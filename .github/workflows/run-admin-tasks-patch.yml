@@ -15,8 +15,22 @@ jobs:
       - name: Apply patch
         run: python scripts/patch_admin_tasks.py
       - name: Build
-        run: npm install && npm run build
+        run: |
+          npm install
+          if ! npm run build > build-error.txt 2>&1; then
+            cat build-error.txt
+            exit 1
+          fi
+      - name: Save build error
+        if: failure()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add build-error.txt
+          git commit -m '[skip ci] Capture admin tasks build error' || true
+          git push || true
       - name: Commit patch
+        if: success()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
