@@ -1,0 +1,29 @@
+name: Apply checklist step 1
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Start checklist step 1'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Apply registration upgrade
+        run: python scripts/apply-step1.py
+      - name: Commit and remove one-time upgrader
+        run: |
+          rm scripts/apply-step1.py .github/workflows/apply-step1.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main.jsx
+          git add -u
+          git diff --cached --quiet && exit 0
+          git commit -m 'Complete checklist step 1 registration'
+          git push
