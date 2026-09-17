@@ -23,18 +23,116 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
       - name: Install dependencies
         run: npm install
-      - name: Inspect JSX context
+      - name: Repair AuthScreen JSX
         run: |
           python - <<'PY'
           from pathlib import Path
-          s=Path('src/main.jsx').read_text(encoding='utf-8')
-          pos=s.find('required />')
-          print('first required /> at',pos)
-          print(repr(s[max(0,pos-500):pos+150]))
+          p = Path('src/main.jsx')
+          s = p.read_text(encoding='utf-8')
+          start = s.index('function AuthScreen()')
+          end = s.index('\nfunction HomeScreen', start)
+          replacement = '''function AuthScreen(){
+            const [mode,setMode]=useState('login')
+            const [code,setCode]=useState('')
+            const [name,setName]=useState('')
+            const [email,setEmail]=useState('')
+            const [password,setPassword]=useState('')
+            const [role,setRole]=useState(null)
+            const [message,setMessage]=useState('')
+            const [busy,setBusy]=useState(false)
+
+            const checkCode=async()=>{
+              setMessage('')
+              const {data,error}=await supabase.rpc('validate_invitation',{p_code:code.trim()})
+              if(error||!data?.length){
+                setRole(null)
+                setMessage('Código inválido, usado, revogado ou expirado.')
+                return
+              }
+              setRole(data[0])
+              if(data[0].intended_name&&!name)setName(data[0].intended_name)
+              if(data[0].intended_email&&!email)setEmail(data[0].intended_email)
+            }
+
+            const submit=async(e)=>{
+              e.preventDefault()
+              setMessage('')
+              setBusy(true)
+              try{
+                if(mode==='register'){
+                  if(!role){
+                    await checkCode()
+                    return
+                  }
+                  const {error}=await supabase.auth.signUp({
+                    email,
+                    password,
+                    options:{data:{name,invite_code:code.trim()}}
+                  })
+                  if(error)throw error
+                  setMessage('Conta criada. Se a confirmação por e-mail estiver ativa, confira sua caixa de entrada para entrar na casa.')
+                }else{
+                  const {error}=await supabase.auth.signInWithPassword({email,password})
+                  if(error)throw error
+                }
+              }catch(err){
+                setMessage(err.message||'Não foi possível concluir.')
+              }finally{
+                setBusy(false)
+              }
+            }
+
+            const switchMode=()=>{
+              setMode(mode==='login'?'register':'login')
+              setMessage('')
+              setRole(null)
+            }
+
+            return <div className="auth-wrap">
+              <div className="auth-card">
+                <div className="auth-brand">
+                  <div className="brand-mark">PBC</div>
+                  <span className="eyebrow">Terreiro Pai Benedito do Congo</span>
+                </div>
+                <h1>{mode==='login'?'Bem-vindo de volta.':'Entre para a casa.'}</h1>
+                <p className="muted">{mode==='login'?'Acesse sua área da comunidade.':'Use o código recebido para criar seu acesso.'}</p>
+                {message&&<div className="form-message">{message}</div>}
+                <form onSubmit={submit}>
+                  {mode==='register'&&<div className="auth-register-fields">
+                    <label>Nome
+                      <input value={name} onChange={e=>setName(e.target.value)} required />
+                    </label>
+                    <label>Código de convite
+                      <div className="code-row">
+                        <input value={code} onChange={e=>setCode(e.target.value.toUpperCase())} placeholder="PBC-XXXXXXXXXXXX" required />
+                        <button type="button" onClick={checkCode}>Validar</button>
+                      </div>
+                    </label>
+                    {role&&<div className="invite-valid"><ShieldCheck size={16}/> Convite válido para <strong>{role.role==='admin'?'Administrador':role.role==='editor'?'Editor':'Membro'}</strong></div>}
+                  </div>}
+                  <label>E-mail
+                    <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
+                  </label>
+                  <label>Senha
+                    <input type="password" minLength={6} value={password} onChange={e=>setPassword(e.target.value)} required />
+                  </label>
+                  <button className="primary-button" disabled={busy}>{busy?'Aguarde…':mode==='login'?'Entrar':'Criar minha conta'}</button>
+                </form>
+                <button className="switch-auth" type="button" onClick={switchMode}>{mode==='login'?'Tenho um código de convite':'Já tenho uma conta'}</button>
+              </div>
+            </div>
+          }
+'''
+          p.write_text(s[:start] + replacement + s[end:], encoding='utf-8')
           PY
+          git diff -- src/main.jsx
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/main.jsx
+          git diff --cached --quiet || (git commit -m "fix: repair authentication JSX" && git push)
       - name: Build
         run: npm run build
       - name: Setup Pages
