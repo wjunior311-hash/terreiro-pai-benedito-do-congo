@@ -26,24 +26,15 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
-      - name: Normalize JSX
+      - name: Inspect JSX context
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('src/main.jsx')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace('required/>', 'required />')
-          p.write_text(s, encoding='utf-8')
+          s=Path('src/main.jsx').read_text(encoding='utf-8')
+          pos=s.find('required />')
+          print('first required /> at',pos)
+          print(repr(s[max(0,pos-500):pos+150]))
           PY
-          if git diff --quiet -- src/main.jsx; then
-            echo "No source normalization needed."
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add src/main.jsx
-            git commit -m "fix: normalize JSX input tags"
-            git push
-          fi
       - name: Build
         run: npm run build
       - name: Setup Pages
