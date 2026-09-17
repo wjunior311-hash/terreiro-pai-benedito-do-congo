@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -26,14 +26,6 @@ jobs:
           node-version: 24
       - name: Install dependencies
         run: npm install
-      - name: Repair AuthScreen JSX
-        run: python scripts/repair-auth.py
-      - name: Commit repaired source
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/main.jsx
-          git diff --cached --quiet || (git commit -m "fix: repair authentication JSX" && git push)
       - name: Build
         run: npm run build
       - name: Setup Pages
