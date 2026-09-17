@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite --config vite.pbc.config.js build",
+    "build": "vite build --config vite.pbc.config.js",
     "preview": "vite preview"
   },
   "dependencies": {
