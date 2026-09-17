@@ -1,10 +1,13 @@
 name: Apply checklist step 2
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   upgrade:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'Trigger checklist step 2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
