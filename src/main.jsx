@@ -1,1 +1,1 @@
-import './appNext.jsx'
+import './appStable.jsx'
