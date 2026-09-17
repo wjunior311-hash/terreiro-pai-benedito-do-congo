@@ -1,0 +1,48 @@
+name: Apply profile UI
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Patch profile screen
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/main.jsx')
+          s=p.read_text()
+          if 'function MeLegacy(' not in s:
+              s=s.replace('function Me(', 'function MeLegacy(', 1)
+          marker='function Admin('
+          if marker not in s:
+              raise SystemExit('Admin marker not found')
+          if 'function Me({p,go,logout})' not in s:
+              component=r'''function Me({p,go,logout}){
+ const [editing,setEditing]=useState(false),[name,setName]=useState(p.name||''),[dob,setDob]=useState(p.date_of_birth||''),[symbol,setSymbol]=useState(p.orixa_symbol||''),[group,setGroup]=useState(p.groups?.name==='Organização'?'Ainda não estou em nenhum grupo':(p.groups?.name||'')),[msg,setMsg]=useState(''),[busy,setBusy]=useState(false)
+ const orixas=[['⚪','Oxalá'],['⚔️','Ogum'],['💛','Oxum'],['🌊','Iemanjá'],['⚡','Xangô'],['🌪️','Iansã'],['🏹','Oxóssi'],['🪻','Nanã'],['🌾','Obaluaiê'],['🦋','Logunedé'],['🔥','Exu'],['🌿','Ossain'],['🌙','Ewá'],['🪨','Obá']]
+ const save=async()=>{setBusy(true);setMsg('');const {data,error}=await supabase.rpc('update_my_profile',{p_name:name,p_date_of_birth:dob||null,p_orixa_symbol:symbol,p_group_name:group});if(error)setMsg(error.message);else{setEditing(false);setMsg('Perfil atualizado.');window.location.reload()}setBusy(false)}
+ return <><div className="hero"><span className="eyebrow">MINHA ÁREA</span><h1>Eu</h1><p className="muted">Seu cadastro e seus acessos na casa.</p></div>{msg&&<div className="toast">{msg}</div>}<div className="card"><div className="row"><div className="logo">{p.orixa_symbol||'🌿'}</div><div><h2 style={{margin:0}}>{p.name}</h2><p className="muted">{p.groups?.name==='Organização'?'Sem grupo definido':p.groups?.name||'Sem grupo'}</p></div></div>{!editing?<><div className="list" style={{marginTop:16}}><div className="row between"><span>Data de nascimento</span><b>{p.date_of_birth?new Date(p.date_of_birth+'T12:00:00').toLocaleDateString('pt-BR'):'—'}</b></div><div className="row between"><span>Orixá</span><b>{p.orixa_symbol||'—'}</b></div><div className="row between"><span>Grupo de atuação</span><b>{p.groups?.name==='Organização'?'Ainda não estou em nenhum grupo':p.groups?.name||'—'}</b></div><div className="row between"><span>E-mail</span><b>{p.email||'—'}</b></div></div><button className="btn primary" style={{width:'100%',marginTop:16}} onClick={()=>setEditing(true)}>Editar meu perfil</button></>:<><div className="field"><label>Nome</label><input className="input" value={name} onChange={e=>setName(e.target.value)}/></div><div className="field"><label>Data de nascimento</label><input className="input" type="date" value={dob} onChange={e=>setDob(e.target.value)}/></div><div className="field"><label>Seu Orixá</label><select className="select" value={symbol} onChange={e=>setSymbol(e.target.value)}>{orixas.map(([icon,label])=><option key={label} value={icon}>{icon} {label}</option>)}</select></div><div className="field"><label>Grupo de atuação</label><select className="select" value={group} onChange={e=>setGroup(e.target.value)}><option>Decoração</option><option>Cozinha</option><option>Comunicação</option><option>Manutenção</option><option>Ainda não estou em nenhum grupo</option></select></div><div className="row"><button className="btn" onClick={()=>setEditing(false)}>Cancelar</button><button className="btn primary" onClick={save} disabled={busy}>{busy?'Salvando…':'Salvar alterações'}</button></div></>}</div><div className="grid"><button className="shortcut" onClick={()=>go('me-finance')}><WalletCards/><b>Meu financeiro</b></button><button className="shortcut" onClick={()=>go('house')}><BookOpen/><b>Informações da casa</b></button>{(p.role==='admin'||p.role==='editor')&&<button className="shortcut" onClick={()=>go('admin')}><Settings/><b>{p.role==='admin'?'Administração':'Gestão da casa'}</b></button>}<button className="shortcut" onClick={logout}><LogOut/><b>Sair</b></button></div></>
+}
+'''
+              s=s.replace(marker, component+marker, 1)
+          p.write_text(s)
+          PY
+      - name: Build
+        run: npm install && npm run build
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/main.jsx
+          git diff --cached --quiet && echo 'No changes' || (git commit -m 'Add profile editing screen' && git push)
+      - name: Remove temporary workflow
+        if: always()
+        run: |
+          git rm -f .github/workflows/apply-profile-ui.yml || true
+          git diff --cached --quiet && exit 0 || (git commit -m 'Remove temporary profile UI workflow' && git push)
