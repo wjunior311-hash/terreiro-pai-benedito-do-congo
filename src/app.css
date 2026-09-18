@@ -98,3 +98,14 @@ body{min-height:100dvh}
 @media(max-width:650px){.content-admin-tabs{padding-bottom:12px}.notice-house-card{grid-template-columns:34px 1fr;padding:18px}.notice-house-mark{width:32px;height:32px;font-size:16px}.notice-house-card h3{font-size:23px}.rule-house-card{grid-template-columns:42px 1fr;gap:13px;padding:18px}.rule-number{font-size:24px}.rule-house-card h3{font-size:22px}}
 
 .content-summary{font-size:16px;line-height:1.72;color:#44483f;margin:0}.content-card-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid #ebe6dc}.read-content-btn,.mark-content-btn{border:0;cursor:pointer;border-radius:11px;padding:9px 11px;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:800}.read-content-btn{background:#344b36;color:#fff}.mark-content-btn{background:#eeeae1;color:#4d6248}.mark-content-btn.marked{background:#e8eee3}.mark-symbol{font-size:17px;line-height:1}.content-reader{padding:24px;max-height:88vh}.content-reader h2{font-family:Georgia,serif;font-size:34px;line-height:1.08;margin:10px 0}.content-full-body{font-size:17px;line-height:1.8;margin-top:18px}.reader-mark{display:flex;align-items:center;gap:11px;margin-top:24px;padding-top:18px;border-top:1px solid #ebe6dc;color:#4d6248}.reader-mark>div{display:grid;gap:2px}.reader-mark span{font-size:12px;color:#76766d}.reader-mark .mark-content-btn{margin-left:auto}@media(max-width:650px){.content-card-actions{align-items:stretch}.read-content-btn,.mark-content-btn{justify-content:center;min-height:42px}.read-content-btn{flex:1}.content-reader{padding:18px}.content-reader h2{font-size:29px}.content-full-body{font-size:16px}.reader-mark{align-items:flex-start}.reader-mark .mark-content-btn{margin-left:0}}
+
+/* Identidade visual das atividades */
+.gira-type-gira{border-left:5px solid #4f6b4f}
+.gira-type-desenvolvimento{border-left:5px solid #7560a8}
+.gira-type-interna{border-left:5px solid #6b7280}
+.gira-type-festa{border-left:5px solid #c47a35}
+.gira-type-quintal{border-left:5px solid #4c8a5b}
+.gira-type-evento{border-left:5px solid #3b7aa3}
+.gira-type-reuniao{border-left:5px solid #8a6f45}
+.gira-type-outra{border-left:5px solid #777}
+.task-done-card{border-color:#67b77f!important;background:#f0faf3}
