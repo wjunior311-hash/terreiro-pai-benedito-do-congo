@@ -9,7 +9,7 @@ import './styles.css'
 import './app.css'
 
 const periods=[['friday','Sexta-feira'],['saturday_1430','Sábado · 14h30–15h30'],['saturday_post_gira','Sábado · pós-gira'],['sunday','Domingo']]
-const kinds=[['teaching','Ensinamentos'],['reflection','Reflexões'],['feeling','O que senti']]
+const kinds=[['ensinamento','Ensinamentos'],['reflexao','Reflexões'],['senti','O que senti']]
 const groups=['Decoração','Cozinha','Comunicação','Manutenção','Organização']
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
 const dateTime=s=>new Date(s).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})
