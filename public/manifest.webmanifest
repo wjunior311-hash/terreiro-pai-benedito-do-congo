@@ -1,0 +1,11 @@
+{
+  "name":"Terreiro Pai Benedito do Congo",
+  "short_name":"TPBC",
+  "start_url":"/terreiro-pai-benedito-do-congo/",
+  "scope":"/terreiro-pai-benedito-do-congo/",
+  "display":"standalone",
+  "background_color":"#f6f0e6",
+  "theme_color":"#f6f0e6",
+  "description":"Comunidade do Terreiro Pai Benedito do Congo",
+  "icons":[{"src":"/terreiro-pai-benedito-do-congo/logo.jpg","sizes":"any","type":"image/jpeg","purpose":"any maskable"}]
+}
