@@ -5,8 +5,11 @@ export const ORIXAS=[
 ]
 const old={'⚪':'oxala','⚔️':'ogum','💛':'oxum','🌊':'iemanja','⚡':'xango','🌪️':'iansa','🏹':'oxossi','🪻':'nana','🌾':'obalue','🦋':'logunede','🔥':'exu','🌿':'ossaim','🌙':'ewá','🪨':'obá'}
 export const normalizeOrixa=v=>old[v]||v||'oxala'
+const specialAssets={oxala:import.meta.env.BASE_URL+'oxala.svg',ogum:import.meta.env.BASE_URL+'ogum.svg',xango:import.meta.env.BASE_URL+'xango.svg',oxum:import.meta.env.BASE_URL+'oxum.svg',iemanja:import.meta.env.BASE_URL+'iemanja.svg',obalue:import.meta.env.BASE_URL+'obalue.svg',nana:import.meta.env.BASE_URL+'nana.svg',ossaim:import.meta.env.BASE_URL+'ossaim.svg',logunede:import.meta.env.BASE_URL+'logunede.svg'}
 export function OrixaIcon({name,size=54,className=''}){
  const n=normalizeOrixa(name)
+ const special=specialAssets[n]; const title=ORIXAS.find(x=>x[0]===n)?.[1]||n
+ if(special)return <img src={special} className={className} width={size} height={size} alt={title} title={title} style={{display:'inline-block',width:size,height:size,flex:'0 0 auto',objectFit:'contain'}}/>
  const stroke=n==='exu'?'#a52a24':n==='ogum'||n==='iemanja'||n==='logunede'?'#1f5570':n==='oxossi'||n==='ossaim'?'#275b35':n==='oxum'||n==='ibeji'?'#c6921b':n==='xango'||n==='obalue'?'#8b4a28':n==='iansa'?'#a52222':n==='nana'?'#54204f':n==='oxumare'?'#2f6b45':'#8b836e'
  const p={width:size,height:size,viewBox:'0 0 100 100',className,fill:'none',stroke,strokeWidth:3,strokeLinecap:'round',strokeLinejoin:'round'}
  if(n==='exu')return <svg {...p}><path d="M50 8v84M28 28h44M38 16l-10 12M62 16l10 12"/><path d="M31 38q-10 12 0 24M69 38q10 12 0 24"/><circle cx="50" cy="91" r="3" fill={stroke}/></svg>
