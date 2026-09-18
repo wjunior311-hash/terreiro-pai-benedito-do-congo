@@ -63,3 +63,23 @@
 .tag-options,.content-filter,.content-tags{display:flex;flex-wrap:wrap;gap:7px}.tag-options .btn{font-size:12px;padding:7px 10px}.content-filter{margin:12px 0 18px}.content-filter .btn{font-size:12px;padding:8px 11px}.content-tags{margin:7px 0 12px}.content-tag{display:inline-flex;padding:4px 8px;border-radius:999px;background:#eeeae1;color:#5b5d53;font-size:11px;font-weight:700}.blog-card{cursor:pointer}.blog-card:hover{border-color:#c8c2b6}
 
 .install-help{position:fixed;inset:0;background:rgba(30,34,28,.42);display:grid;place-items:center;padding:24px;z-index:30}.install-help-card{width:min(520px,100%);background:#fffdf9;border:1px solid #ded8ca;border-radius:22px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.18)}.install-help-card h3{margin:0}.install-help-card p{line-height:1.65}
+
+/* iPhone / PWA viewport and safe-area adjustments */
+html,body,#root{min-height:100%;width:100%;overflow-x:hidden}
+body{min-height:100dvh}
+.app{min-height:100dvh;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.top{padding-top:calc(13px + env(safe-area-inset-top))}
+.content{padding-bottom:calc(34px + env(safe-area-inset-bottom))}
+.bottom{padding-bottom:env(safe-area-inset-bottom)}
+@media(max-width:650px){
+  .top{align-items:center;gap:10px;padding-left:14px;padding-right:14px}
+  .top>div:nth-child(2){min-width:0;flex:1}
+  .top small{font-size:10px;letter-spacing:.10em;line-height:1.35}
+  .top strong{font-size:14px;line-height:1.25}
+  .top-actions{flex:0 0 auto}
+  .preview-toggle{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+  .content{padding-left:16px;padding-right:16px}
+}
+@media(display-mode:standalone){
+  .top{padding-top:calc(13px + env(safe-area-inset-top))}
+}
