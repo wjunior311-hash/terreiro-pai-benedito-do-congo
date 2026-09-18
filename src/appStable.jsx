@@ -56,13 +56,14 @@ function Content(){
 import React,{useEffect,useState,useRef} from 'react'
 import { TERREIRO_LOGO } from './logoData';
 import {createRoot} from 'react-dom/client'
-import {Home as HomeIcon,CalendarDays,Leaf,UserRound,WalletCards,BookOpen,ShieldCheck,LogOut,Check,X,Plus,RefreshCw,ChevronRight,Users,ClipboardList,Ticket,FileText,Save,Trash2,ArrowLeft,Eye as EyeIcon,CircleHelp} from 'lucide-react'
+import {Home as HomeIcon,CalendarDays,Leaf,UserRound,WalletCards,BookOpen,ShieldCheck,LogOut,Check,X,Plus,RefreshCw,ChevronRight,Users,ClipboardList,Ticket,FileText,Save,Trash2,ArrowLeft,Eye as EyeIcon,CircleHelp,Download} from 'lucide-react'
 import {supabase} from './lib/supabase'
 import {OrixaIcon,ORIXAS} from './orixaSymbols'
 import './styles.css'
 import './app.css'
 
 const periods=[['friday','Sexta-feira'],['saturday_1430','Sábado · 14h30–15h30'],['saturday_post_gira','Sábado · pós-gira'],['sunday','Domingo']]
+const types={gira:'Gira',festa:'Festa',evento:'Evento do terreiro',reuniao:'Reunião',outra:'Outra atividade'}
 const kinds=[['ensinamento','Ensinamentos'],['reflexao','Reflexões'],['senti','O que senti']]
 const groups=['Decoração','Cozinha','Comunicação','Manutenção','Organização']
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
