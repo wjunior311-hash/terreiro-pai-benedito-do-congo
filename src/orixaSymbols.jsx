@@ -1,7 +1,7 @@
 import React from 'react'
 
 export const ORIXAS=[
- ['oxala','Oxalá'],['exu','Exu'],['ogum','Ogum'],['oxossi','Oxóssi'],['xango','Xangô'],['iansa','Iansã'],['oxum','Oxum'],['iemanja','Iemanjá'],['obalue','Obaluaiê'],['nana','Nanã'],['oxumare','Oxumarê'],['ossaim','Ossaim'],['logunede','Logunedé'],['ibeji','Ibeji']
+ ['oxala','Oxalá'],['exu','Exu'],['ogum','Ogum'],['oxossi','Oxóssi'],['xango','Xangô'],['iansa','Iansã'],['oxum','Oxum'],['iemanja','Iemanjá'],['obalue','Obaluaiê'],['nana','Nanã'],['oxumare','Oxumarê'],['ossaim','Ossaim'],['logunede','Logunedé']
 ]
 const old={'⚪':'oxala','⚔️':'ogum','💛':'oxum','🌊':'iemanja','⚡':'xango','🌪️':'iansa','🏹':'oxossi','🪻':'nana','🌾':'obalue','🦋':'logunede','🔥':'exu','🌿':'ossaim','🌙':'ewá','🪨':'obá'}
 export const normalizeOrixa=v=>old[v]||v||'oxala'
