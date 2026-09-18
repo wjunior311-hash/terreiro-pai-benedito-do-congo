@@ -109,3 +109,6 @@ body{min-height:100dvh}
 .gira-type-reuniao{border-left:5px solid #8a6f45}
 .gira-type-outra{border-left:5px solid #777}
 .task-done-card{border-color:#67b77f!important;background:#f0faf3}
+
+
+.task-operation{margin-top:18px}.task-live-card{background:#fff;border:2px solid #ddd;border-radius:14px;margin:10px 0;padding:14px}.task-live-card.done{border-color:#67b77f;background:#f0faf3}.task-instructions{line-height:1.55;margin:10px 0}.task-live-card .complete{margin-top:10px}.task-live-card .note{margin-top:10px}
