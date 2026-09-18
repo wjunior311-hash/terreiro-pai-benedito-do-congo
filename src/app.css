@@ -28,3 +28,15 @@
  .house-content-card p{font-size:15px;line-height:1.65}
  .content-list-head{align-items:start}
 }
+
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:0}
+.preview-toggle{border:1px solid #d5cfc1;background:#fffdf8;color:#3d493a;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.preview-toggle:hover{background:#eee9dc}
+.preview-toggle.member{background:#344b36;color:#fff;border-color:#344b36}
+.preview-banner{max-width:900px;margin:10px auto 0;padding:8px 14px;border:1px solid #d7dfd0;background:#edf3e8;color:#465942;border-radius:12px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+@media(max-width:650px){
+ .top-actions{gap:6px}
+ .preview-toggle{padding:7px 9px;font-size:10px}
+ .top-actions .preview-toggle + svg{display:none}
+ .preview-banner{margin:8px 13px 0}
+}
