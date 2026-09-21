@@ -5,7 +5,7 @@ export const ORIXAS=[
 ]
 const old={'⚪':'oxala','⚔️':'ogum','💛':'oxum','🌊':'iemanja','⚡':'xango','🌪️':'iansa','🏹':'oxossi','🪻':'nana','🌾':'obalue','🦋':'logunede','🔥':'exu','🌿':'ossaim','🌙':'ewá','🪨':'obá'}
 export const normalizeOrixa=v=>old[v]||v||'oxala'
-const specialAssets={oxala:import.meta.env.BASE_URL+'oxala.svg',ogum:import.meta.env.BASE_URL+'ogum.svg',xango:import.meta.env.BASE_URL+'xango.svg',oxum:import.meta.env.BASE_URL+'oxum.svg',iemanja:import.meta.env.BASE_URL+'iemanja.svg',obalue:import.meta.env.BASE_URL+'obalue.svg',nana:import.meta.env.BASE_URL+'nana.svg',ossaim:import.meta.env.BASE_URL+'ossaim.svg',logunede:import.meta.env.BASE_URL+'logunede.svg'}
+const specialAssets={oxala:import.meta.env.BASE_URL+'oxala.svg',exu:import.meta.env.BASE_URL+'EXU.png',ogum:import.meta.env.BASE_URL+'OGUM.png',oxossi:import.meta.env.BASE_URL+'OXOSSI.png',xango:import.meta.env.BASE_URL+'XANGO.png',oxum:import.meta.env.BASE_URL+'oxum.svg',iemanja:import.meta.env.BASE_URL+'iemanja.svg',obalue:import.meta.env.BASE_URL+'obalue.svg',nana:import.meta.env.BASE_URL+'nana.svg',ossaim:import.meta.env.BASE_URL+'ossaim.svg',logunede:import.meta.env.BASE_URL+'logunede.svg'}
 export function OrixaIcon({name,size=54,className=''}){
  const n=normalizeOrixa(name)
  const special=specialAssets[n]; const title=ORIXAS.find(x=>x[0]===n)?.[1]||n
