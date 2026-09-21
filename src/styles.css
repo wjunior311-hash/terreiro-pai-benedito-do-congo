@@ -25,3 +25,11 @@
 
 .home-next-date{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}.home-next-day{font-size:58px;line-height:.95;font-weight:800;color:#344b36;z-index:1}.home-next-month{font-size:12px;letter-spacing:.16em;font-weight:800;color:#5f6658;margin-top:7px;z-index:1}.home-next-time{font-size:13px;color:#6d665d;margin-top:8px;z-index:1}.home-next-date:after{border-color:rgba(255,255,255,.65)}
 @media(max-width:650px){.home-next-day{font-size:48px}.home-next-month{font-size:10px}.home-next-time{font-size:11px}}
+
+/* Correção do calendário da próxima atividade */
+.home-next-date{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:14px 10px;min-width:0}
+.home-next-date:after{inset:14px}
+.home-next-date .home-next-day{font-size:48px;line-height:.95;font-weight:800;letter-spacing:-.04em;color:#344b36}
+.home-next-date .home-next-month{font-size:14px;line-height:1.1;font-weight:800;letter-spacing:.14em;color:#56604e;margin-top:5px;max-width:100%;text-align:center;white-space:nowrap}
+.home-next-date .home-next-time{font-size:19px;line-height:1.1;font-weight:600;color:#655d54;margin-top:9px}
+@media(max-width:650px){.home-next-date .home-next-day{font-size:39px}.home-next-date .home-next-month{font-size:11px}.home-next-date .home-next-time{font-size:16px}}
