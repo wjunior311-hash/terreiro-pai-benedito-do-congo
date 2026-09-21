@@ -116,3 +116,56 @@ body{min-height:100dvh}
 .activity-card-date{width:86px;height:86px;border-radius:16px;background:#e6e0d1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;border:1px solid #d6d0c2}.activity-card-day{font-size:31px;line-height:1;font-weight:800;color:#344b36}.activity-card-month{font-size:11px;letter-spacing:.12em;font-weight:800;color:#6d665d;margin-top:4px}.activity-card-time{font-size:11px;color:#6d665d;margin-top:5px}.activity-card-date + div{min-width:0}@media(max-width:650px){.activity-card-date{width:72px;height:72px}.activity-card-day{font-size:27px}.activity-card-month,.activity-card-time{font-size:10px}}
 
 .people-filter-grid{grid-template-columns:repeat(3,1fr)}.people-filters{margin:14px 0 18px}.invitation-card{margin-bottom:10px}.invitation-used{opacity:.78}.pai-santo-badge{display:inline-flex;align-items:center;margin-left:7px;padding:3px 7px;border-radius:999px;background:#efe4d3;color:#74552f;border:1px solid #ddc8a7;font-size:9px;font-weight:900;letter-spacing:.08em;vertical-align:middle}.pai-santo-badge:before{content:'✦';margin-right:4px}.pai-santo-badge-block{margin:8px 0 0}.community-feed-tabs .btn{white-space:nowrap}@media(max-width:800px){.people-filter-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.people-filter-grid{grid-template-columns:1fr}}
+
+/* Financeiro ADM — visão em tabela */
+.finance-admin-card{overflow:hidden}
+.finance-admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.finance-month-picker{max-width:180px}
+.finance-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 16px}
+.finance-summary-item{border:1px solid var(--border,#ddd);background:var(--surface,#fff);border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.finance-summary-item b{font-size:20px;line-height:1}
+.finance-summary-item span{font-size:11px;color:var(--muted,#777)}
+.finance-summary-item.active{box-shadow:inset 0 0 0 2px currentColor}
+.finance-summary-item.paid{color:#2f7d4a}
+.finance-summary-item.unpaid{color:#b04b45}
+.finance-admin-filters{display:grid;grid-template-columns:2fr repeat(4,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.finance-table-wrap{overflow:auto;border:1px solid var(--border,#ddd);border-radius:12px;-webkit-overflow-scrolling:touch}
+.finance-table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;font-size:12px}
+.finance-table th,.finance-table td{border-bottom:1px solid var(--border,#e7e1d7);border-right:1px solid var(--border,#eee);padding:7px 6px;text-align:center;background:var(--surface,#fff)}
+.finance-table th{position:sticky;top:0;z-index:2;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#777);background:#f7f4ee}
+.finance-table th:last-child,.finance-table td:last-child{border-right:0}
+.finance-table tbody tr:last-child td{border-bottom:0}
+.finance-person-col,.finance-person-cell{position:sticky;left:0;z-index:3;text-align:left!important;min-width:190px;width:220px}
+.finance-table th.finance-person-col{z-index:4}
+.finance-person-cell{box-shadow:4px 0 8px rgba(0,0,0,.04)}
+.finance-person-cell b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:205px}
+.finance-person-cell small{display:block;color:var(--muted,#888);font-size:10px;margin-top:2px}
+.finance-table th.current-month{background:#eee9df;color:#252525}
+.finance-table td.current-month{background:#faf8f3}
+.finance-cell{width:58px;height:48px}
+.finance-cell-button{width:32px;height:32px;border-radius:9px;border:1px solid transparent;font-size:18px;font-weight:700;cursor:pointer;transition:transform .12s,filter .12s}
+.finance-cell-button:hover{transform:scale(1.06);filter:brightness(.97)}
+.finance-cell-button:disabled{cursor:default;opacity:.65}
+.finance-cell-button.paid{background:#e4f3e8;color:#287544;border-color:#b9dfc5}
+.finance-cell-button.unpaid{background:#fae9e7;color:#b24b43;border-color:#edc7c2}
+.finance-cell-button.na{background:#f1f1ef;color:#888}
+.finance-empty{padding:28px;text-align:center;color:var(--muted,#777)}
+.finance-table-help{margin:10px 2px 0}
+@media (max-width:900px){
+ .finance-admin-filters{grid-template-columns:1fr 1fr}
+ .finance-person-col,.finance-person-cell{min-width:160px;width:160px}
+ .finance-table{min-width:800px}
+}
+@media (max-width:640px){
+ .finance-admin-toolbar{align-items:flex-start;flex-direction:column}
+ .finance-month-picker{max-width:none;width:100%}
+ .finance-admin-filters{grid-template-columns:1fr}
+ .finance-summary{gap:6px}
+ .finance-summary-item{padding:9px}
+ .finance-summary-item b{font-size:18px}
+ .finance-table{min-width:760px}
+ .finance-person-col,.finance-person-cell{min-width:145px;width:145px}
+ .finance-person-cell b{max-width:132px}
+ .finance-cell{width:52px;padding:6px 4px!important}
+ .finance-cell-button{width:30px;height:30px}
+}
