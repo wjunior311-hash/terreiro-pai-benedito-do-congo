@@ -101,7 +101,7 @@ function GiraDetail({p,gira,back}){
    supabase.from('tasks').select('*,task_categories(name),task_assignments(profile_id,assignment_mode),task_status(done,completed_by,completed_at)').eq('gira_id',gira.id).order('sort_order'),
    supabase.from('community_posts').select('*').eq('gira_id',gira.id).order('created_at',{ascending:false})
   ]);
-  setCapacity(c||[]);setTasks(t||[]);setPosts(ps||[]);
+  setCapacity(c||[]);setTasks(t||[]);if((ps||[]).length){const ids=[...new Set((ps||[]).map(x=>x.author_id))];const{data:authors}=await supabase.from('profiles').select('id,name,is_pai_de_santo').in('id',ids);const am=Object.fromEntries((authors||[]).map(x=>[x.id,x]));setPosts((ps||[]).map(x=>({...x,author:am[x.author_id]})))}else setPosts([]);
   const ids=[...new Set((t||[]).flatMap(x=>(x.task_assignments||[]).map(a=>a.profile_id)))];
   if(ids.length){const {data:pr}=await supabase.from('profiles').select('id,name').in('id',ids);setTaskPeople(Object.fromEntries((pr||[]).map(x=>[x.id,x.name])))}else setTaskPeople({});
  };
@@ -149,7 +149,7 @@ function GiraDetail({p,gira,back}){
 
     {resp?.status==='going'&&p.leadership_seal&&<div className="card"><span className="eyebrow">ESCOLHA DO FACILITADOR</span><p className="muted small">Você pode escolher uma tarefa em cada período que marcou como disponível.</p>{periods.filter(([k])=>availability.includes(k)).map(([k,l])=>{const chosen=myTasks.find(t=>t.period_key===k&&t.task_assignments?.some(a=>a.profile_id===p.id&&a.assignment_mode==='leader_choice'));if(chosen)return <div className="list-item row between" key={k}><span><small className="muted">{l}</small><br/><b>{chosen.name}</b></span><span className="pill">ESCOLHIDA</span></div>;const options=tasks.filter(t=>t.period_key===k);return <div key={k} className="list-item"><small className="muted">{l}</small>{options.length?options.map(t=><div className="row between" key={t.id} style={{marginTop:8}}><span><b>{t.name}</b><small className="muted"> · {t.task_categories?.name||'Tarefa'}</small></span><button className="btn" disabled={busy} onClick={()=>chooseLeaderTask(t.id)}>Escolher</button></div>):<p className="muted small">Nenhuma tarefa cadastrada neste período.</p>}</div>})}</div>}
    </div>
-   <div className="card"><h3>O que ficou dessa atividade?</h3>{posts.length?posts.map(x=><div className="list-item" key={x.id}><b>{kinds.find(k=>k[0]===x.kind)?.[1]}</b><p style={{whiteSpace:'pre-wrap'}}>{x.body}</p></div>):<p className="muted">Ainda não há registros ligados a esta atividade.</p>}</div>
+   <div className="card"><h3>O que ficou dessa atividade?</h3>{posts.length?posts.map(x=><div className="list-item" key={x.id}><b>{kinds.find(k=>k[0]===x.kind)?.[1]}</b>{x.author?.is_pai_de_santo&&<span className="pai-santo-badge pai-santo-badge-block">PAI DE SANTO</span>}<p style={{whiteSpace:'pre-wrap'}}>{x.body}</p></div>):<p className="muted">Ainda não há registros ligados a esta atividade.</p>}</div>
   </div>
  );
 }
