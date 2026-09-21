@@ -112,3 +112,5 @@ body{min-height:100dvh}
 
 
 .task-operation{margin-top:18px}.task-live-card{background:#fff;border:2px solid #ddd;border-radius:14px;margin:10px 0;padding:14px}.task-live-card.done{border-color:#67b77f;background:#f0faf3}.task-instructions{line-height:1.55;margin:10px 0}.task-live-card .complete{margin-top:10px}.task-live-card .note{margin-top:10px}
+
+.activity-card-date{width:86px;height:86px;border-radius:16px;background:#e6e0d1;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;border:1px solid #d6d0c2}.activity-card-day{font-size:31px;line-height:1;font-weight:800;color:#344b36}.activity-card-month{font-size:11px;letter-spacing:.12em;font-weight:800;color:#6d665d;margin-top:4px}.activity-card-time{font-size:11px;color:#6d665d;margin-top:5px}.activity-card-date + div{min-width:0}@media(max-width:650px){.activity-card-date{width:72px;height:72px}.activity-card-day{font-size:27px}.activity-card-month,.activity-card-time{font-size:10px}}
