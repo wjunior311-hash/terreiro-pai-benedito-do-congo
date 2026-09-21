@@ -33,3 +33,27 @@
 .home-next-date .home-next-month{font-size:14px;line-height:1.1;font-weight:800;letter-spacing:.14em;color:#56604e;margin-top:5px;max-width:100%;text-align:center;white-space:nowrap}
 .home-next-date .home-next-time{font-size:19px;line-height:1.1;font-weight:600;color:#655d54;margin-top:9px}
 @media(max-width:650px){.home-next-date .home-next-day{font-size:39px}.home-next-date .home-next-month{font-size:11px}.home-next-date .home-next-time{font-size:16px}}
+
+/* Agenda de giras — visual limpo e sem ícones gigantes */
+.gira-filters{display:flex;flex-wrap:wrap;gap:8px;overflow:visible;padding:0 0 4px;margin:0 0 24px}
+.gira-filters button{font-size:11px;padding:9px 13px;white-space:nowrap}
+.agenda-month-title{font-size:25px!important;text-transform:capitalize;margin:24px 4px 12px!important;color:#4b4033}
+.gira-agenda-list{gap:12px}
+.gira-agenda-card{grid-template-columns:92px 1fr auto;border-radius:18px;min-height:132px}
+.agenda-date{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#e9eee3;border-right:1px solid #dfe5d7;position:relative;min-width:0}
+.agenda-date:after{content:'';position:absolute;inset:10px;border:1px solid rgba(255,255,255,.8);border-radius:13px;pointer-events:none}
+.agenda-day,.agenda-month,.agenda-time{position:relative;z-index:1}
+.agenda-day{font-size:34px;line-height:.95;font-weight:800;letter-spacing:-.03em;color:#344b36}
+.agenda-month{font-size:10px;line-height:1;font-weight:800;letter-spacing:.13em;color:#59634f;margin-top:5px}
+.agenda-time{font-size:12px;line-height:1;font-weight:600;color:#71685e;margin-top:8px}
+.gira-agenda-card .agenda-info{padding:16px 14px}
+.gira-agenda-card .agenda-info h2{font-size:20px;margin:9px 0 7px}
+.gira-agenda-card .agenda-info .date{font-size:12px}
+.gira-agenda-card .entity-chips{margin:8px 0 5px}
+.gira-agenda-card .entity-chip{padding:5px 7px;font-size:9px}
+.gira-agenda-card .muted{font-size:10px}
+.gira-agenda-card .agenda-chevron{margin-right:12px}
+.gira-type-desenvolvimento .agenda-date{background:#f0e9f7}
+.gira-type-festa .agenda-date{background:#f8ece2}
+.gira-type-quintal .agenda-date{background:#e8eee4}
+@media(max-width:650px){.gira-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px;margin-bottom:18px}.gira-filters button{flex:none}.agenda-month-title{font-size:22px!important}.gira-agenda-card{grid-template-columns:78px 1fr auto;min-height:126px}.agenda-day{font-size:30px}.agenda-month{font-size:9px}.agenda-time{font-size:11px}.gira-agenda-card .agenda-info{padding:14px 10px}.gira-agenda-card .agenda-info h2{font-size:18px}.gira-agenda-card .agenda-info .date{font-size:11px}.gira-agenda-card .agenda-chevron{margin-right:8px}}
