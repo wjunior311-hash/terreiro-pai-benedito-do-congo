@@ -57,3 +57,21 @@
 .gira-type-festa .agenda-date{background:#f8ece2}
 .gira-type-quintal .agenda-date{background:#e8eee4}
 @media(max-width:650px){.gira-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px;margin-bottom:18px}.gira-filters button{flex:none}.agenda-month-title{font-size:22px!important}.gira-agenda-card{grid-template-columns:78px 1fr auto;min-height:126px}.agenda-day{font-size:30px}.agenda-month{font-size:9px}.agenda-time{font-size:11px}.gira-agenda-card .agenda-info{padding:14px 10px}.gira-agenda-card .agenda-info h2{font-size:18px}.gira-agenda-card .agenda-info .date{font-size:11px}.gira-agenda-card .agenda-chevron{margin-right:8px}}
+
+/* Home — próxima atividade: composição mobile mais leve */
+@media(max-width:650px){
+  .home-next{display:flex;flex-direction:column;overflow:hidden}
+  .home-next-art.home-next-date{min-height:112px;height:112px;width:100%;flex:none;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:14px;padding:12px 20px;background:linear-gradient(145deg,#d9dfcf,#aab7a0)}
+  .home-next-date:after{inset:12px;border-radius:16px}
+  .home-next-date .home-next-day{font-size:48px;line-height:.9}
+  .home-next-date .home-next-month{font-size:13px;letter-spacing:.12em;margin:0}
+  .home-next-date .home-next-time{font-size:17px;margin:0;padding-left:14px;border-left:1px solid rgba(80,90,72,.3)}
+  .home-next-info{padding:18px 18px 20px}
+  .home-next-info h2{font-size:24px;margin:11px 0 7px}
+  .home-next-info .date{font-size:13px}
+  .home-next-info .btn{margin-top:14px}
+  .home-presence{position:static;left:auto;right:auto;bottom:auto;display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:14px 18px;background:#efe8db;border-top:1px solid #e2d8c8}
+  .home-presence>span{font-size:11px}
+  .home-presence .choice{margin-left:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .home-presence .choice .btn{width:100%;padding:10px 8px;justify-content:center}
+}
