@@ -121,7 +121,7 @@ function GiraDetail({p,gira,back}){
    <button className="btn" onClick={back}><ArrowLeft size={15}/> Todas as giras</button>
    <div className="card">
     <div className="gira">
-     {gira.art_path?<img className="art" src={gira.art_path} alt=""/>:<div className="art">🌾</div>}
+     {gira.art_path?<img className="art" src={gira.art_path} alt=""/>:null}
      <div>
       <span className="activity-tag detail-type">{typeLabel(gira.activity_type)}</span>
       <h2>{gira.name}</h2><p>{dateTime(gira.starts_at)}</p>
