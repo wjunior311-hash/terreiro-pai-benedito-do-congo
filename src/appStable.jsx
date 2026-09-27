@@ -235,7 +235,7 @@ function Me({p,go,logout,memberPreview=false}){
  if(tab==='profile')return <Profile p={p} back={()=>setTab('menu')}/>;
  if(tab==='finance')return <Finance p={p} back={()=>setTab('menu')}/>;
  const orixa=p.orixa_symbol||'oxala',roleLabel=p.role==='admin'?'Administrador':p.role==='editor'?'Editor':'Membro',group=p.groups?.name||'Organização';
- return <div className="me-page me-orixa-"+orixa>
+ return <div className={'me-page me-orixa-'+orixa}>
   <section className="me-hero">
    <div><span className="eyebrow">MEU ESPAÇO</span><h1>Olá, {p.name?.split(' ')[0]||'membro'}.</h1><p className="muted">Aqui você acompanha sua caminhada dentro da casa.</p></div>
    <div className="me-hero-orixa"><OrixaIcon name={orixa} size={54}/><small>{ORIXAS.find(x=>x[0]===orixa)?.[1]||'Orixá'}</small></div>
