@@ -214,3 +214,18 @@ body{min-height:100dvh}
 
 
 .gira-turn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.gira-turn-card{min-width:0}.task-turn-list{display:grid;gap:8px;margin:12px 0}.task-turn-item{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e4ddd2;border-radius:12px;background:#fffdf8}.task-turn-item>div:nth-child(2){flex:1;min-width:0}.task-turn-item small,.task-turn-item p{display:block;margin-top:3px}.drag-handle{cursor:grab;color:#8b8379;font-weight:800}.turn-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.turn-choice-grid .btn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left}.turn-choice-grid .btn span{font-size:11px;opacity:.75}.task-done{opacity:.7;text-decoration:line-through}.gira-turn-card .card{margin-top:10px}@media(max-width:700px){.gira-turn-grid,.turn-choice-grid{grid-template-columns:1fr}.task-turn-item .row{gap:4px}.task-turn-item .row .btn{padding:7px 8px}}
+
+/* Próxima atividade — resumo compacto e leitura completa na agenda */
+.home-next-info{padding-bottom:70px!important}
+.home-next-bring{margin-top:10px;color:#6d665d;font-size:11px;line-height:1.55}
+.home-next-bring>b{color:#4e473f}
+.home-next-bring>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;white-space:pre-line;margin-top:3px}
+.home-next-bring>button{display:inline-flex;align-items:center;gap:3px;margin-top:5px;padding:0;background:transparent;color:#53674d;font-size:10px;font-weight:800}
+.home-next-contribution{margin-top:8px!important}
+.gira-detail-text{margin:10px 0;white-space:pre-line;line-height:1.65}
+.gira-admin-textarea{min-height:120px;resize:vertical;line-height:1.55}
+@media(max-width:650px){
+ .home-next-info{padding:15px 13px 67px!important}
+ .home-next-bring{-webkit-line-clamp:2;font-size:10.5px}
+ .gira-admin-textarea{min-height:100px}
+}
