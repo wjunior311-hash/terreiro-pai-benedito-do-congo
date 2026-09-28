@@ -155,13 +155,13 @@ function GiraDetail({p,gira,back}){
  const[resp,setResp]=useState(null),[turns,setTurns]=useState([]),[availability,setAvailability]=useState([]),[tasks,setTasks]=useState([]),[statuses,setStatuses]=useState({}),[exchanges,setExchanges]=useState([]),[msg,setMsg]=useState(''),[busy,setBusy]=useState(false),[swap,setSwap]=useState({current:'',requested:[],message:''});
  const now=new Date(),start=new Date(gira.starts_at),open=now>=new Date(start.getTime()-10*86400000)&&now<new Date(start.getTime()-3*86400000),released=now>=new Date(start.getTime()-3*86400000),isToday=now.toDateString()===start.toDateString();
  const load=async()=>{
-  const[{data:r},{data:t},{data:a},{data:x},{data:incoming}]=await Promise.all([
+  const[{data:r},{data:t},{data:a},{data:x}]=await Promise.all([
    supabase.from('gira_responses').select('*').eq('gira_id',gira.id).eq('profile_id',p.id).maybeSingle(),
    supabase.rpc('gira_turn_summary',{p_gira_id:gira.id}),
    supabase.from('gira_turn_availability').select('gira_turn_id').eq('profile_id',p.id).in('gira_turn_id',(await supabase.from('gira_turns').select('id').eq('gira_id',gira.id)).data?.map(v=>v.id)||[]),
-   supabase.from('task_exchange_requests').select('*').eq('gira_id',gira.id).or('requester_id.eq.'+p.id+',accepted_by.eq.'+p.id).order('created_at',{ascending:false}),supabase.from('task_exchange_notifications').select('id,request_id,status').eq('recipient_id',p.id).eq('status','unread')
+   supabase.from('task_exchange_requests').select('*').eq('gira_id',gira.id).or('requester_id.eq.'+p.id+',accepted_by.eq.'+p.id).order('created_at',{ascending:false})
   ]);
-  setResp(r);setTurns(t||[]);setAvailability((a||[]).map(v=>v.gira_turn_id));setExchanges([...(x||[]),...(incoming||[])]);
+  setResp(r);setTurns(t||[]);setAvailability((a||[]).map(v=>v.gira_turn_id));setExchanges(x||[]);
   if(released){const{data:ts}=await supabase.rpc('gira_turn_tasks',{p_gira_id:gira.id});setTasks(ts||[]);const ids=(ts||[]).map(v=>v.id);if(ids.length){const{data:ss}=await supabase.from('task_status').select('task_id,done,completed_by,completed_at').in('task_id',ids);const m={};(ss||[]).forEach(v=>m[v.task_id]=v);setStatuses(m)}else setStatuses({})}else{setTasks([]);setStatuses({})}
  };
  useEffect(()=>{load()},[gira.id,p.id]);
