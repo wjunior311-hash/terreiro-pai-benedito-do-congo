@@ -219,7 +219,7 @@ body{min-height:100dvh}
 .home-next-info{padding-bottom:70px!important}
 .home-next-bring{margin-top:10px;color:#6d665d;font-size:11px;line-height:1.55}
 .home-next-bring>b{color:#4e473f}
-.home-next-bring>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;white-space:pre-line;margin-top:3px}
+.home-next-bring>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;white-space:pre-line;margin-top:3px}.home-next-bring.expanded>span{display:block;-webkit-line-clamp:unset;overflow:visible}
 .home-next-bring>button{display:inline-flex;align-items:center;gap:3px;margin-top:5px;padding:0;background:transparent;color:#53674d;font-size:10px;font-weight:800}
 .home-next-contribution{margin-top:8px!important}
 .gira-detail-text{margin:10px 0;white-space:pre-line;line-height:1.65}
