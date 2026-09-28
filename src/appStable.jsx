@@ -117,6 +117,8 @@ function Home({p,go,memberPreview=false}){
    <div className="home-welcome-copy"><span className="eyebrow">BEM-VINDO, {p.name?.split(' ')[0]?.toUpperCase()}</span><h1>Nossa força vem de quem veio antes<br/><em>e de quem caminha conosco.</em></h1><p className="muted">Tudo o que você precisa para acompanhar a vida da casa, em um só lugar.</p></div>
   </section>
 
+  {!memberPreview&&<GiraHomeAlerts p={p} go={go}/>}
+
   {(p.role==='admin'||p.is_finance_manager)&&!memberPreview&&<button className="admin-home-card" onClick={()=>go('admin')}><div><span className="eyebrow">ÁREA ADMINISTRATIVA</span><strong>Gestão da Casa</strong><span>Gerencie pessoas, atividades, tarefas, financeiro e conteúdos.</span></div><ShieldCheck size={28}/><ChevronRight size={20}/></button>}
 
   <section className="home-section">
