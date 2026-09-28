@@ -89,7 +89,7 @@ function Auth(){const [register,setRegister]=useState(false),[code,setCode]=useS
 function Field({label,children}){return <div className="field"><label>{label}</label>{children}</div>}
 
 function Home({p,go,memberPreview=false}){
- const[gira,setGira]=useState(null),[resp,setResp]=useState(null),[contents,setContents]=useState([]),[notices,setNotices]=useState([]),[pending,setPending]=useState({monthly:0,extras:0}),[newCharges,setNewCharges]=useState([]),[loadingHome,setLoadingHome]=useState(true);
+ const[gira,setGira]=useState(null),[resp,setResp]=useState(null),[turnSummary,setTurnSummary]=useState([]),[myTurnIds,setMyTurnIds]=useState([]),[myTaskCount,setMyTaskCount]=useState(0),[contents,setContents]=useState([]),[notices,setNotices]=useState([]),[pending,setPending]=useState({monthly:0,extras:0}),[newCharges,setNewCharges]=useState([]),[loadingHome,setLoadingHome]=useState(true);
  const load=async()=>{
   setLoadingHome(true);const now=new Date();
   const[{data:g},{data:c},{data:n}]=await Promise.all([
