@@ -161,7 +161,7 @@ function GiraDetail({p,gira,back}){
    supabase.from('gira_turn_availability').select('gira_turn_id').eq('profile_id',p.id).in('gira_turn_id',(await supabase.from('gira_turns').select('id').eq('gira_id',gira.id)).data?.map(v=>v.id)||[]),
    supabase.from('task_exchange_requests').select('*').eq('gira_id',gira.id).or('requester_id.eq.'+p.id+',accepted_by.eq.'+p.id).order('created_at',{ascending:false})
   ]);
-  setResp(r);setTurns(t||[]);setAvailability((a||[]).map(v=>v.gira_turn_id));setExchanges(x||[]);
+  setResp(r);setTurns(t||[]);setAvailability((a||[]).map(v=>v.gira_turn_id));const{data:ni}=await supabase.from('task_exchange_notifications').select('request_id').eq('recipient_id',p.id).eq('status','unread');const{data:nr}=ni?.length?await supabase.from('task_exchange_requests').select('*').in('id',ni.map(v=>v.request_id)):({data:[]});setExchanges([...(x||[]),...(nr||[])]);
   if(released){const{data:ts}=await supabase.rpc('gira_turn_tasks',{p_gira_id:gira.id});setTasks(ts||[]);const ids=(ts||[]).map(v=>v.id);if(ids.length){const{data:ss}=await supabase.from('task_status').select('task_id,done,completed_by,completed_at').in('task_id',ids);const m={};(ss||[]).forEach(v=>m[v.task_id]=v);setStatuses(m)}else setStatuses({})}else{setTasks([]);setStatuses({})}
  };
  useEffect(()=>{load()},[gira.id,p.id]);
