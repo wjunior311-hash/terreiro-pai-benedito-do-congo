@@ -217,6 +217,7 @@ function GiraTurnManager({p,editor=false}){
  const loadGiras=async()=>{const{data}=await supabase.from('giras').select('*').order('starts_at',{ascending:false});setGiras(data||[]);if(!selectedId&&data?.[0])setSelectedId(data[0].id)};
  const loadGira=async id=>{
   if(!id){setTurns([]);setTasks({});setParticipants([]);setExchanges([]);return}
+  await supabase.rpc('expire_gira_exchange_requests');
   const[{data:td},{data:ts},{data:rs},{data:ex}]=await Promise.all([
    supabase.from('gira_turns').select('*').eq('gira_id',id).order('sort_order'),
    supabase.from('tasks').select('*,task_status(done,completed_by,completed_at)').eq('gira_id',id).order('sort_order'),
