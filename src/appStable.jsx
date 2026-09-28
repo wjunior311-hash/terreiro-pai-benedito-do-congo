@@ -77,7 +77,7 @@ function App(){
   {screen==='community'&&<Community p={profile}/>}
   {screen==='content'&&<HouseContent p={profile} back={()=>setScreen('home')}/>} 
   {screen==='me'&&<Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview}/>} {screen==='contact'&&<ContactParents back={()=>setScreen('home')}/>}
-  {screen==='admin'&&!memberPreview&&profile.role==='admin'&&<Admin p={profile}/>}
+  {screen==='admin'&&!memberPreview&&(profile.role==='admin'||profile.is_finance_manager)&&<Admin p={profile}/>}
   {screen==='admin'&&!memberPreview&&profile.role==='editor'&&<Admin p={profile} editor/>}
 </main>
 <Birthday/>
