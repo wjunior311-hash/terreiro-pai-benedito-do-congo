@@ -91,52 +91,40 @@ function Field({label,children}){return <div className="field"><label>{label}</l
 function Home({p,go,memberPreview=false}){
  const[gira,setGira]=useState(null),[resp,setResp]=useState(null),[contents,setContents]=useState([]),[notices,setNotices]=useState([]),[pending,setPending]=useState({monthly:0,extras:0}),[newCharges,setNewCharges]=useState([]),[loadingHome,setLoadingHome]=useState(true);
  const load=async()=>{
-  setLoadingHome(true);
-  const now=new Date();
+  setLoadingHome(true);const now=new Date();
   const[{data:g},{data:c},{data:n}]=await Promise.all([
    supabase.from('giras').select('*').gte('starts_at',now.toISOString()).order('starts_at').limit(1).maybeSingle(),
    supabase.from('house_contents').select('id,title,body,content_type,tags,created_at').eq('content_type','content').order('created_at',{ascending:false}).limit(3),
    supabase.from('notices').select('id,title,body,starts_at,ends_at,published,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3)
   ]);
   setGira(g);setContents(c||[]);setNotices((n||[]).filter(x=>(!x.starts_at||new Date(x.starts_at)<=now)&&(!x.ends_at||new Date(x.ends_at)>=now)));
-  if(g){
-   const{data:r}=await supabase.from('gira_responses').select('*').eq('gira_id',g.id).eq('profile_id',p.id).maybeSingle();
-   setResp(r);
-  }else setResp(null);
+  if(g){const{data:r}=await supabase.from('gira_responses').select('*').eq('gira_id',g.id).eq('profile_id',p.id).maybeSingle();setResp(r)}else setResp(null);
   if(financialEligible(p.date_of_birth,now,p.is_pai_de_santo)){
-   const ref=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);
-   await supabase.rpc('sync_my_monthly_dues',{p_reference_month:ref});
-   const[{data:d},{data:x}]=await Promise.all([
-    supabase.from('monthly_dues').select('reference_month,status').eq('profile_id',p.id),
-    supabase.from('extra_charges').select('id,description,amount,status,due_date,created_at').eq('profile_id',p.id).order('created_at',{ascending:false})
-   ]);
+   const ref=new Date(now.getFullYear(),now.getMonth(),1).toISOString().slice(0,10);await supabase.rpc('sync_my_monthly_dues',{p_reference_month:ref});
+   const[{data:d},{data:x}]=await Promise.all([supabase.from('monthly_dues').select('reference_month,status').eq('profile_id',p.id),supabase.from('extra_charges').select('id,description,amount,status,due_date,created_at').eq('profile_id',p.id).order('created_at',{ascending:false})]);
    const current=now.toISOString().slice(0,7),start=String(p.financial_start_month||'').slice(0,7);
    const monthly=(d||[]).filter(x=>x.status!=='paid'&&x.status!=='not_applicable'&&String(x.reference_month).slice(0,7)<current&&(!start||String(x.reference_month).slice(0,7)>=start)).length;
-   const extras=(x||[]).filter(x=>x.status!=='paid');
-   setPending({monthly,extras:extras.length});
-   setNewCharges(extras.filter(x=>x.created_at&&new Date(x.created_at)>=new Date(now.getTime()-30*86400000)));
-  }else{setPending({monthly:0,extras:0});setNewCharges([])}
-  setLoadingHome(false)
+   const extras=(x||[]).filter(x=>x.status!=='paid');setPending({monthly,extras:extras.length});setNewCharges(extras.filter(x=>x.created_at&&new Date(x.created_at)>=new Date(now.getTime()-30*86400000)));
+  }else{setPending({monthly:0,extras:0});setNewCharges([])}setLoadingHome(false)
  };
  useEffect(()=>{load()},[p.id]);
  const answer=async status=>{if(!gira)return;const{data,error}=await supabase.from('gira_responses').upsert({gira_id:gira.id,profile_id:p.id,status},{onConflict:'gira_id,profile_id'}).select().single();if(!error)setResp(data)};
- const today=new Date();
- const paymentReminder=today.getDate()===15&&financialEligible(p.date_of_birth,today,p.is_pai_de_santo);
- const pendingTotal=pending.monthly+pending.extras;
+ const today=new Date(),paymentReminder=today.getDate()===15&&financialEligible(p.date_of_birth,today,p.is_pai_de_santo),pendingTotal=pending.monthly+pending.extras;
+ const activityDate=gira?new Date(gira.starts_at):null;
  return <div className="home-page">
-  {p.role==='admin'&&!memberPreview&&<button className="admin-home-card" onClick={()=>go('admin')}><div><span className="eyebrow">ÁREA ADMINISTRATIVA</span><strong>Gestão da Casa</strong><span>Gerencie pessoas, atividades, tarefas, financeiro e conteúdos.</span></div><ShieldCheck size={28}/><ChevronRight size={20}/></button>}
   <section className="home-welcome">
    <div className="home-welcome-copy"><span className="eyebrow">BEM-VINDO, {p.name?.split(' ')[0]?.toUpperCase()}</span><h1>Nossa força vem de quem veio antes<br/><em>e de quem caminha conosco.</em></h1><p className="muted">Tudo o que você precisa para acompanhar a vida da casa, em um só lugar.</p></div>
-   <div className="home-welcome-orixa"><OrixaIcon name={p.orixa_symbol} size={62}/><small>{ORIXAS.find(x=>x[0]===p.orixa_symbol)?.[1]||'Meu Orixá'}</small></div>
   </section>
+
+  {p.role==='admin'&&!memberPreview&&<button className="admin-home-card" onClick={()=>go('admin')}><div><span className="eyebrow">ÁREA ADMINISTRATIVA</span><strong>Gestão da Casa</strong><span>Gerencie pessoas, atividades, tarefas, financeiro e conteúdos.</span></div><ShieldCheck size={28}/><ChevronRight size={20}/></button>}
 
   <section className="home-section">
    <div className="home-section-head"><div><span className="eyebrow">AGENDA DA CASA</span><h2>Próxima atividade</h2></div><button className="home-link" onClick={()=>go('giras')}>Ver agenda <ChevronRight size={14}/></button></div>
    {gira?<div className={'home-next gira-type-'+(gira.activity_type||'gira')}>
-    <div className="home-next-art home-next-date"><span className="home-next-day">{new Date(gira.starts_at).getDate().toString().padStart(2,'0')}</span><span className="home-next-month">{new Date(gira.starts_at).toLocaleDateString('pt-BR',{month:'long'}).toUpperCase()}</span><span className="home-next-time">{new Date(gira.starts_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+    <div className="home-next-date"><span className="home-next-day">{activityDate.getDate().toString().padStart(2,'0')}</span><span className="home-next-month">{activityDate.toLocaleDateString('pt-BR',{month:'short'}).replace('.','').toUpperCase()}</span><span className="home-next-time">{activityDate.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div>
     <div className="home-next-info"><div className="line-between"><span className="activity-tag">{typeLabel(gira.activity_type)}</span><span className="eyebrow">PRÓXIMA</span></div><h2>{gira.name}</h2><p className="date"><CalendarDays size={15}/>{dateTime(gira.starts_at)}</p>{gira.entity_lines?.length>0&&<div className="entity-chips">{gira.entity_lines.map(id=>{const x=lineInfo(id);return x?<span className="entity-chip" key={id}>{x[1]} {x[2]}</span>:null})}</div>}{gira.what_to_bring&&<p className="muted small"><b>Levar:</b> {gira.what_to_bring}</p>}{Number(gira.contribution_amount)>0&&<p className="muted small"><b>Contribuição:</b> {money(gira.contribution_amount)}</p>}<button className="btn" onClick={()=>go('giras')}>Ver detalhes <ChevronRight size={15}/></button></div>
     <div className="home-presence"><span>Você vai?</span><div className="choice"><button className={'btn '+(resp?.status==='going'?'active':'')} onClick={()=>answer('going')}><Check size={15}/> Vou participar</button><button className={'btn '+(resp?.status==='not_going'?'active':'')} onClick={()=>answer('not_going')}><X size={15}/> Não vou</button></div></div>
-   </div>:<div className="home-empty"><CalendarDays size={22}/><div><b>Nenhuma próxima atividade cadastrada</b><p className="muted small">Quando uma nova atividade for criada, ela aparecerá aqui.</p></div><button className="btn" onClick={()=>go('giras')}>Abrir agenda</button></div>}
+   </div>:<div className="home-empty"><CalendarDays size={21}/><div><b>Nenhuma próxima atividade cadastrada</b><p className="muted small">Quando uma nova atividade for criada, ela aparecerá aqui.</p></div><button className="btn" onClick={()=>go('giras')}>Abrir agenda <ChevronRight size={15}/></button></div>}
   </section>
 
   {!loadingHome&&<section className="home-section home-for-you">
@@ -155,7 +143,6 @@ function Home({p,go,memberPreview=false}){
   <section className="home-section home-shortcuts-section"><div className="home-section-head"><div><span className="eyebrow">ACESSOS RÁPIDOS</span><h2>O que você procura?</h2></div></div><div className="home-shortcuts"><button onClick={()=>go('giras')}><CalendarDays/><span><b>Giras & atividades</b><small>Agenda da casa</small></span><ChevronRight/></button><button onClick={()=>go('community')}><Leaf/><span><b>Mural da Casa</b><small>Conversas da comunidade</small></span><ChevronRight/></button><button onClick={()=>go('content')}><BookOpen/><span><b>Conteúdos</b><small>Textos, avisos e regras</small></span><ChevronRight/></button><button onClick={()=>go('me')}><UserRound/><span><b>Meu espaço</b><small>Perfil, financeiro e opções</small></span><ChevronRight/></button></div></section>
  </div>
 }
-
 function Shortcut({icon:Icon,text,onClick}){return <button className="shortcut" onClick={onClick}><Icon/><b>{text}</b></button>}
 function Notice(){const[n,setN]=useState(null);useEffect(()=>{supabase.from('notices').select('*').eq('published',true).order('starts_at',{ascending:false}).limit(1).maybeSingle().then(({data})=>setN(data))},[]);return n?<div className="card notice"><span className="eyebrow">AVISO DA CASA</span><b>{n.title}</b><p>{n.body}</p></div>:null}
 
