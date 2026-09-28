@@ -180,17 +180,15 @@ body{min-height:100dvh}
 
 /* Home + menu — acabamento da experiência principal */
 .home-page{display:grid;gap:22px}
-.home-welcome{padding:10px 4px 2px;max-width:760px}.home-welcome-copy{min-width:0}.home-welcome h1{font-size:48px;line-height:1.02;letter-spacing:-1.5px;margin:9px 0 14px}.home-welcome h1 em{display:inline-block}.home-welcome-copy>.muted{font-size:17px;line-height:1.55;max-width:650px}
+.home-welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:6px 4px 2px}
+.home-welcome-copy{min-width:0}.home-welcome h1{font-size:38px;margin:8px 0 10px}.home-welcome-orixa{width:94px;height:94px;border-radius:28px;background:#edf0e8;border:1px solid #d9e0d2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:none}.home-welcome-orixa small{font-size:9px;color:#69715f;font-weight:800}
 .home-section{min-width:0}.home-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 3px 11px}.home-section-head h2{font-family:Georgia,serif;font-size:23px;font-weight:500;margin:4px 0 0;color:#3f382f}.home-link{display:inline-flex;align-items:center;gap:3px;background:transparent;color:#53674d;font-size:11px;font-weight:800;padding:5px 0;white-space:nowrap}
 .home-next{margin-bottom:0;box-shadow:0 16px 36px rgba(81,63,40,.07)}.home-next-info{padding:21px 22px 70px}.home-next-info .btn{margin-top:8px}.home-presence{background:#f1eadf;border-top:1px solid #e2d7c7}
-
-.home-empty{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid #ded5c7;border-radius:18px;background:#fffdf8;color:#5d574f;min-height:76px}.home-empty>svg{color:#65745a;flex:none}.home-empty>div{flex:1;min-width:0}.home-empty p{margin-top:3px;line-height:1.35}.home-empty .btn{white-space:nowrap}
-
+.home-empty{display:flex;align-items:center;gap:13px;padding:18px;border:1px dashed #d6ccbd;border-radius:18px;background:#fffdf8;color:#5d574f}.home-empty>div{flex:1}.home-empty p{margin-top:3px}
 .home-for-you{padding-top:2px}.home-alert{margin:0 0 9px}.home-alert:last-child{margin-bottom:0}.home-clear{display:flex;align-items:center;gap:12px;padding:15px 17px;border:1px solid #d5e1d1;border-radius:17px;background:#f3f7f1;color:#40533c}.home-clear>svg{flex:none}.home-clear p{margin-top:3px}
 .home-content-section{display:grid;gap:20px}.home-feed{margin:0}.home-feed-list{grid-template-columns:repeat(3,minmax(0,1fr))}.home-feed-card,.home-notice-card{transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}.home-feed-card:hover,.home-notice-card:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(81,63,40,.06)}
 .home-shortcuts{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.home-shortcuts button{display:flex;align-items:center;gap:12px;padding:14px 15px;text-align:left;border:1px solid #e1d9cc;border-radius:16px;background:#fffdf8}.home-shortcuts button>svg:first-child{width:20px;height:20px;color:#65745a;flex:none}.home-shortcuts button>span{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.home-shortcuts button b{font-size:12px}.home-shortcuts button small{font-size:10px;color:#8a8177}.home-shortcuts button>svg:last-child{width:15px;color:#aaa094}
 .home-shortcuts-section{padding-bottom:6px}
-
 
 /* Refinamento da Home: hero editorial e agenda compacta */
 .home-page{gap:30px}
