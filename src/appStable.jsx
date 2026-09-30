@@ -184,7 +184,7 @@ function GiraDetail({p,gira,back}){
  const myTurns=turns.filter(t=>availability.includes(t.turn_id));
  const fullAlternatives=turns.filter(t=>t.is_full&&!availability.includes(t.turn_id));
  const isAnyShiftToday=myTurns.some(t=>t.shift_date===new Date().toISOString().slice(0,10));
- const coverStyle={'--gira-cover-image':gira.art_path?\`url("\${gira.art_path}")\`:'none','--gira-cover-color':gira.cover_color||'#65745a'};
+ const coverStyle={'--gira-cover-image':gira.art_path?`url("${gira.art_path}")`:'none','--gira-cover-color':gira.cover_color||'#65745a'};
  return <div>
   <button className="btn gira-detail-back" onClick={back}><ArrowLeft size={15}/> Todas as giras</button>
   <section className={'gira-public-hero '+(gira.art_path?'has-cover':'no-cover')} style={coverStyle}>
