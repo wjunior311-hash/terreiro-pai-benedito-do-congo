@@ -166,3 +166,6 @@
 .gira-cover-upload{margin-top:14px}.gira-cover-preview{width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:10px;display:block}
 .gira-admin-event-card{background-size:cover;background-position:center}
 @media(max-width:650px){.gira-entity-picker,.gira-cover-mode{grid-template-columns:1fr}}
+
+.gira-cover-library{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 16px}.gira-cover-library-item{border:1px solid rgba(0,0,0,.1);border-radius:13px;padding:0;overflow:hidden;background:#fff;cursor:pointer;text-align:left}.gira-cover-library-item.selected{border-color:rgba(60,80,55,.65);box-shadow:0 0 0 2px rgba(60,80,55,.12)}.gira-cover-library-item img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}.gira-cover-library-item span{display:block;padding:7px 9px;font-size:.82rem;text-transform:capitalize}.gira-cover-custom{border-top:1px solid rgba(0,0,0,.08);padding-top:14px}.gira-cover-custom .input{margin-top:8px}@media(max-width:650px){.gira-cover-library{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
