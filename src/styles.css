@@ -291,3 +291,13 @@
   .gira-admin-choice{min-height:74px}
   .gira-admin-actions{margin:0;padding-left:2px;padding-right:2px}
 }
+
+/* Contraste automatico das capas das giras */
+.gira-agenda-card.has-cover{color:var(--gira-text-color,#fff)}
+.gira-agenda-card.has-cover .agenda-info,
+.gira-agenda-card.has-cover .agenda-info h2,
+.gira-agenda-card.has-cover .agenda-info p,
+.gira-agenda-card.has-cover .agenda-info small,
+.gira-agenda-card.has-cover .agenda-chevron{color:var(--gira-text-color,#fff)}
+.gira-agenda-card.has-cover .agenda-cover-fade{background:linear-gradient(90deg,var(--gira-cover-overlay,rgba(20,26,20,.58)) 0%,rgba(20,26,20,.34) 48%,rgba(20,26,20,.08) 100%)}
+.gira-agenda-card.has-cover .activity-tag,.gira-agenda-card.has-cover .entity-chip,.gira-agenda-card.has-cover .agenda-info>small{color:var(--gira-text-color,#fff);border-color:color-mix(in srgb,var(--gira-text-color,#fff) 48%,transparent);background:color-mix(in srgb,var(--gira-text-color,#fff) 12%,transparent)}
