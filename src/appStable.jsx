@@ -274,7 +274,7 @@ function GiraTurnManager({p,editor=false}){
  const agenda=selected?.use_task_list?(templates.find(x=>x.id===selected.task_list_id)||null):null;
  return <div className="gira-admin-page">
   {message&&<div className="toast">{message}</div>}
-  {view==='list'&&<><div className="row between gira-admin-header"><div><span className="eyebrow">AGENDA DA CASA</span><h2>Giras</h2><p className="muted">Crie e organize as giras como eventos da casa.</p></div>{!editor&&<button className="btn primary" onClick={openNew}><Plus size={14}/> Criar gira</button>}</div>
+  {view==='list'&&<><div className="row between gira-admin-header"><div><span className="eyebrow">AGENDA DA CASA</span><h2>Giras</h2><p className="muted">Crie e organize as giras como eventos da casa.</p></div><button className="btn primary" onClick={openNew}><Plus size={14}/> Criar gira</button></div>
     <div className="gira-admin-list">{!giras.length?<div className="card empty"><h3>Nenhuma gira cadastrada</h3><p className="muted">Quando você criar uma gira, ela aparecerá aqui.</p>{!editor&&<button className="btn primary" onClick={openNew}>Criar primeira gira</button>}</div>:giras.map(g=>{const d=formatDate(g);return <button type="button" className="gira-admin-event-card" key={g.id} onClick={()=>openDetail(g)}><div className="gira-admin-event-date"><strong>{d.day}</strong><span>{d.month}</span><small>{d.time}</small></div><div className="gira-admin-event-main"><span className="activity-tag">🌿 GIRA</span><h3>{g.name}</h3><p>{d.date} · {d.time}</p><div className="gira-admin-event-meta"><span>{g.use_task_list?'✓ Agenda de tarefas':'Sem agenda de tarefas'}</span></div></div><ChevronRight size={18}/></button>})}</div>
   </>}
   {(view==='new'||view==='edit')&&<div className="gira-admin-create">
