@@ -216,7 +216,7 @@ function HouseContent({back,p}){
  const tags=['Todos','Banhos','Ensinamentos','Recados dos Pais da Casa','Macumbas de Terreiro'];
  const cleanHtml=html=>String(html||'');
  const textToHtml=t=>String(t||'').split('\\n\\n').map(x=>'<p>'+x.split('\\n').join('<br>')+'</p>').join('');
- const plainText=html=>{const d=document.createElement('div');d.innerHTML=String(html||'');return String(d.textContent||d.innerText||'').replace(/\\s+/g,' ').trim()};
+ const plainText=html=>{const d=document.createElement('div');d.innerHTML=String(html||'');return String(d.textContent||d.innerText||'').trim()};
  const summary=html=>{const t=plainText(html);return t.length>240?t.slice(0,240)+'…':t};
  const renderBody=html=>cleanHtml(/<[a-z][\\s\\S]*>/i.test(html||'')?html:textToHtml(html));
  const load=async()=>{const[{data:c},{data:n},{data:r}]=await Promise.all([supabase.from('house_contents').select('*').order('sort_order').order('created_at',{ascending:false}),supabase.from('notices').select('*').order('created_at',{ascending:false}),supabase.from('house_content_reads').select('content_id,profile_id,profiles(name,orixa_symbol)')]);setItems(c||[]);setNotices(n||[]);setReads((r||[]).filter(x=>x.profile_id===p?.id).map(x=>x.content_id));const map={};(r||[]).forEach(x=>{if(!map[x.content_id])map[x.content_id]=[];map[x.content_id].push({id:x.profile_id,name:x.profiles?.name||'Membro',orixa:x.profiles?.orixa_symbol})});setMarks(map)};
