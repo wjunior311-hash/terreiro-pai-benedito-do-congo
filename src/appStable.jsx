@@ -165,7 +165,7 @@ function useReadableCover(url,fallback='#65745a'){
   let active=true;
   const hexLuma=v=>{const h=(v||fallback).replace('#','');if(h.length!==6)return .45;const r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;const f=x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4);return .2126*f(r)+.7152*f(g)+.0722*f(b)};
   const apply=l=>{const dark=l>.58;if(active)setStyle({color:dark?'#273128':'#fff',overlay:dark?'rgba(255,250,241,.48)':'rgba(20,26,20,.58)'})};
-  if(!url){apply(hexLuma(fallback));return()=>{active=false}};
+  if(!url){const l=hexLuma(fallback);if(active)setStyle({color:l>.58?'#273128':'#fff',overlay:'transparent'});return()=>{active=false}};
   const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{
    try{const c=document.createElement('canvas'),ctx=c.getContext('2d',{willReadFrequently:true});c.width=24;c.height=24;ctx.drawImage(img,0,0,24,24);const px=ctx.getImageData(0,0,24,24).data;let sum=0,n=0;for(let i=0;i<px.length;i+=16){const r=px[i]/255,g=px[i+1]/255,b=px[i+2]/255;const f=x=>x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4);sum+=.2126*f(r)+.7152*f(g)+.0722*f(b);n++}apply(sum/n)}catch(e){apply(.35)}};
   img.onerror=()=>apply(.35);img.src=url;
