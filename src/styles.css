@@ -301,3 +301,28 @@
 .gira-agenda-card.has-cover .agenda-chevron{color:var(--gira-text-color,#fff)}
 .gira-agenda-card.has-cover .agenda-cover-fade{background:linear-gradient(90deg,var(--gira-cover-overlay,rgba(20,26,20,.58)) 0%,rgba(20,26,20,.34) 48%,rgba(20,26,20,.08) 100%)}
 .gira-agenda-card.has-cover .activity-tag,.gira-agenda-card.has-cover .entity-chip,.gira-agenda-card.has-cover .agenda-info>small{color:var(--gira-text-color,#fff);border-color:color-mix(in srgb,var(--gira-text-color,#fff) 48%,transparent);background:color-mix(in srgb,var(--gira-text-color,#fff) 12%,transparent)}
+
+/* Correções de contraste e confirmação de presença */
+.gira-agenda-card.has-cover .agenda-visual:before{background:var(--gira-cover-overlay,rgba(20,26,20,.58))!important}
+.gira-agenda-card.has-cover .agenda-cover-fade{background:transparent!important}
+.gira-agenda-card.has-cover .agenda-info,
+.gira-agenda-card.has-cover .agenda-info h2,
+.gira-agenda-card.has-cover .agenda-info .date,
+.gira-agenda-card.has-cover .agenda-info>small,
+.gira-agenda-card.has-cover .agenda-chevron{color:var(--gira-text-color,#fff)!important}
+.gira-agenda-card.has-cover .agenda-info h2{text-shadow:0 2px 10px rgba(0,0,0,.28)}
+.gira-agenda-card.has-cover .agenda-info .entity-chip{color:var(--gira-text-color,#fff)!important;border-color:currentColor;background:rgba(255,255,255,.12)}
+.gira-public-hero:before{background:var(--gira-cover-overlay,rgba(12,17,12,.62))!important}
+.gira-public-hero-content,
+.gira-public-hero h1,
+.gira-public-hero .gira-public-meta>span,
+.gira-public-hero .gira-public-entities span{color:var(--gira-text-color,#fff)!important}
+.gira-public-hero h1{text-shadow:0 2px 12px rgba(0,0,0,.25)}
+.gira-response-confirmation{display:flex;align-items:center;gap:9px;margin:0 4px 14px;padding:12px 14px;border-radius:14px;background:#edf3e8;color:#40533c;border:1px solid #d5e1d1;font-size:12px}
+.gira-response-confirmation.not_going{background:#f4ece8;color:#6d5148;border-color:#e3d2ca}
+.gira-public-actions .btn.is-selected{box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 0 0 1px rgba(52,75,54,.15);transform:translateY(-1px)}
+.gira-public-actions .btn.not-going.is-selected{background:#765e55;color:#fff}
+.home-presence{position:relative;flex-wrap:wrap}
+.home-presence-status{flex-basis:100%;font-size:10px;font-weight:700;color:#52654c;margin-top:-2px}
+.home-presence .choice .btn.is-selected{box-shadow:inset 0 0 0 2px rgba(255,255,255,.45)}
+.home-presence .choice .btn.not-going{background:#765e55;color:#fff}
