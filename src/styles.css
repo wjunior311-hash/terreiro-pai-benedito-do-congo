@@ -360,3 +360,73 @@
  .home-presence-new .choice .btn{width:100%;padding:10px 7px;justify-content:center}
  .home-presence-new .home-presence-status{flex-basis:100%}
 }
+
+
+/* Unified visual system for Giras — shared by Home, Agenda and Admin */
+.unified-gira-clickable{display:block;width:100%;padding:0;border:0;background:transparent;text-align:left;color:inherit;cursor:pointer}
+.unified-gira-card{--ug-radius:26px;display:grid;grid-template-columns:118px minmax(0,1fr);width:100%;min-height:190px;border:1px solid #dfd8ca;border-radius:var(--ug-radius);overflow:hidden;background:#fffdf8;box-shadow:0 1px 0 rgba(48,55,45,.04);text-align:left;position:relative}
+.unified-gira-date{background:#e8eee4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 12px;border-right:1px solid rgba(53,86,63,.12);color:#35563f}
+.unified-gira-day{font-size:46px;line-height:.9;font-weight:800;letter-spacing:-.04em}
+.unified-gira-month{font-size:12px;font-weight:800;letter-spacing:.18em;margin-top:10px}
+.unified-gira-time{font-size:13px;margin-top:12px;color:#697064}
+.unified-gira-visual{position:relative;min-width:0;display:flex;align-items:stretch;overflow:hidden;background-color:var(--gira-cover-color,#65745a);background-image:var(--gira-cover-image);background-position:center;background-size:cover;color:var(--gira-text-color,#fff)}
+.unified-gira-overlay{position:absolute;inset:0;background:var(--gira-cover-overlay,rgba(20,26,20,.58));pointer-events:none}
+.unified-gira-info{position:relative;z-index:1;width:100%;min-width:0;padding:23px 26px;display:flex;flex-direction:column;justify-content:center}
+.unified-gira-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+.unified-gira-topline .activity-tag{flex:0 1 auto;max-width:80%;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:inherit}
+.unified-gira-next{font-size:11px;font-weight:800;letter-spacing:.16em;opacity:.72;white-space:nowrap}
+.unified-gira-info h3{font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.03;font-weight:500;letter-spacing:-.02em;margin:0 0 10px;color:inherit}
+.unified-gira-meta{display:flex;align-items:center;gap:7px;margin:0 0 10px;font-size:13px;line-height:1.35;color:inherit;opacity:.92}
+.unified-gira-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px}
+.unified-gira-chip,.unified-gira-footer span{font-size:11px;font-weight:700;line-height:1.2;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.38);background:rgba(255,255,255,.13);color:inherit}
+.unified-gira-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+.unified-gira-footer>span{padding:5px 8px}
+.unified-gira-footer svg{margin-left:auto;opacity:.85}
+.unified-gira-no-cover .unified-gira-visual{background-image:none}
+.unified-gira-no-cover .unified-gira-overlay{background:var(--gira-cover-overlay,rgba(20,26,20,.12))}
+.unified-gira-agenda{min-height:158px;grid-template-columns:104px minmax(0,1fr)}
+.unified-gira-agenda .unified-gira-date{padding:15px 10px}
+.unified-gira-agenda .unified-gira-day{font-size:38px}
+.unified-gira-agenda .unified-gira-month{font-size:11px;margin-top:8px}
+.unified-gira-agenda .unified-gira-time{font-size:11px;margin-top:8px}
+.unified-gira-agenda .unified-gira-info{padding:18px 22px}
+.unified-gira-agenda .unified-gira-info h3{font-size:24px;margin-bottom:7px}
+.unified-gira-agenda .unified-gira-meta{font-size:11px;margin-bottom:7px}
+.unified-gira-agenda .unified-gira-chips{display:none}
+.unified-gira-agenda .unified-gira-footer{margin-top:2px}
+.unified-gira-home-wrap{width:100%}
+.unified-gira-home{min-height:226px}
+.unified-gira-home .unified-gira-info{padding:26px 28px}
+.unified-gira-home .unified-gira-info h3{font-size:31px}
+.unified-gira-presence{background:#efe8dc;border:1px solid #dfd8ca;border-top:0;border-radius:0 0 26px 26px;padding:17px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.unified-gira-presence strong{font-size:14px;margin-right:auto}
+.unified-gira-presence .choice{display:flex;gap:10px}
+.unified-gira-presence .btn{min-height:42px}
+.unified-gira-presence-status{width:100%;font-size:12px;font-weight:800;color:#557157}
+.unified-gira-home-wrap .unified-gira-card{border-radius:26px 26px 0 0}
+.unified-gira-admin{min-height:168px}
+.unified-gira-admin .unified-gira-info{padding:20px 23px}
+.unified-gira-admin .unified-gira-info h3{font-size:25px}
+.unified-gira-admin .unified-gira-chips{margin-bottom:8px}
+.unified-gira-admin .unified-gira-footer{margin-top:1px}
+.unified-gira-admin .unified-gira-topline .activity-tag{background:rgba(255,255,255,.2)}
+@media(max-width:600px){
+ .unified-gira-card{grid-template-columns:86px minmax(0,1fr);min-height:178px}
+ .unified-gira-day{font-size:37px}
+ .unified-gira-month{font-size:10px;margin-top:8px}
+ .unified-gira-time{font-size:11px;margin-top:8px}
+ .unified-gira-info{padding:17px 17px}
+ .unified-gira-info h3{font-size:23px}
+ .unified-gira-meta{font-size:11px}
+ .unified-gira-agenda{grid-template-columns:80px minmax(0,1fr);min-height:145px}
+ .unified-gira-agenda .unified-gira-info{padding:15px 16px}
+ .unified-gira-agenda .unified-gira-info h3{font-size:20px}
+ .unified-gira-home .unified-gira-info{padding:20px 18px}
+ .unified-gira-home .unified-gira-info h3{font-size:25px}
+ .unified-gira-presence{padding:15px 16px}
+ .unified-gira-presence strong{width:100%;margin:0}
+ .unified-gira-presence .choice{width:100%}
+ .unified-gira-presence .btn{flex:1}
+ .unified-gira-admin .unified-gira-info{padding:16px 17px}
+ .unified-gira-admin .unified-gira-info h3{font-size:21px}
+}
