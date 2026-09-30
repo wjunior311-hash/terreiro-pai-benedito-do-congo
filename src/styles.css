@@ -236,3 +236,58 @@
  .gira-public-overview{grid-template-columns:1fr}
  .gira-public-section{padding:17px}
 }
+
+/* Editor de giras — nova hierarquia visual */
+.gira-admin-create{max-width:980px;margin:0 auto;padding:0 2px 42px}
+.gira-admin-create.is-edit{max-width:980px}
+.gira-admin-create-head{position:relative;padding:10px 4px 28px;margin-bottom:4px}
+.gira-admin-create-head:after{content:'';display:block;width:58px;height:3px;background:#3d5941;border-radius:4px;margin-top:20px}
+.gira-admin-create-head .eyebrow{letter-spacing:.16em;font-size:10px;color:#6b7466}
+.gira-admin-create-head h2{font-family:'Playfair Display',serif;font-size:40px;line-height:1.08;font-weight:500;margin:8px 0 9px;color:#29352a}
+.gira-admin-create-head p{max-width:720px;line-height:1.55;font-size:15px;color:#777269}
+.gira-admin-form{padding:30px 32px;margin-bottom:18px;border:1px solid #ddd7ca;border-radius:26px;background:#fffdf9;box-shadow:0 8px 28px rgba(71,57,39,.045)}
+.gira-admin-section{display:grid;grid-template-columns:44px 1fr;gap:15px;align-items:start;margin-bottom:27px;padding-bottom:20px;border-bottom:1px solid #ebe6dc}
+.gira-admin-section h3{margin:2px 0 5px;font-family:'Playfair Display',serif;font-weight:500;font-size:25px;line-height:1.15;color:#303a30}
+.gira-admin-section p{margin:0;max-width:680px;line-height:1.45;font-size:13px}
+.gira-admin-step{width:42px;height:42px;border-radius:14px;background:#edf1e8;color:#40583f;font-size:12px;letter-spacing:.04em}
+.gira-admin-form .field{margin-bottom:20px}
+.gira-admin-form .field:last-child{margin-bottom:0}
+.gira-admin-form .field-label{font-size:12px;font-weight:800;letter-spacing:.03em;color:#4f574d;margin-bottom:8px}
+.gira-admin-form .muted.small{font-size:12px;line-height:1.45}
+.gira-admin-form .input,.gira-admin-form .select,.gira-admin-form .textarea{border-radius:14px;border-color:#d9d4ca;background:#fffefa;font-size:15px;min-height:48px}
+.gira-admin-form .textarea{padding-top:13px;line-height:1.5}
+.gira-admin-form .grid{gap:14px}
+.gira-admin-choice-grid{gap:12px}
+.gira-admin-choice{min-height:78px;padding:16px 17px;border:1px solid #ddd7cc;border-radius:17px;background:#fffefa}
+.gira-admin-choice.selected{border-color:#71836e;background:#f0f4ed;box-shadow:inset 0 0 0 1px #71836e}
+.gira-admin-choice b{font-size:15px;color:#30392f}
+.gira-admin-choice small{font-size:11px;line-height:1.4}
+.gira-admin-choice-icon{width:30px;height:30px;background:#f5f2eb}
+.gira-admin-agenda-options{margin-top:20px;padding-top:20px;border-top:1px solid #ebe6dc}
+.gira-admin-agenda-option{min-height:66px;padding:14px 15px;border-radius:15px}
+.gira-admin-actions{position:sticky;bottom:0;z-index:5;margin:0 -2px;padding:14px 4px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(246,242,234,0),#f6f2ea 28%);backdrop-filter:blur(8px)}
+.gira-admin-actions .btn{min-height:48px;padding-inline:20px}
+.gira-admin-create.is-edit .gira-admin-create-head h2{font-size:42px}
+.gira-admin-create.is-edit .gira-admin-form:first-of-type{border-top:3px solid #65745a}
+.gira-admin-create.is-edit .gira-admin-section:first-child .gira-admin-step{background:#e5ecdf}
+.gira-cover-mode{gap:12px}
+.gira-cover-choice{min-height:82px;padding:16px;border-radius:17px}
+.gira-cover-choice b{font-size:15px}
+.gira-cover-choice small{font-size:11px;line-height:1.4}
+.gira-cover-color-row{border-radius:16px;background:#f8f5ee;border-color:#e3ddd1}
+.gira-cover-library-item{border-radius:15px;overflow:hidden}
+.gira-cover-custom{padding:16px;border:1px dashed #d8d1c5;border-radius:16px;background:#fbf8f1}
+@media(max-width:650px){
+  .gira-admin-create{padding:0 0 34px}
+  .gira-admin-create-head{padding:4px 2px 23px}
+  .gira-admin-create-head h2,.gira-admin-create.is-edit .gira-admin-create-head h2{font-size:32px}
+  .gira-admin-create-head p{font-size:13px}
+  .gira-admin-form{padding:22px 18px;margin-bottom:14px;border-radius:22px}
+  .gira-admin-section{grid-template-columns:38px 1fr;gap:12px;margin-bottom:21px;padding-bottom:17px}
+  .gira-admin-section h3{font-size:21px}
+  .gira-admin-step{width:38px;height:38px;border-radius:12px}
+  .gira-admin-form .field{margin-bottom:17px}
+  .gira-admin-form .input,.gira-admin-form .select,.gira-admin-form .textarea{font-size:16px}
+  .gira-admin-choice{min-height:74px}
+  .gira-admin-actions{margin:0;padding-left:2px;padding-right:2px}
+}
