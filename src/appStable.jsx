@@ -214,10 +214,10 @@ function House({back}){const[items,setItems]=useState([]);const labels={rule:'Re
 function HouseContent({back,p}){
  const[items,setItems]=useState([]),[notices,setNotices]=useState([]),[section,setSection]=useState('content'),[tag,setTag]=useState('Todos'),[reads,setReads]=useState([]),[marks,setMarks]=useState({}),[selected,setSelected]=useState(null);
  const tags=['Todos','Banhos','Ensinamentos','Recados dos Pais da Casa','Macumbas de Terreiro'];
- const cleanHtml=html=>String(html||'').replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi,'').replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi,'').replace(/<\\/?(?!b\\b|strong\\b|i\\b|em\\b|u\\b|ul\\b|ol\\b|li\\b|p\\b|br\\b|blockquote\\b)[^>]+>/gi,'').replace(/<([a-z]+)\\s+[^>]*>/gi,'<$1>');
- const textToHtml=t=>String(t||'').split(/\\n\\n+/).map(x=>'<p>'+x.replace(/\\n/g,'<br>')+'</p>').join('');
- const plainText=html=>String(html||'').replace(/<br\\s*\\/?>(?=.)/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\\s+/g,' ').trim();
- const summary=html=>{const t=plainText(html);return t.length>240?t.slice(0,240).replace(/\\s+\\S*$/,'')+'…':t};
+ const cleanHtml=html=>String(html||'');
+ const textToHtml=t=>String(t||'').split('\\n\\n').map(x=>'<p>'+x.split('\\n').join('<br>')+'</p>').join('');
+ const plainText=html=>{const d=document.createElement('div');d.innerHTML=String(html||'');return String(d.textContent||d.innerText||'').replace(/\\s+/g,' ').trim()};
+ const summary=html=>{const t=plainText(html);return t.length>240?t.slice(0,240)+'…':t};
  const renderBody=html=>cleanHtml(/<[a-z][\\s\\S]*>/i.test(html||'')?html:textToHtml(html));
  const load=async()=>{const[{data:c},{data:n},{data:r}]=await Promise.all([supabase.from('house_contents').select('*').order('sort_order').order('created_at',{ascending:false}),supabase.from('notices').select('*').order('created_at',{ascending:false}),supabase.from('house_content_reads').select('content_id,profile_id,profiles(name,orixa_symbol)')]);setItems(c||[]);setNotices(n||[]);setReads((r||[]).filter(x=>x.profile_id===p?.id).map(x=>x.content_id));const map={};(r||[]).forEach(x=>{if(!map[x.content_id])map[x.content_id]=[];map[x.content_id].push({id:x.profile_id,name:x.profiles?.name||'Membro',orixa:x.profiles?.orixa_symbol})});setMarks(map)};
  useEffect(()=>{load();supabase.rpc('touch_my_last_seen')},[]);
