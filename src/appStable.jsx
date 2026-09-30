@@ -214,7 +214,7 @@ function House({back}){const[items,setItems]=useState([]);const labels={rule:'Re
 function HouseContent({back,p}){
  const[items,setItems]=useState([]),[notices,setNotices]=useState([]),[section,setSection]=useState('content'),[tag,setTag]=useState('Todos'),[reads,setReads]=useState([]),[marks,setMarks]=useState({}),[selected,setSelected]=useState(null);
  const tags=['Todos','Banhos','Ensinamentos','Recados dos Pais da Casa','Macumbas de Terreiro'];
- const cleanHtml=html=>String(html||'').replace(/<script[\\s\\S]*?<\\/script>/gi,'').replace(/<style[\\s\\S]*?<\\/style>/gi,'').replace(/<\\/?(?!b\\b|strong\\b|i\\b|em\\b|u\\b|ul\\b|ol\\b|li\\b|p\\b|br\\b|blockquote\\b)[^>]+>/gi,'').replace(/<([a-z]+)\\s+[^>]*>/gi,'<$1>');
+ const cleanHtml=html=>String(html||'').replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi,'').replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi,'').replace(/<\\/?(?!b\\b|strong\\b|i\\b|em\\b|u\\b|ul\\b|ol\\b|li\\b|p\\b|br\\b|blockquote\\b)[^>]+>/gi,'').replace(/<([a-z]+)\\s+[^>]*>/gi,'<$1>');
  const textToHtml=t=>String(t||'').split(/\\n\\n+/).map(x=>'<p>'+x.replace(/\\n/g,'<br>')+'</p>').join('');
  const plainText=html=>String(html||'').replace(/<br\\s*\\/?>(?=.)/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\\s+/g,' ').trim();
  const summary=html=>{const t=plainText(html);return t.length>240?t.slice(0,240).replace(/\\s+\\S*$/,'')+'…':t};
