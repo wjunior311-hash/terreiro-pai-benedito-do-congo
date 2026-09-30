@@ -163,6 +163,8 @@
 .gira-cover-photo{background:#eee;font-size:20px}
 .gira-cover-color-row{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px;border:1px solid rgba(0,0,0,.08);border-radius:12px}
 .gira-cover-color-row input{width:48px;height:40px;padding:2px;border:0;background:transparent;cursor:pointer}
+
+.gira-color-picker-main{display:flex;align-items:center;gap:12px}.gira-color-picker-swatch{position:relative;width:58px;height:58px;border-radius:50%;border:2px solid #d9d2c4;box-shadow:inset 0 0 0 5px rgba(255,255,255,.65),0 1px 4px rgba(0,0,0,.08);cursor:pointer;display:block;flex:none}.gira-color-picker-swatch input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;padding:0;border:0}.gira-color-palette{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.gira-color-dot{width:30px;height:30px;border-radius:50%;border:2px solid rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(0,0,0,.12);cursor:pointer;padding:0}.gira-color-dot.selected{box-shadow:0 0 0 2px #65745a,0 0 0 4px #fff}.gira-cover-color-row{display:block}.gira-cover-color-row small{line-height:1.35}
 .gira-cover-upload{margin-top:14px}.gira-cover-preview{width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:10px;display:block}
 .gira-admin-event-card{background-size:cover;background-position:center}
 @media(max-width:650px){.gira-entity-picker,.gira-cover-mode{grid-template-columns:1fr}}
