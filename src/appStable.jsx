@@ -179,7 +179,7 @@ function GiraDetail({p,gira,back}){
  const createSwap=async()=>{if(!swap.current||!swap.requested.length){setMsg('Selecione seu turno atual e pelo menos um horário desejado.');return}setBusy(true);const{error}=await supabase.rpc('create_gira_turn_exchange',{p_gira_id:gira.id,p_current_turn_id:swap.current,p_requested_turn_ids:swap.requested,p_message:swap.message});setMsg(error?err(error):'Solicitação de troca enviada. As pessoas dos horários escolhidos serão avisadas.');setBusy(false);setSwap({current:'',requested:[],message:''});load()};
  const acceptSwap=async id=>{setBusy(true);const{error}=await supabase.rpc('accept_gira_turn_exchange',{p_request_id:id});setMsg(error?err(error):'Troca realizada com sucesso.');setBusy(false);load()};
  const declineSwap=async id=>{await supabase.from('task_exchange_notifications').update({status:'removed'}).eq('request_id',id).eq('recipient_id',p.id);load()};
- const availableLabel=t=>\`${t.occupied}/${t.capacity} pessoas\`;
+ const availableLabel=t=>`${t.occupied}/${t.capacity} pessoas`;
  const taskGroups={};tasks.forEach(t=>(taskGroups[t.gira_turn_id]??=[]).push(t));
  const myTurns=turns.filter(t=>availability.includes(t.turn_id));
  const fullAlternatives=turns.filter(t=>t.is_full&&!availability.includes(t.turn_id));
