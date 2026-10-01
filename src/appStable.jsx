@@ -185,12 +185,12 @@ function GiraDetail({p,gira,back}){
  const formatShiftDate=d=>d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}):'';
  const load=async()=>{
   await supabase.rpc('expire_gira_exchange_requests');
-  const[{data:r},{data:allResponses},{data:t},{data:a},{data:allAvailability},{data:x},{data:n}]=await Promise.all([
+  const[{data:r},{data:confirmed},{data:t},{data:a},{data:turnPeopleRows},{data:x},{data:n}]=await Promise.all([
    supabase.from('gira_responses').select('*').eq('gira_id',gira.id).eq('profile_id',p.id).maybeSingle(),
-   supabase.from('gira_responses').select('profile_id').eq('gira_id',gira.id).eq('status','going'),
+   supabase.rpc('get_gira_confirmed_people',{p_gira_id:gira.id}),
    supabase.rpc('gira_turn_summary',{p_gira_id:gira.id}),
    supabase.from('gira_turn_availability').select('gira_turn_id').eq('profile_id',p.id),
-   supabase.from('gira_turn_availability').select('gira_turn_id,profile_id').eq('gira_id',gira.id),
+   supabase.rpc('get_gira_turn_people',{p_gira_id:gira.id}),
    supabase.from('task_exchange_requests').select('*').eq('gira_id',gira.id).or('requester_id.eq.'+p.id+',accepted_by.eq.'+p.id).order('created_at',{ascending:false}),
    supabase.from('task_exchange_notifications').select('id,request_id,status,created_at').eq('recipient_id',p.id).eq('status','unread').order('created_at',{ascending:false})
   ]);
@@ -199,14 +199,11 @@ function GiraDetail({p,gira,back}){
   const{data:turnDetails}=ids.length?await supabase.from('gira_turns').select('*').in('id',ids).order('sort_order'):({data:[]});
   const details=turnDetails||[];
   const merged=turnRows.map(x=>({...x,...(details.find(d=>d.id===x.turn_id)||{})}));
-  const confirmedIds=(allResponses||[]).map(v=>v.profile_id);
-  const attendeeIds=[...new Set([...(confirmedIds||[]),...(allAvailability||[]).map(v=>v.profile_id)])];
-  const{data:attendeeProfiles}=attendeeIds.length?await supabase.from('profiles').select('id,name').in('id',attendeeIds).eq('is_active',true):({data:[]});
-  const nameMap=Object.fromEntries((attendeeProfiles||[]).map(v=>[v.id,v.name]));
   setResp(r);setTurns(merged);setAvailability(hasTaskAgenda?(a||[]).map(v=>v.gira_turn_id):[]);setExchanges(x||[]);setNotifications(n||[]);
-  setConfirmedPeople((attendeeProfiles||[]).filter(v=>confirmedIds.includes(v.id)).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')));
+  const confirmedPeopleRows=(confirmed||[]).map(v=>({id:v.profile_id,name:v.name}));
+  setConfirmedPeople(confirmedPeopleRows.sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')));
   const groupedTurnPeople={};
-  (allAvailability||[]).forEach(v=>{(groupedTurnPeople[v.gira_turn_id]??=[]).push({id:v.profile_id,name:nameMap[v.profile_id]||'Pessoa'});});
+  (turnPeopleRows||[]).forEach(v=>{(groupedTurnPeople[v.gira_turn_id]??=[]).push({id:v.profile_id,name:v.name});});
   Object.keys(groupedTurnPeople).forEach(k=>groupedTurnPeople[k].sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')));
   setTurnPeople(groupedTurnPeople);
   if(released){const{data:ts}=await supabase.rpc('gira_turn_tasks',{p_gira_id:gira.id});setTasks(ts||[]);const ids2=(ts||[]).map(v=>v.id);if(ids2.length){const{data:ss}=await supabase.from('task_status').select('task_id,done,completed_by,completed_at').in('task_id',ids2);const m={};(ss||[]).forEach(v=>m[v.task_id]=v);setStatuses(m)}else setStatuses({})}else{setTasks([]);setStatuses({})}
