@@ -229,3 +229,14 @@ body{min-height:100dvh}
  .home-next-bring{-webkit-line-clamp:2;font-size:10.5px}
  .gira-admin-textarea{min-height:100px}
 }
+
+.gira-public-confirmed-link{display:flex;justify-content:flex-end;margin:8px 0 2px}
+.gira-confirmed-btn{border:0;background:transparent;color:#66705f;font:inherit;font-size:.82rem;display:inline-flex;align-items:center;gap:6px;padding:6px 2px;cursor:pointer}
+.gira-confirmed-btn span{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#eef0ea;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem}
+.gira-confirmed-list{display:grid;gap:6px;margin-top:16px}
+.gira-confirmed-person{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:12px;background:#f7f7f2;color:#343a32}
+.gira-turn-people{margin:12px 0 16px;padding:10px 12px;border-radius:12px;background:#f7f7f2}
+.gira-turn-people-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.gira-turn-person{font-size:.78rem;padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #e3e5df}
+.gira-turn-person.me{font-weight:600;border-color:#cfd5c7}
+.gira-confirmed-modal{width:min(520px,100%)}
