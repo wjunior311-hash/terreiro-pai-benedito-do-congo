@@ -96,7 +96,7 @@ function Home({p,go,memberPreview=false}){
  const[gira,setGira]=useState(null),[resp,setResp]=useState(null),[turnSummary,setTurnSummary]=useState([]),[myTurnIds,setMyTurnIds]=useState([]),[myTaskCount,setMyTaskCount]=useState(0),[contents,setContents]=useState([]),[notices,setNotices]=useState([]),[pending,setPending]=useState({monthly:0,extras:0}),[newCharges,setNewCharges]=useState([]),[turnChangeNotifications,setTurnChangeNotifications]=useState([]),[turnAvailabilityNotifications,setTurnAvailabilityNotifications]=useState([]),[loadingHome,setLoadingHome]=useState(true),[showGiraDescription,setShowGiraDescription]=useState(false);
  const load=async()=>{
   setLoadingHome(true);const now=new Date();
-  const[{data:g},{data:c},{data:n},{data:turnChanges}]=await Promise.all([
+  const[{data:g},{data:c},{data:n},{data:turnChanges},{data:availabilityNotifications}]=await Promise.all([
    supabase.from('giras').select('*').gte('starts_at',now.toISOString()).order('starts_at').limit(1).maybeSingle(),
    supabase.from('house_contents').select('id,title,body,content_type,tags,created_at').eq('content_type','content').order('created_at',{ascending:false}).limit(3),
    supabase.from('notices').select('id,title,body,starts_at,ends_at,published,created_at').eq('published',true).order('created_at',{ascending:false}).limit(3),
@@ -189,7 +189,7 @@ function GiraDetail({p,gira,back}){
  const formatShiftDate=d=>d?new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'2-digit'}):'';
  const load=async()=>{
   await supabase.rpc('expire_gira_exchange_requests');
-  const[{data:r},{data:confirmed},{data:t},{data:a},{data:turnPeopleRows},{data:x},{data:n},{data:turnChanges}]=await Promise.all([
+  const[{data:r},{data:confirmed},{data:t},{data:a},{data:turnPeopleRows},{data:x},{data:n},{data:turnChanges},{data:availabilityNotifications}]=await Promise.all([
    supabase.from('gira_responses').select('*').eq('gira_id',gira.id).eq('profile_id',p.id).maybeSingle(),
    supabase.rpc('get_gira_confirmed_people',{p_gira_id:gira.id}),
    supabase.rpc('gira_turn_summary',{p_gira_id:gira.id}),
