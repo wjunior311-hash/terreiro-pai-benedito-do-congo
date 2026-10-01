@@ -253,3 +253,5 @@ body{min-height:100dvh}
 .gira-admin-turn-move .select{font-size:.82rem;padding:8px 10px}
 .gira-turn-change-notice{border:1px solid #d8e2d2;background:#f3f7f0;margin:12px 0}
 .gira-turn-change-notice h3{margin:4px 0}
+
+.gira-admin-turn-capacity{margin:12px 0;padding:10px;border-top:1px solid #ebe9e0;border-bottom:1px solid #ebe9e0}.gira-admin-turn-capacity label{display:block;margin-bottom:6px}.gira-admin-turn-capacity .input{max-width:110px}.gira-admin-turn-capacity .row{gap:8px}
