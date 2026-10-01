@@ -240,3 +240,16 @@ body{min-height:100dvh}
 .gira-turn-person{font-size:.78rem;padding:5px 9px;border-radius:999px;background:#fff;border:1px solid #e3e5df}
 .gira-turn-person.me{font-weight:600;border-color:#cfd5c7}
 .gira-confirmed-modal{width:min(520px,100%)}
+
+.gira-admin-turn-control{margin-top:16px}
+.gira-admin-turn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+.gira-admin-turn-card{border:1px solid #e5e3db;border-radius:16px;padding:14px;background:#fffdf8}
+.gira-admin-turn-card>.row:first-child{margin-bottom:12px}
+.gira-admin-turn-card>.row:first-child b{display:block}
+.gira-admin-turn-people{display:grid;gap:8px}
+.gira-admin-turn-person{padding:10px;border-radius:12px;background:#f6f5ef;border:1px solid #ebe9e0}
+.gira-admin-turn-person>b{font-size:.9rem}
+.gira-admin-turn-move{margin-top:7px}
+.gira-admin-turn-move .select{font-size:.82rem;padding:8px 10px}
+.gira-turn-change-notice{border:1px solid #d8e2d2;background:#f3f7f0;margin:12px 0}
+.gira-turn-change-notice h3{margin:4px 0}
