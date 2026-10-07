@@ -633,3 +633,15 @@ body{min-height:100dvh}
 .fn-item label.btn.is-busy{opacity:.6}
 .fn-resend{width:100%;text-align:right;font-size:.78rem;color:#3f6a3a;font-weight:700;cursor:pointer}
 .finance-status-btn.review{background:#e6eef3;color:#365a73}
+
+/* ===== Pessoas e funções (pp-) ===== */
+.pp{max-width:780px;margin:0 auto}
+.pp-row{gap:12px}
+.pp-inactive{color:#a13d32;font-weight:600}
+.pp-head{display:flex;align-items:center;gap:14px;margin:14px 0 6px}
+.pp-head h2{margin:0}
+.pp-head p{margin:2px 0 0}
+.pp-fields{border:1px solid #ded8cb;min-inline-size:0}
+.pp-fields h3{margin:6px 0 4px;font-size:1rem}
+.pp-fields h3:not(:first-child){margin-top:18px}
+.pp-fields:disabled{opacity:.7}
