@@ -22,7 +22,7 @@ export const materias = [
   { n: '01', titulo: 'A FORÇA DAS ÁGUAS', sub: 'Cachoeira, matas e o que nos lava por dentro', cor: '#2aa3b8', corTxt: '#167384', corSoft: '#e3f3f5', secao: 'EM NOVEMBRO', foto: '#123b3a', img: IMG + 'cachoeira.jpg', pos: 'center 60%', fotoLabel: '[FOTO · CACHOEIRA NA MATA]',
     chips: [
       { nome: 'Cachoeira', texto: 'A água que desce da pedra não para. Ela lava, refresca, arrasta o que pesa e segue. Na cachoeira aprendemos que limpar não é apagar quem somos, é tirar o excesso para que a nossa força volte a correr.' },
-      { nome: 'Mata', texto: 'A mata é casa dos espíritos das flores e dos caboclos, morada das folhas e de quem conhece cada uma delas. Sem folha não há axé: é dela que vem o banho, o remédio e o assentamento.' },
+      { nome: 'Mata', texto: 'A mata é casa dos espíritos das florestas e dos caboclos, morada das folhas e de quem conhece cada uma delas. Sem folha não há axé: é dela que vem o banho, o remédio e o assentamento.' },
       { nome: 'Pedra', texto: 'A pedra é a parte da cachoeira que fica, e é ali que está Xangô. Ela recebe a água há séculos e permanece. Lembra que firmeza e fluidez não são opostos: uma sustenta a outra.' },
       { nome: 'Rio', texto: 'O rio é caminho. Liga a nascente ao mar, a mata à cidade. É movimento com direção: a água não corre para qualquer lugar, ela segue seu leito. Nas suas margens vivem os Boiadeiros, ribeirinhos que conhecem o rio, a beira e a travessia.' }
     ],
@@ -33,7 +33,7 @@ export const materias = [
       Q('A ÁGUA NÃO BRIGA COM A PEDRA. ELA ENCONTRA O CAMINHO.'),
       H('QUEM MORA NA ÁGUA E NA MATA'),
       P('A cachoeira não é só água. É água, pedra, mata e margem, e cada parte tem quem more ali. Por isso, falar dessa gira é pensar no todo.'),
-      P('Na água doce, saudamos Oxum, dona do ouro e do cuidado com aquilo que é precioso. Nas pedras por onde a água desce, está Xangô, com a sua firmeza e a sua justiça. Nas matas, Oxóssi, caçador que provê, e Ossaim, guardião das folhas e do segredo de cada uma delas. E Logunedé, que transita entre o rio e a mata com a doçura da água e a astúcia do caçador.'),
+      P('Na água doce, saudamos Oxum, dona do ouro e do cuidado com aquilo que é precioso. Nas pedras por onde a água desce, está Xangô, com a sua firmeza e a sua justiça. Nas matas, Oxóssi, caçador que provê, e Ossaim, guardião das folhas e do segredo de cada uma delas. E Logunedé, que transita entre o rio e a mata.'),
       P('E não estamos sozinhos com os Orixás. Nas matas vivem os nossos caboclos, força ancestral indígena que chega para curar, orientar e firmar. Nas margens dos rios, os Boiadeiros: ribeirinhos, conhecedores das águas, da beira e da travessia, que sabem conduzir e reunir.'),
       H('COMO SE PREPARAR'),
       P('Chegue com o corpo e a cabeça limpos. Evite excessos nos dias anteriores, descanse e venha disposto a ouvir mais do que falar. Respeite o tempo da gira: na água e na mata, tudo tem seu momento.'),
