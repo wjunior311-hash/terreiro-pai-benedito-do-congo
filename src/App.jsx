@@ -120,7 +120,7 @@ export function App() {
 <main className="content"><div className="screen" key={screen}>
   {screen === "home" && <Home p={profile} go={go} memberPreview={memberPreview} />}
   {screen === "giras" && <Giras p={profile} />}
-  {screen === "revista" && <RevistaTela p={profile} />}
+  {screen === "revista" && <RevistaTela p={profile} go={go} />}
   {screen === "community" && <Community p={profile} draft={muralDraft} />}
   {screen === "content" && <HouseContent p={profile} back={() => setScreen("home")} />} 
   {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}

@@ -437,3 +437,7 @@ h1,h2,h3{color:var(--ink)}
 .rv-modo{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:14px;background:#ebe4d8;margin-top:6px}
 .rv-modo button{min-height:42px;border-radius:10px;background:none;font-weight:700;font-size:14px;color:#6b5f52}.rv-modo button.on{background:#fffdf8;color:#231c16;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .rv-modo-txt{padding:14px 16px;border-radius:14px;background:#eef5ea;animation:tp-fade .25s ease}
+.rv-livro-capa{position:relative;overflow:hidden}.rv-livro-capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rv-agenda-ok{font-size:12px;color:#f5c518;font-weight:700;white-space:nowrap}
+.rv-agenda-go{margin-top:12px;min-height:48px;border-radius:12px;background:#f5c518;color:#231c16;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px}
+.rv-agenda-hint{margin-top:10px;font-size:13px;opacity:.75}

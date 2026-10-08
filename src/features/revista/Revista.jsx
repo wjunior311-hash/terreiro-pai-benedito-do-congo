@@ -54,10 +54,10 @@ export function RevistaHomeCard({ p, go }) {
 }
 
 // Tela "Revista": última edição + edições anteriores
-export function RevistaTela({ p }) {
+export function RevistaTela({ p, go }) {
   const [rows, reload] = useEdicoes(p), [open, setOpen] = useState(null);
   const manager = can(p, "newsletter.manage");
-  if (open) return <Revista p={p} slug={open} back={() => {
+  if (open) return <Revista p={p} slug={open} go={go} back={() => {
     setOpen(null);
     reload();
   }} />;
@@ -81,7 +81,7 @@ export function RevistaTela({ p }) {
 }
 
 // O leitor
-export function Revista({ p, slug, back, preview = false }) {
+export function Revista({ p, slug, back, go = null, preview = false }) {
   const ed = edicaoPorSlug(slug);
   const [tela, setTela] = useState("capa"), [idx, setIdx] = useState(0), [lidas, setLidas] = useState({}), [chip, setChip] = useState({});
   const manager = can(p, "newsletter.manage");
@@ -159,7 +159,7 @@ export function Revista({ p, slug, back, preview = false }) {
     </div>
     <div className="rv-body" key={idx}>
       <div className="rv-sub rv-in3">{m.sub}</div>
-      {m.blocos.map((b, i) => <Bloco key={i} b={b} m={m} ed={ed} p={p} manager={manager || preview} chipSel={chipSel} setChip={(v) => setChip((x) => ({ ...x, [idx]: v }))} />)}
+      {m.blocos.map((b, i) => <Bloco key={i} b={b} m={m} ed={ed} p={p} go={go} manager={manager || preview} chipSel={chipSel} setChip={(v) => setChip((x) => ({ ...x, [idx]: v }))} />)}
     </div>
     <div className="rv-foot">
       <button className="rv-next" onClick={() => idx < total - 1 ? abrir(idx + 1) : setTela("sumario")}>{idx < total - 1 ? "Próxima matéria" : "Fim da edição"} <ArrowRight size={18} /></button>
@@ -167,7 +167,7 @@ export function Revista({ p, slug, back, preview = false }) {
   </div>;
 }
 
-function Bloco({ b, m, ed, p, manager, chipSel, setChip }) {
+function Bloco({ b, m, ed, p, go, manager, chipSel, setChip }) {
   switch (b.k) {
     case "p": return <p>{b.texto}</p>;
     case "forte": return <p><b>{b.texto}</b></p>;
@@ -185,12 +185,12 @@ function Bloco({ b, m, ed, p, manager, chipSel, setChip }) {
     case "veste": return <div className="rv-veste">{ed.vestimenta.map((v) => <div key={v.t} className="rv-veste-item">
       <span style={{ background: v.bg }}>{v.ic}</span><span><b>{v.t}</b><small>{v.d}</small></span>
     </div>)}</div>;
-    case "agenda": return <Agenda ed={ed} p={p} />;
+    case "agenda": return <Agenda ed={ed} p={p} go={go} />;
     case "banho": return <Banho banho={ed.banho} />;
     case "pagar": return <Pagar p={p} />;
     case "niver": return <Niver ed={ed} />;
     case "livros": return <div className="rv-livros">{ed.livros.map((l) => <div key={l.titulo} className="rv-livro">
-      <span className="rv-livro-capa" style={{ background: l.cor }}>{l.titulo.split(":")[0]}</span>
+      <span className="rv-livro-capa" style={{ background: l.cor }}>{l.titulo.split(":")[0]}{l.capa && <img src={l.capa} alt={"Capa de " + l.titulo} loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.style.display = "none"; }} />}</span>
       <span><b>{l.titulo}</b><small>{l.autor}</small><p>{l.texto}</p></span>
     </div>)}</div>;
     case "pergunta": return <div className="rv-pergunta"><small>PARA PENSAR</small><b>{b.texto}</b></div>;
@@ -231,8 +231,8 @@ function Frase({ texto }) {
   </div>;
 }
 
-function Agenda({ ed, p }) {
-  const [giras, setGiras] = useState(null), [resp, setResp] = useState({}), [busy, setBusy] = useState("");
+function Agenda({ ed, p, go }) {
+  const [giras, setGiras] = useState(null), [resp, setResp] = useState({});
   useEffect(() => {
     (async () => {
       const { data } = await supabase.from("giras").select("id,name,starts_at,status").eq("status", "published").gte("starts_at", ed.agendaDe + "T00:00:00").lte("starts_at", ed.agendaAte + "T23:59:59").order("starts_at");
@@ -244,13 +244,6 @@ function Agenda({ ed, p }) {
       }
     })();
   }, []);
-  const toggle = async (g) => {
-    const status = resp[g.id] === "going" ? "not_going" : "going";
-    setBusy(g.id);
-    const { error } = await supabase.from("gira_responses").upsert({ gira_id: g.id, profile_id: p.id, status }, { onConflict: "gira_id,profile_id" });
-    if (!error) setResp((v) => ({ ...v, [g.id]: status }));
-    setBusy("");
-  };
   const now = new Date();
   return <div className="rv-agenda">
     <b className="rv-agenda-t">NA CASA</b>
@@ -260,9 +253,11 @@ function Agenda({ ed, p }) {
       return <div key={g.id} className={"rv-agenda-row" + (past ? " past" : "")}>
         <span className="rv-agenda-d">{d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}<small>{d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</small></span>
         <span className="rv-agenda-n">{g.name}</span>
-        {past ? <small className="rv-agenda-past">já foi</small> : <button disabled={busy === g.id} className={going ? "on" : ""} onClick={() => toggle(g)}>{going ? "✓ Vou" : "Vou participar"}</button>}
+        {past ? <small className="rv-agenda-past">já foi</small> : going ? <small className="rv-agenda-ok">✓ você confirmou</small> : null}
       </div>;
     })}
+    {go && <button className="rv-agenda-go" onClick={() => go("giras")}>Ver a agenda completa e confirmar presença <ArrowRight size={17} /></button>}
+    {!go && <small className="rv-agenda-hint">Para confirmar presença, a pessoa vai para a Agenda do app.</small>}
   </div>;
 }
 

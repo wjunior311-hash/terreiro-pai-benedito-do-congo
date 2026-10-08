@@ -91,7 +91,7 @@ export const materias = [
       H('DICA DE BANHO: ÂNIMO E DISPOSIÇÃO'),
       P('Para quando o corpo pesa e as coisas ficam para depois: um banho para combater a procrastinação e a indisposição física.'),
       { k: 'banho' },
-      C('Como tomar o banho: da cabeça para baixo ou do pescoço para baixo? Tem dia ou horário indicado? Complete aqui antes de publicar.'),
+      P('Depois de preparado e morno, tome o banho da cabeça para baixo, mentalizando ânimo, disposição e o corpo voltando a se mover.'),
       H('ANIVERSARIANTES DE OUTUBRO'),
       { k: 'niver' },
       H('DICAS DE LEITURA'),
@@ -121,6 +121,6 @@ export const banho = {
 };
 
 export const livros = [
-  { titulo: 'IFÁ LUCUMÍ: O RESGATE DA TRADIÇÃO', autor: 'Nei Lopes · Pallas', cor: '#1f4fb3', texto: 'Nei Lopes percorre o culto de Ifá como ele sobreviveu em Cuba, a tradição lucumí, e mostra o que ela revela sobre as nossas raízes iorubás deste lado do Atlântico.' },
-  { titulo: 'FÉ NAS FOLHAS', autor: 'Sueli Kintê e Sueide Kintê', cor: '#2f6b3a', texto: 'Um livro sobre o saber das folhas: o cuidado, a cura e a fé que moram nas plantas. Leitura perfeita para o mês da gira das matas.' }
+  { titulo: 'IFÁ LUCUMÍ: O RESGATE DA TRADIÇÃO', autor: 'Nei Lopes · Pallas', cor: '#1f4fb3', capa: 'https://pallaseditora.com.br/wp-content/uploads/2024/09/9788534705684.jpg', texto: 'Nei Lopes percorre o culto de Ifá como ele sobreviveu em Cuba, a tradição lucumí, e mostra o que ela revela sobre as nossas raízes iorubás deste lado do Atlântico.' },
+  { titulo: 'FÉ NAS FOLHAS', autor: 'Sueide Kintê e Sueli Kintê · Companhia das Letras', cor: '#2f6b3a', capa: 'https://ciadasletras.vtexassets.com/arquivos/ids/185024/cdl-9786584954502.jpg', texto: 'Um livro sobre o saber das folhas: o cuidado, a cura e a fé que moram nas plantas. Leitura perfeita para o mês da gira das matas.' }
 ];
