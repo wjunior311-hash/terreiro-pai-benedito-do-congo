@@ -145,7 +145,7 @@ export function Content() {
     window.scrollTo({ top: 0 });
   };
   const startEdit = (x) => {
-    setForm({ ...blank(x._kind), ...x, kind: x._kind, tags: Array.isArray(x.tags) ? x.tags : [], cover_url: x.cover_url || "", cover_color: x.cover_color || CONTENT_COLORS[0], starts_at: toInputDate(x.starts_at), ends_at: toInputDate(x.ends_at), published: x.published !== false, coverFile: null });
+    setForm({ ...blank(x._kind), ...x, title: x.title || "", summary: x.summary || "", body: x.body || "", kind: x._kind, tags: Array.isArray(x.tags) ? x.tags : [], cover_url: x.cover_url || "", cover_color: x.cover_color || CONTENT_COLORS[0], starts_at: toInputDate(x.starts_at), ends_at: toInputDate(x.ends_at), published: x.published !== false, coverFile: null });
     setPreview(false);
     setMessage("");
     setView("edit");
@@ -162,7 +162,7 @@ export function Content() {
   const save = async () => {
     if (saving) return;
     const html = sanitizeContentHtml(editorRef.current?.innerHTML || form.body);
-    if (!form.title.trim() || !contentPlain(html)) {
+    if (!(form.title || "").trim() || !contentPlain(html)) {
       setMessage("Preencha o título e o texto.");
       return;
     }
@@ -170,13 +170,13 @@ export function Content() {
     setMessage("");
     try {
       if (form.kind === "notice") {
-        const args = { p_title: form.title.trim(), p_body: html, p_starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : null, p_ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null, p_published: form.published };
+        const args = { p_title: (form.title || "").trim(), p_body: html, p_starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : null, p_ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null, p_published: form.published };
         const { error } = await (form.id ? supabase.rpc("editor_update_notice", { p_id: form.id, ...args }) : supabase.rpc("editor_create_notice", args));
         if (error) throw error;
       } else {
         let cover = form.cover_url;
         if (form.coverFile) cover = await uploadCover(form.coverFile);
-        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: form.title.trim(), summary: form.summary.trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length } });
+        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: (form.title || "").trim(), summary: (form.summary || "").trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length } });
         if (error) throw error;
       }
       setSaving(false);
@@ -241,7 +241,7 @@ export function Content() {
     {isContent && <div className="field">
       <label htmlFor="bl-sum">Resumo <small className="muted">(aparece no cartão; uma frase)</small>
       </label>
-      <input id="bl-sum" className="input" maxLength={160} value={form.summary} onChange={(e) => set({ summary: e.target.value })} placeholder="Ex.: O que levar, como chegar e o que observar" />
+      <input id="bl-sum" className="input" maxLength={160} value={form.summary || ""} onChange={(e) => set({ summary: e.target.value })} placeholder="Ex.: O que levar, como chegar e o que observar" />
       </div>}
     <div className="field">
       <label>Texto</label>
