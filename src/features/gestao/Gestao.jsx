@@ -8,19 +8,20 @@ import { can } from "../acesso.js";
 import { Content } from "../conteudos/GestaoConteudos.jsx";
 import { AdminRoles, People } from "./Pessoas.jsx";
 import { Frequencia } from "./Frequencia.jsx";
+import { GestaoRevista } from "../revista/GestaoRevista.jsx";
 import { GiraTurnManager } from "./GestaoGiras.jsx";
 import { AdminFinance } from "../financeiro/GestaoFinanceira.jsx";
 
 export function Admin({ p }) {
   const full = can(p, "admin.full"), master = !!p?.is_master;
-  const nav = [...full ? [["overview", "Visão"]] : [], ...can(p, "people.manage") ? [["people", "Pessoas"], ["attendance", "Frequência"]] : [], ...can(p, "giras.manage") ? [["giras", "Giras"]] : [], ...can(p, "finance.view") ? [["finance", "Financeiro"]] : [], ...full ? [["invites", "Convites"]] : [], ...can(p, "content.manage") ? [["content", "Conteúdos"]] : [], ...full ? [["questions", "Dúvidas"]] : [], ...master ? [["roles", "Funções"]] : []];
+  const nav = [...full ? [["overview", "Visão"]] : [], ...can(p, "people.manage") ? [["people", "Pessoas"], ["attendance", "Frequência"]] : [], ...can(p, "giras.manage") ? [["giras", "Giras"]] : [], ...can(p, "finance.view") ? [["finance", "Financeiro"]] : [], ...full ? [["invites", "Convites"]] : [], ...can(p, "content.manage") ? [["content", "Conteúdos"]] : [], ...can(p, "newsletter.manage") ? [["revista", "Revista"]] : [], ...full ? [["questions", "Dúvidas"]] : [], ...master ? [["roles", "Funções"]] : []];
   const [tab, setTab] = useState(nav[0]?.[0] || "overview");
   if (!nav.length) return null;
   const allowed = nav.some(([id]) => id === tab);
   const subtitle = full ? "Pessoas, giras, financeiro e conteúdos" : nav.map((x) => x[1]).join(", ");
   return <div>
     {!full && <p className="muted small" style={{ margin: "0 2px 10px" }}>Você pode acessar: {subtitle}</p>}
-    <div className="admin-nav">{nav.map(([id, label]) => <button className={"btn " + (tab === id ? "primary" : "")} key={id} onClick={() => setTab(id)}>{label}</button>)}</div>{allowed && <>{tab === "overview" && <AdminOverview onNavigate={setTab} />}{tab === "people" && <People me={p} />}{tab === "attendance" && <Frequencia />}{tab === "giras" && <GiraTurnManager p={p} editor={!full} />}{tab === "finance" && <AdminFinance />}{tab === "invites" && <Invites />}{tab === "content" && <Content />}{tab === "questions" && <AdminQuestions />}{tab === "roles" && <AdminRoles />}</>}</div>;
+    <div className="admin-nav">{nav.map(([id, label]) => <button className={"btn " + (tab === id ? "primary" : "")} key={id} onClick={() => setTab(id)}>{label}</button>)}</div>{allowed && <>{tab === "overview" && <AdminOverview onNavigate={setTab} />}{tab === "people" && <People me={p} />}{tab === "attendance" && <Frequencia />}{tab === "giras" && <GiraTurnManager p={p} editor={!full} />}{tab === "finance" && <AdminFinance />}{tab === "invites" && <Invites />}{tab === "content" && <Content />}{tab === "revista" && <GestaoRevista p={p} />}{tab === "questions" && <AdminQuestions />}{tab === "roles" && <AdminRoles />}</>}</div>;
 }
 
 export function AdminOverview({ onNavigate }) {

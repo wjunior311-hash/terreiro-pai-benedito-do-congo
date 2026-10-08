@@ -15,12 +15,13 @@ import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
 import { Admin } from "./features/gestao/Gestao.jsx";
 import { refreshPushSubscription } from "./features/avisos/push.js";
+import { RevistaTela } from "./features/revista/Revista.jsx";
 import "./styles.css";
 import "./app.css";
 import "./tema.css";
 
-const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa" };
-const SCREEN_PARENT = { contact: "me", admin: "me" };
+const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú" };
+const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home" };
 
 export function App() {
   const [session, setSession] = useState(null),
@@ -119,6 +120,7 @@ export function App() {
 <main className="content"><div className="screen" key={screen}>
   {screen === "home" && <Home p={profile} go={go} memberPreview={memberPreview} />}
   {screen === "giras" && <Giras p={profile} />}
+  {screen === "revista" && <RevistaTela p={profile} />}
   {screen === "community" && <Community p={profile} draft={muralDraft} />}
   {screen === "content" && <HouseContent p={profile} back={() => setScreen("home")} />} 
   {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}

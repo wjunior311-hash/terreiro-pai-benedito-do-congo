@@ -10,6 +10,7 @@ import { useMemberFinance, ymOf } from "../financeiro/regras.js";
 import { PayModal } from "../financeiro/ComoPagar.jsx";
 import { standardizeName } from "../gestao/Pessoas.jsx";
 import { AvisosHomeCard } from "../avisos/AtivarAvisos.jsx";
+import { RevistaHomeCard } from "../revista/Revista.jsx";
 
 export const HOME_PHRASE = "Nossa força vem de quem veio antes e de quem caminha conosco.";
 
@@ -128,6 +129,8 @@ export function Home({ p, go, memberPreview = false }) {
      <span>Tudo em dia por aqui.</span>
      </div>}
   </section>
+
+  <RevistaHomeCard p={p} go={go} />
 
   {!memberPreview && <AvisosHomeCard />}
 
