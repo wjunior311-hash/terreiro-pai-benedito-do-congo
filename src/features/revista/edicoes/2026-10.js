@@ -97,20 +97,29 @@ export const materias = [
       H('DICAS DE LEITURA'),
       { k: 'livros' }
     ] },
-  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', img: IMG + 'aisha-3.jpg', pos: 'center 18%', fotoLabel: '[FOTO DA PESSOA]',
+  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', imgs: [IMG + 'aisha-3.jpg', IMG + 'bruna-2.jpg'], pos: 'center 18%',
     blocos: [
-      P('Nosso terreiro é feito de pessoas, histórias e caminhos que se cruzam. Este mês, duas pessoas da nossa egbé contam, com as próprias palavras, como chegaram até aqui.'),
-      { k: 'perfil', nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: IMG + 'aisha-rosto.jpg' },
-      P('Meu nome é Aisha. Sou filha de Xangô e Yemanjá. Sou umbandista desde que nasci: nasci e cresci no axé e, inclusive, fui batizada em terreiro.'),
-      P('Mas, na verdade? Eu não era tão participativa. No começo, meus pais eram de outra casa, e eu nem ligava para essas coisas. Com o tempo, começaram a surgir os trabalhos na nossa casa, que eram internos, e a comunidade, a egbé, foi crescendo aos poucos. Eu continuava nada participativa. Quer dizer, eu ia! Quando minha mãe chamava a mim e ao Yan no quarto para tomar um passe. Depois, eu voltava para o meu canto.'),
-      P('Com o tempo, fui começando a participar das giras. Escutar e aprender sobre os Orixás e as entidades, sobre a religião em si, o sincretismo, a incorporação… E tudo me interessava. Eu queria saber cada vez mais: saber sobre mim, descobrir meus Orixás e até mesmo incorporar entidades. Mas, claro, hoje eu sei que cada um tem o seu tempo.'),
-      P('Participar das giras me fez muito bem. Me aproximei da minha ancestralidade e do meu povo. Sempre senti muito a energia dos Orixás, mas principalmente a de Oyá. Eu chorava, tremia… A gente sabe como é, né? Por isso eu achava que fosse filha dela. E vocês acreditam que não? Quando descobri meus pais de verdade, me encontrei neles. Eu sinto eles comigo, sinto a energia e o axé deles.'),
-      Q('CUIDANDO DO MEU POVO, ELES CUIDAM DE MIM.'),
-      P('Cuidar da minha ancestralidade e do meu povo me faz muito bem. Mesmo com dificuldades, ainda estou aprendendo. Com o tempo, percebi a importância de cuidar do meu povo, e que, cuidando deles, eles cuidam de mim. Eles talvez sejam mais presentes na nossa vida do que imaginamos: cuidam da gente, mostram que nunca estamos sozinhos, nos protegem e mostram a saída das piores situações.'),
-      P('Hoje sou muito grata por estar e participar dessa religião e, principalmente, dessa egbé, que eu já considero família. Não sei o que seria de mim sem os meus ancestrais e as nossas macumbinhas.'),
-      Q('TUDO CHEGA NO TEMPO QUE TEM QUE CHEGAR. SEM MEDO E SEM PRESSA.'),
-      { k: 'galeria', fotos: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg', IMG + 'aisha-3.jpg'] },
-      C('Falta o segundo perfil (nome, Orixás, foto e texto).')
+      P('Nosso terreiro é feito de pessoas, histórias e caminhos que se cruzam. Este mês, duas pessoas da nossa egbé contam, com as próprias palavras, como chegaram até aqui. Toque em cada uma para ler.'),
+      { k: 'perfis', perfis: [
+        { nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: IMG + 'aisha-rosto.jpg', galeria: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg', IMG + 'aisha-3.jpg'], blocos: [
+          P('Meu nome é Aisha. Sou filha de Xangô e Yemanjá. Sou umbandista desde que nasci: nasci e cresci no axé e, inclusive, fui batizada em terreiro.'),
+          P('Mas, na verdade? Eu não era tão participativa. No começo, meus pais eram de outra casa, e eu nem ligava para essas coisas. Com o tempo, começaram a surgir os trabalhos na nossa casa, que eram internos, e a comunidade, a egbé, foi crescendo aos poucos. Eu continuava nada participativa. Quer dizer, eu ia! Quando minha mãe chamava a mim e ao Yan no quarto para tomar um passe. Depois, eu voltava para o meu canto.'),
+          P('Com o tempo, fui começando a participar das giras. Escutar e aprender sobre os Orixás e as entidades, sobre a religião em si, o sincretismo, a incorporação… E tudo me interessava. Eu queria saber cada vez mais: saber sobre mim, descobrir meus Orixás e até mesmo incorporar entidades. Mas, claro, hoje eu sei que cada um tem o seu tempo.'),
+          P('Participar das giras me fez muito bem. Me aproximei da minha ancestralidade e do meu povo. Sempre senti muito a energia dos Orixás, mas principalmente a de Oyá. Eu chorava, tremia… A gente sabe como é, né? Por isso eu achava que fosse filha dela. E vocês acreditam que não? Quando descobri meus pais de verdade, me encontrei neles. Eu sinto eles comigo, sinto a energia e o axé deles.'),
+          Q('CUIDANDO DO MEU POVO, ELES CUIDAM DE MIM.'),
+          P('Cuidar da minha ancestralidade e do meu povo me faz muito bem. Mesmo com dificuldades, ainda estou aprendendo. Com o tempo, percebi a importância de cuidar do meu povo, e que, cuidando deles, eles cuidam de mim. Eles talvez sejam mais presentes na nossa vida do que imaginamos: cuidam da gente, mostram que nunca estamos sozinhos, nos protegem e mostram a saída das piores situações.'),
+          P('Hoje sou muito grata por estar e participar dessa religião e, principalmente, dessa egbé, que eu já considero família. Não sei o que seria de mim sem os meus ancestrais e as nossas macumbinhas.'),
+          Q('TUDO CHEGA NO TEMPO QUE TEM QUE CHEGAR. SEM MEDO E SEM PRESSA.')
+        ] },
+        { nome: 'BRUNA', sub: 'Filha de Nanã', foto: IMG + 'bruna-rosto.jpg', galeria: [IMG + 'bruna-1.jpg', IMG + 'bruna-2.jpg', IMG + 'bruna-3.jpg'], blocos: [
+          P('Desde que me entendo por gente, eu já tinha alguma relação com a Umbanda. Claro que eu não sabia nomear, mas minha mãe tinha um caboclo que cuidava da gente. Eu sabia que ele vinha das matas e que cuidava de nós com banhos e ervas. Sempre que eu tinha alguma questão (dos grandes problemas de criança), eu fechava os olhinhos e pedia para ele me ajudar, porque ele disse que sempre estaria por perto para nos auxiliar.'),
+          P('Mesmo frequentando a igreja católica, já na adolescência, era a ele que eu recorria. Minhas orações e rezas eram sempre para ele. Eu ainda não conhecia outras entidades, só ele.'),
+          P('Quando o Preto-Velho de uma pessoa muito importante para mim me disse para recorrer a Nanã sempre que eu quisesse ou precisasse, porque era ela quem me acompanhava desde antes de eu chegar ao Aiyê, no primeiro momento tomei um choque. Meu sonho era ser filha de um caçador, forte e ágil, porque assim, em algum momento, eu poderia ser menos pensamento e mais agilidade (hahaha). Ledo engano! A começar que o caçador precisa ser meticuloso em suas ações. E, convenhamos, eu tenho muito mais a ver com Nanã.'),
+          P('Quando descobri o tamanho do colo de Nanã, a sua força, a sua história, fiquei honrada de tê-la na minha vida. Ela me dá direção, com sabedoria e cuidado, comigo e com o outro. Ela me ensina todos os dias que, para coisas novas nascerem, algumas precisam morrer.'),
+          Q('A VIDA É CIRCULAR: SOMOS COMEÇO, MEIO E COMEÇO.'),
+          P('Como diria Nego Bispo.')
+        ] }
+      ] }
     ] }
 ];
 

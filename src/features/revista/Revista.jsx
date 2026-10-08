@@ -151,6 +151,7 @@ export function Revista({ p, slug, back, go = null, preview = false }) {
     </div>
     <div className="rv-hero" style={{ background: m.foto }}>
       {m.img && <img src={m.img} alt="" style={{ objectPosition: m.pos || "center" }} />}
+      {m.imgs && <div className="rv-hero-duo">{m.imgs.map((x) => <img key={x} src={x} alt="" style={{ objectPosition: m.pos || "center" }} />)}</div>}
       <div className="rv-hero-shade" />
       <div className="rv-hero-text">
         <span className="rv-secao rv-in1">{m.secao}</span>
@@ -186,6 +187,7 @@ function Bloco({ b, m, ed, p, go, manager, chipSel, setChip }) {
       <span style={{ background: v.bg }}>{v.ic}</span><span><b>{v.t}</b><small>{v.d}</small></span>
     </div>)}</div>;
     case "agenda": return <Agenda ed={ed} p={p} go={go} />;
+    case "perfis": return <Perfis b={b} m={m} ed={ed} p={p} go={go} manager={manager} />;
     case "galeria": return <div className="rv-galeria">{b.fotos.map((f) => <img key={f} src={f} alt="" loading="lazy" />)}</div>;
     case "perfil": return <div className="rv-perfil">
       {b.foto ? <img src={b.foto} alt={"Foto de " + b.nome} /> : <span className="rv-perfil-ini">{b.nome.charAt(0)}</span>}
@@ -215,6 +217,24 @@ function Banho({ banho }) {
       <button className={modo === "secas" ? "on" : ""} onClick={() => setModo("secas")}>Folhas de saquinho</button>
     </div>
     <p className="rv-modo-txt" key={modo}>{banho[modo]}</p>
+  </div>;
+}
+
+function Perfis({ b, m, ed, p, go, manager }) {
+  const [sel, setSel] = useState(0), pf = b.perfis[sel];
+  const trocar = (i) => {
+    setSel(i);
+    document.querySelector(".rv-perfis")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  return <div className="rv-perfis">
+    <div className="rv-perfis-tabs" role="tablist">{b.perfis.map((x, i) => <button key={x.nome} role="tab" aria-selected={i === sel} className={i === sel ? "on" : ""} onClick={() => trocar(i)}>
+      <img src={x.foto} alt="" /><span><b>{x.nome}</b><small>{x.sub}</small></span>
+    </button>)}</div>
+    <div className="rv-perfis-body" key={sel}>
+      {pf.blocos.map((x, i) => <Bloco key={i} b={x} m={m} ed={ed} p={p} go={go} manager={manager} chipSel={0} setChip={() => {}} />)}
+      {pf.galeria && <div className="rv-galeria">{pf.galeria.map((f) => <img key={f} src={f} alt="" loading="lazy" />)}</div>}
+      {b.perfis.length > 1 && <button className="rv-perfis-next" onClick={() => trocar((sel + 1) % b.perfis.length)}>Ler a história de {b.perfis[(sel + 1) % b.perfis.length].nome.charAt(0) + b.perfis[(sel + 1) % b.perfis.length].nome.slice(1).toLowerCase()} <ArrowRight size={16} /></button>}
+    </div>
   </div>;
 }
 
