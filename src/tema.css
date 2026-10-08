@@ -441,3 +441,7 @@ h1,h2,h3{color:var(--ink)}
 .rv-agenda-ok{font-size:12px;color:#f5c518;font-weight:700;white-space:nowrap}
 .rv-agenda-go{margin-top:12px;min-height:48px;border-radius:12px;background:#f5c518;color:#231c16;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px}
 .rv-agenda-hint{margin-top:10px;font-size:13px;opacity:.75}
+.rv-perfil{display:flex;align-items:center;gap:14px;margin-top:10px;padding-top:16px;border-top:3px solid #231c16}
+.rv-perfil img,.rv-perfil-ini{flex:none;width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--rv-cor)}
+.rv-perfil-ini{display:grid;place-items:center;background:var(--rv-cor-soft);color:var(--rv-cor-txt);font-family:var(--rv-font);font-size:38px}
+.rv-perfil b{display:block;font-family:var(--rv-font);font-weight:400;font-size:34px;line-height:1}.rv-perfil small{display:block;font-size:15px;color:var(--rv-cor-txt);font-weight:700;margin-top:4px}
