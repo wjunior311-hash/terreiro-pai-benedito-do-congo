@@ -22,9 +22,9 @@ export const materias = [
   { n: '01', titulo: 'A FORÇA DAS ÁGUAS', sub: 'Cachoeira, matas e o que nos lava por dentro', cor: '#2aa3b8', corTxt: '#167384', corSoft: '#e3f3f5', secao: 'EM NOVEMBRO', foto: '#123b3a', img: IMG + 'cachoeira.jpg', pos: 'center 60%', fotoLabel: '[FOTO · CACHOEIRA NA MATA]',
     chips: [
       { nome: 'Cachoeira', texto: 'A água que desce da pedra não para. Ela lava, refresca, arrasta o que pesa e segue. Na cachoeira aprendemos que limpar não é apagar quem somos, é tirar o excesso para que a nossa força volte a correr.' },
-      { nome: 'Mata', texto: 'A mata é casa dos encantados e dos caboclos, morada das folhas e de quem conhece cada uma delas. Sem folha não há axé: é dela que vem o banho, o remédio e o assentamento.' },
-      { nome: 'Pedra', texto: 'A pedra é a parte da cachoeira que fica. Ela recebe a água há séculos e permanece. Lembra que firmeza e fluidez não são opostos: uma sustenta a outra.' },
-      { nome: 'Rio', texto: 'O rio é caminho. Liga a nascente ao mar, a mata à cidade. É movimento com direção: a água não corre para qualquer lugar, ela segue seu leito.' }
+      { nome: 'Mata', texto: 'A mata é casa dos espíritos das flores e dos caboclos, morada das folhas e de quem conhece cada uma delas. Sem folha não há axé: é dela que vem o banho, o remédio e o assentamento.' },
+      { nome: 'Pedra', texto: 'A pedra é a parte da cachoeira que fica, e é ali que está Xangô. Ela recebe a água há séculos e permanece. Lembra que firmeza e fluidez não são opostos: uma sustenta a outra.' },
+      { nome: 'Rio', texto: 'O rio é caminho. Liga a nascente ao mar, a mata à cidade. É movimento com direção: a água não corre para qualquer lugar, ela segue seu leito. Nas suas margens vivem os Boiadeiros, ribeirinhos que conhecem o rio, a beira e a travessia.' }
     ],
     blocos: [
       P('Antes de existir terreiro, já existia a água correndo entre as pedras. Para os povos que trouxeram o culto aos Orixás de África e para os povos originários desta terra, rio, cachoeira e mata nunca foram paisagem: são lugares vivos, com dono, com fundamento e com respeito.'),
@@ -32,7 +32,9 @@ export const materias = [
       { k: 'chips', texto: 'Toque em cada elemento:' },
       Q('A ÁGUA NÃO BRIGA COM A PEDRA. ELA ENCONTRA O CAMINHO.'),
       H('QUEM MORA NA ÁGUA E NA MATA'),
-      P('Na cachoeira, saudamos Oxum, dona das águas doces, do ouro e do cuidado com aquilo que é precioso. Nas matas, Oxóssi, caçador que provê, e Ossaim, guardião das folhas e do segredo de cada uma delas. E entre o rio e a mata, Logunedé, filho de Oxum e de Oxóssi, que carrega as duas forças: a doçura da água e a astúcia do caçador. É nas matas também que vivem os nossos caboclos, força ancestral indígena que chega para curar, orientar e firmar.'),
+      P('A cachoeira não é só água. É água, pedra, mata e margem, e cada parte tem quem more ali. Por isso, falar dessa gira é pensar no todo.'),
+      P('Na água doce, saudamos Oxum, dona do ouro e do cuidado com aquilo que é precioso. Nas pedras por onde a água desce, está Xangô, com a sua firmeza e a sua justiça. Nas matas, Oxóssi, caçador que provê, e Ossaim, guardião das folhas e do segredo de cada uma delas. E Logunedé, que transita entre o rio e a mata com a doçura da água e a astúcia do caçador.'),
+      P('E não estamos sozinhos com os Orixás. Nas matas vivem os nossos caboclos, força ancestral indígena que chega para curar, orientar e firmar. Nas margens dos rios, os Boiadeiros: ribeirinhos, conhecedores das águas, da beira e da travessia, que sabem conduzir e reunir.'),
       H('COMO SE PREPARAR'),
       P('Chegue com o corpo e a cabeça limpos. Evite excessos nos dias anteriores, descanse e venha disposto a ouvir mais do que falar. Respeite o tempo da gira: na água e na mata, tudo tem seu momento.'),
       { k: 'pergunta', texto: 'O QUE VOCÊ PRECISA DEIXAR A ÁGUA LEVAR?' }
@@ -73,6 +75,8 @@ export const materias = [
       P('A roupa de gira não é uniforme nem figurino. É proteção, é igualdade e é respeito. Quando todos vestem o mesmo branco, ninguém é maior que ninguém diante do sagrado.'),
       { k: 'veste' },
       Q('A ROUPA BRANCA NÃO ESCONDE QUEM VOCÊ É. ELA TIRA DO CAMINHO O QUE NÃO PRECISA ESTAR ALI.'),
+      H('E EM DIA DE FESTA?'),
+      P('Nas festividades a orientação pode mudar. São bem-vindas roupas com tecido africano ou cores ligadas ao tema da festa, sempre com aviso antes. Na dúvida, siga o branco.'),
       P('Ficou com dúvida sobre algum item? Pergunte antes da gira. É sempre melhor perguntar do que chegar em dúvida.')
     ] },
   { n: '05', titulo: 'CALENDÁRIO', sub: 'O que vem por aí', cor: '#2f6b3a', corTxt: '#2f6b3a', corSoft: '#e6efe2', secao: 'AGENDA', foto: '#1d3a22', img: IMG + 'tambor.jpg', pos: 'center 55%', fotoLabel: '[FOTO · TERREIRO]',
@@ -101,11 +105,13 @@ export const materias = [
 
 export const vestimenta = [
   { ic: '✓', bg: '#2f6b3a', t: 'Roupa branca, limpa e passada', d: 'Tecido que não seja transparente. A roupa de gira é só para a gira: não venha com ela da rua.' },
+  { ic: '✓', bg: '#2f6b3a', t: 'Homens: calça e camiseta', d: 'Brancas, confortáveis para se movimentar.' },
+  { ic: '✓', bg: '#2f6b3a', t: 'Mulheres: saia comprida e camiseta', d: 'Com calça ou shorts por baixo da saia, para ficar à vontade durante toda a gira.' },
   { ic: '✓', bg: '#2f6b3a', t: 'Pés descalços', d: 'É o nosso contato direto com o chão sagrado. Só não vale para quem tem alguma questão maior que impeça.' },
   { ic: '○', bg: '#8a7f72', t: 'Pano de cabeça (opcional)', d: 'Protege o Orí. Em alguns rituais ele é obrigatório: quando for, a casa avisa antes.' },
   { ic: '○', bg: '#8a7f72', t: 'Fios de contas e guias (opcional)', d: 'Use os seus, se tiver. Não são obrigatórios para estar na gira.' },
   { ic: '✕', bg: '#b8231a', t: 'Decotes, roupas curtas ou justas', d: 'Durante a gira o corpo se movimenta e se entrega: a roupa precisa acompanhar sem expor.' },
-  { ic: '✕', bg: '#b8231a', t: 'Estampas, acessórios e perfume forte', d: 'Brincos grandes, relógio, maquiagem pesada e cheiros fortes atrapalham a gira e as entidades.' }
+  { ic: '✕', bg: '#b8231a', t: 'Estampas, acessórios e perfume forte', d: 'Nas giras do dia a dia. Brincos grandes, relógio, maquiagem pesada e cheiros fortes atrapalham a gira e as entidades.' }
 ];
 
 export const banho = {
