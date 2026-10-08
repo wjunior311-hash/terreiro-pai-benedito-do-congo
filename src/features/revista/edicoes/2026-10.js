@@ -19,7 +19,7 @@ export const agendaAte = "2026-11-30";
 export const mesAniversario = 10;
 
 export const materias = [
-  { n: '01', titulo: 'A FORÇA DAS ÁGUAS', sub: 'Cachoeira, matas e o que nos lava por dentro', cor: '#2aa3b8', corTxt: '#167384', corSoft: '#e3f3f5', secao: 'GIRA DO MÊS', foto: '#123b3a', img: IMG + 'cachoeira.jpg', pos: 'center 60%', fotoLabel: '[FOTO · CACHOEIRA NA MATA]',
+  { n: '01', titulo: 'A FORÇA DAS ÁGUAS', sub: 'Cachoeira, matas e o que nos lava por dentro', cor: '#2aa3b8', corTxt: '#167384', corSoft: '#e3f3f5', secao: 'EM NOVEMBRO', foto: '#123b3a', img: IMG + 'cachoeira.jpg', pos: 'center 60%', fotoLabel: '[FOTO · CACHOEIRA NA MATA]',
     chips: [
       { nome: 'Cachoeira', texto: 'A água que desce da pedra não para. Ela lava, refresca, arrasta o que pesa e segue. Na cachoeira aprendemos que limpar não é apagar quem somos, é tirar o excesso para que a nossa força volte a correr.' },
       { nome: 'Mata', texto: 'A mata é casa dos encantados e dos caboclos, morada das folhas e de quem conhece cada uma delas. Sem folha não há axé: é dela que vem o banho, o remédio e o assentamento.' },
@@ -28,7 +28,7 @@ export const materias = [
     ],
     blocos: [
       P('Antes de existir terreiro, já existia a água correndo entre as pedras. Para os povos que trouxeram o culto aos Orixás de África e para os povos originários desta terra, rio, cachoeira e mata nunca foram paisagem: são lugares vivos, com dono, com fundamento e com respeito.'),
-      P('A gira que está chegando nos convida a voltar para esse lugar. Não para "relaxar na natureza", mas para lembrar que o nosso axé tem origem ali: na folha colhida com licença, na água que se pede antes de entrar, no silêncio de quem chega na mata sabendo que é visita.'),
+      P('A Gira da Cachoeira, em novembro, nos convida a voltar para esse lugar. Não para "relaxar na natureza", mas para lembrar que o nosso axé tem origem ali: na folha colhida com licença, na água que se pede antes de entrar, no silêncio de quem chega na mata sabendo que é visita.'),
       { k: 'chips', texto: 'Toque em cada elemento:' },
       Q('A ÁGUA NÃO BRIGA COM A PEDRA. ELA ENCONTRA O CAMINHO.'),
       H('QUEM MORA NA ÁGUA E NA MATA'),
@@ -37,7 +37,7 @@ export const materias = [
       P('Chegue com o corpo e a cabeça limpos. Evite excessos nos dias anteriores, descanse e venha disposto a ouvir mais do que falar. Respeite o tempo da gira: na água e na mata, tudo tem seu momento.'),
       { k: 'pergunta', texto: 'O QUE VOCÊ PRECISA DEIXAR A ÁGUA LEVAR?' }
     ] },
-  { n: '02', titulo: 'IBEJI E OS ERÊS', sub: 'A sabedoria que chega brincando', cor: '#f5c518', corTxt: '#9a6f00', corSoft: '#fff5d1', corChip: '#231c16', secao: 'ORIXÁS', foto: '#5a3d0c', img: IMG + 'eres.jpg', pos: 'center 25%', fotoLabel: '[FOTO · DOCES, BRINQUEDOS OU GÊMEOS]',
+  { n: '02', titulo: 'IBEJI E OS ERÊS', sub: 'A sabedoria que chega brincando', cor: '#f5c518', corTxt: '#9a6f00', corSoft: '#fff5d1', corChip: '#231c16', secao: 'APRENDIZADOS', foto: '#5a3d0c', img: IMG + 'eres.jpg', pos: 'center 25%', fotoLabel: '[FOTO · DOCES, BRINQUEDOS OU GÊMEOS]',
     chips: [
       { nome: 'Ibeji', texto: 'Orixá dos gêmeos na tradição iorubá. Representa a dualidade que se completa, a abundância e a proteção da infância. Para os iorubás, o nascimento de gêmeos é sinal de bênção e de responsabilidade.' },
       { nome: 'Taiwo e Kehinde', texto: 'Na tradição iorubá, o primeiro gêmeo a nascer é Taiwo, "o que provou o mundo", enviado para ver se a vida era boa. Kehinde, "o que chegou depois", é considerado o mais velho, porque mandou o irmão na frente.' },
