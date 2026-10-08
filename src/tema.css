@@ -445,3 +445,4 @@ h1,h2,h3{color:var(--ink)}
 .rv-perfil img,.rv-perfil-ini{flex:none;width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--rv-cor)}
 .rv-perfil-ini{display:grid;place-items:center;background:var(--rv-cor-soft);color:var(--rv-cor-txt);font-family:var(--rv-font);font-size:38px}
 .rv-perfil b{display:block;font-family:var(--rv-font);font-weight:400;font-size:34px;line-height:1}.rv-perfil small{display:block;font-size:15px;color:var(--rv-cor-txt);font-weight:700;margin-top:4px}
+.rv-galeria{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.rv-galeria img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px}

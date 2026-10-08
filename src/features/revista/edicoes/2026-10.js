@@ -97,10 +97,10 @@ export const materias = [
       H('DICAS DE LEITURA'),
       { k: 'livros' }
     ] },
-  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', fotoLabel: '[FOTO DA PESSOA]',
+  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', img: IMG + 'aisha-3.jpg', pos: 'center 18%', fotoLabel: '[FOTO DA PESSOA]',
     blocos: [
       P('Nosso terreiro é feito de pessoas, histórias e caminhos que se cruzam. Este mês, duas pessoas da nossa egbé contam, com as próprias palavras, como chegaram até aqui.'),
-      { k: 'perfil', nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: null },
+      { k: 'perfil', nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: IMG + 'aisha-rosto.jpg' },
       P('Meu nome é Aisha. Sou filha de Xangô e Yemanjá. Sou umbandista desde que nasci: nasci e cresci no axé e, inclusive, fui batizada em terreiro.'),
       P('Mas, na verdade? Eu não era tão participativa. No começo, meus pais eram de outra casa, e eu nem ligava para essas coisas. Com o tempo, começaram a surgir os trabalhos na nossa casa, que eram internos, e a comunidade, a egbé, foi crescendo aos poucos. Eu continuava nada participativa. Quer dizer, eu ia! Quando minha mãe chamava a mim e ao Yan no quarto para tomar um passe. Depois, eu voltava para o meu canto.'),
       P('Com o tempo, fui começando a participar das giras. Escutar e aprender sobre os Orixás e as entidades, sobre a religião em si, o sincretismo, a incorporação… E tudo me interessava. Eu queria saber cada vez mais: saber sobre mim, descobrir meus Orixás e até mesmo incorporar entidades. Mas, claro, hoje eu sei que cada um tem o seu tempo.'),
@@ -108,7 +108,8 @@ export const materias = [
       Q('CUIDANDO DO MEU POVO, ELES CUIDAM DE MIM.'),
       P('Cuidar da minha ancestralidade e do meu povo me faz muito bem. Mesmo com dificuldades, ainda estou aprendendo. Com o tempo, percebi a importância de cuidar do meu povo, e que, cuidando deles, eles cuidam de mim. Eles talvez sejam mais presentes na nossa vida do que imaginamos: cuidam da gente, mostram que nunca estamos sozinhos, nos protegem e mostram a saída das piores situações.'),
       P('Hoje sou muito grata por estar e participar dessa religião e, principalmente, dessa egbé, que eu já considero família. Não sei o que seria de mim sem os meus ancestrais e as nossas macumbinhas.'),
-      C('Faltam a foto da Aisha e o segundo perfil (nome, Orixás, foto e texto).')
+      { k: 'galeria', fotos: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg', IMG + 'aisha-3.jpg'] },
+      C('Falta o segundo perfil (nome, Orixás, foto e texto).')
     ] }
 ];
 

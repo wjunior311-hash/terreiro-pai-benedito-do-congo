@@ -186,6 +186,7 @@ function Bloco({ b, m, ed, p, go, manager, chipSel, setChip }) {
       <span style={{ background: v.bg }}>{v.ic}</span><span><b>{v.t}</b><small>{v.d}</small></span>
     </div>)}</div>;
     case "agenda": return <Agenda ed={ed} p={p} go={go} />;
+    case "galeria": return <div className="rv-galeria">{b.fotos.map((f) => <img key={f} src={f} alt="" loading="lazy" />)}</div>;
     case "perfil": return <div className="rv-perfil">
       {b.foto ? <img src={b.foto} alt={"Foto de " + b.nome} /> : <span className="rv-perfil-ini">{b.nome.charAt(0)}</span>}
       <span><b>{b.nome}</b><small>{b.sub}</small></span>
