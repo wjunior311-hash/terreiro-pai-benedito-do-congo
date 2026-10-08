@@ -108,6 +108,7 @@ export const materias = [
       Q('CUIDANDO DO MEU POVO, ELES CUIDAM DE MIM.'),
       P('Cuidar da minha ancestralidade e do meu povo me faz muito bem. Mesmo com dificuldades, ainda estou aprendendo. Com o tempo, percebi a importância de cuidar do meu povo, e que, cuidando deles, eles cuidam de mim. Eles talvez sejam mais presentes na nossa vida do que imaginamos: cuidam da gente, mostram que nunca estamos sozinhos, nos protegem e mostram a saída das piores situações.'),
       P('Hoje sou muito grata por estar e participar dessa religião e, principalmente, dessa egbé, que eu já considero família. Não sei o que seria de mim sem os meus ancestrais e as nossas macumbinhas.'),
+      Q('TUDO CHEGA NO TEMPO QUE TEM QUE CHEGAR. SEM MEDO E SEM PRESSA.'),
       { k: 'galeria', fotos: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg', IMG + 'aisha-3.jpg'] },
       C('Falta o segundo perfil (nome, Orixás, foto e texto).')
     ] }
