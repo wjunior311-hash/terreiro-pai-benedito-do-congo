@@ -455,3 +455,4 @@ h1,h2,h3{color:var(--ink)}
 .rv-perfis-tabs b{display:block;font-family:var(--rv-font);font-weight:400;font-size:20px;line-height:1}.rv-perfis-tabs small{display:block;font-size:12px;color:var(--rv-cor-txt);font-weight:700;line-height:1.2;margin-top:2px}
 .rv-perfis-body{display:flex;flex-direction:column;gap:16px;animation:tp-fade .3s ease}
 .rv-perfis-next{align-self:flex-start;min-height:44px;padding:0 16px;border-radius:99px;border:2px solid var(--rv-cor);background:#fffdf8;color:var(--rv-cor-txt);font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
+.rv-galeria:has(img:nth-child(2):last-child){grid-template-columns:repeat(2,1fr)}

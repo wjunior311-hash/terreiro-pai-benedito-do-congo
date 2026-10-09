@@ -97,11 +97,11 @@ export const materias = [
       H('DICAS DE LEITURA'),
       { k: 'livros' }
     ] },
-  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', imgs: [IMG + 'aisha-3.jpg', IMG + 'bruna-2.jpg'], pos: 'center 18%',
+  { n: '07', titulo: 'GENTE DO TERREIRO', sub: 'Pessoas, histórias e caminhos', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', imgs: [IMG + 'aisha-1.jpg', IMG + 'bruna-2.jpg'], pos: 'center 22%',
     blocos: [
       P('Nosso terreiro é feito de pessoas, histórias e caminhos que se cruzam. Este mês, duas pessoas da nossa egbé contam, com as próprias palavras, como chegaram até aqui. Toque em cada uma para ler.'),
       { k: 'perfis', perfis: [
-        { nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: IMG + 'aisha-rosto.jpg', galeria: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg', IMG + 'aisha-3.jpg'], blocos: [
+        { nome: 'AISHA', sub: 'Filha de Xangô e Yemanjá', foto: IMG + 'aisha-rosto.jpg', galeria: [IMG + 'aisha-1.jpg', IMG + 'aisha-2.jpg'], blocos: [
           P('Meu nome é Aisha. Sou filha de Xangô e Yemanjá. Sou umbandista desde que nasci: nasci e cresci no axé e, inclusive, fui batizada em terreiro.'),
           P('Mas, na verdade? Eu não era tão participativa. No começo, meus pais eram de outra casa, e eu nem ligava para essas coisas. Com o tempo, começaram a surgir os trabalhos na nossa casa, que eram internos, e a comunidade, a egbé, foi crescendo aos poucos. Eu continuava nada participativa. Quer dizer, eu ia! Quando minha mãe chamava a mim e ao Yan no quarto para tomar um passe. Depois, eu voltava para o meu canto.'),
           P('Com o tempo, fui começando a participar das giras. Escutar e aprender sobre os Orixás e as entidades, sobre a religião em si, o sincretismo, a incorporação… E tudo me interessava. Eu queria saber cada vez mais: saber sobre mim, descobrir meus Orixás e até mesmo incorporar entidades. Mas, claro, hoje eu sei que cada um tem o seu tempo.'),
