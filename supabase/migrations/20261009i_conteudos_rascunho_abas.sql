@@ -8,9 +8,7 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 -- membros não veem rascunho
-drop policy if exists house_contents_select_active on public.house_contents;
-create policy house_contents_select_active on public.house_contents
-  for select to authenticated
+alter policy house_contents_select_active on public.house_contents
   using (app.is_active_member() and (not is_draft or app.can_manage_house_content()));
 
 -- salvar conteúdo: agora também rascunho e formato
