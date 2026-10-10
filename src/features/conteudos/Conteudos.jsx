@@ -1,21 +1,48 @@
 // Conteúdos em formato de blog (membros).
-import { useEffect, useState } from "react";
-import { Check, ChevronRight, ArrowLeft, Bell } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Check, ChevronRight, ChevronLeft, ArrowLeft, Bell } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
 import { dateTime, err } from "../../lib/helpers.js";
-import { CONTENT_TAGS, contentSummary, coverStyle, readingMinutes, sanitizeContentHtml } from "./conteudo.js";
+import { CONTENT_TAGS, contentSummary, coverStyle, isDraft, readingMinutes, sanitizeContentHtml, splitContentTabs } from "./conteudo.js";
+
+// Corpo em abas: cada Título vira um botão; Anterior / Próxima no fim.
+function ContentTabs({ body }) {
+  const { intro, tabs } = useMemo(() => splitContentTabs(body), [body]);
+  const [i, setI] = useState(0);
+  const topRef = useRef(null);
+  useEffect(() => { if (i >= tabs.length) setI(0); }, [tabs.length]);
+  if (!tabs.length) return <div className="bl-body" dangerouslySetInnerHTML={{ __html: sanitizeContentHtml(body) || "<p>…</p>" }} />;
+  const cur = tabs[Math.min(i, tabs.length - 1)];
+  const go = (n) => {
+    setI(n);
+    const el = topRef.current;
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  return <>
+  {intro && <div className="bl-body" dangerouslySetInnerHTML={{ __html: intro }} />}
+  <div className="bl-tabs" ref={topRef} role="tablist">{tabs.map((t, n) => <button type="button" role="tab" key={n} aria-selected={n === i} className={n === i ? "is-on" : ""} onClick={() => go(n)}>{t.title}</button>)}</div>
+  <section className="bl-tab-panel" key={i}>
+   <h2 className="bl-tab-title">{cur.title}</h2>
+   <div className="bl-body" dangerouslySetInnerHTML={{ __html: cur.html || "<p>…</p>" }} />
+  </section>
+  {tabs.length > 1 && <div className="bl-tab-nav">
+   {i > 0 ? <button type="button" className="btn" onClick={() => go(i - 1)}><small><ChevronLeft size={12} /> Anterior</small>{tabs[i - 1].title}</button> : <span />}
+   {i < tabs.length - 1 ? <button type="button" className="btn primary" onClick={() => go(i + 1)}><small>Próxima <ChevronRight size={12} /></small>{tabs[i + 1].title}</button> : <span />}
+  </div>}
+  </>;
+}
 
 export function ContentArticle({ x, authorName, read, onBack, onConfirm, confirming, preview = false }) {
   return <article className="bl-article">
   {!preview && <button type="button" className="btn bl-back" onClick={onBack}><ArrowLeft size={15} /> Voltar</button>}
-  <div className={"bl-cover" + (x.cover_url ? " has-image" : "")} style={coverStyle(x)}>{x.is_required && <span className="bl-badge">Leitura obrigatória</span>}</div>
+  <div className={"bl-cover" + (x.cover_url ? " has-image" : "")} style={coverStyle(x)}>{isDraft(x) ? <span className="bl-badge is-draft">Rascunho · só a gestão vê</span> : x.is_required && <span className="bl-badge">Leitura obrigatória</span>}</div>
   <div className="bl-article-inner">
    {x.tags?.length > 0 && <div className="bl-tags">{x.tags.map((t) => <span key={t}>{t}</span>)}</div>}
    <h1>{x.title || "Título do conteúdo"}</h1>
    <p className="bl-meta">{authorName ? authorName + " · " : ""}{readingMinutes(x.body)} min de leitura{x.created_at ? " · " + new Date(x.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long" }) : ""}</p>
    {x.summary && <p className="bl-lead">{x.summary}</p>}
-   <div className="bl-body" dangerouslySetInnerHTML={{ __html: sanitizeContentHtml(x.body) || "<p>…</p>" }} />
-   {x.is_required && <div className="bl-confirm">{read?.confirmed_at ? <p className="bl-confirmed">
+   {x.layout === "abas" ? <ContentTabs body={x.body} /> : <div className="bl-body" dangerouslySetInnerHTML={{ __html: sanitizeContentHtml(x.body) || "<p>…</p>" }} />}
+   {x.is_required && !isDraft(x) && <div className="bl-confirm">{read?.confirmed_at ? <p className="bl-confirmed">
      <Check size={17} /> Você confirmou a leitura em {new Date(read.confirmed_at).toLocaleDateString("pt-BR")}.</p> : <>
      <p>Este conteúdo é de leitura obrigatória.</p>
      <button type="button" className="btn primary" disabled={confirming || preview} onClick={onConfirm}>
@@ -56,7 +83,7 @@ export function HouseContent({ back, p }) {
     setSelected(x);
     setMsg("");
     window.scrollTo({ top: 0 });
-    if (!reads[x.id]) {
+    if (!reads[x.id] && !isDraft(x)) {
       const { error } = await supabase.rpc("mark_house_content_read", { p_content_id: x.id });
       if (!error) setReads((v) => ({ ...v, [x.id]: { ...v[x.id] || {}, content_id: x.id, first_read_at: (/* @__PURE__ */ new Date()).toISOString() } }));
     }
@@ -75,11 +102,11 @@ export function HouseContent({ back, p }) {
   if (selected) return <div className="bl">{msg && <div className="gw-warning">{msg}</div>}<ContentArticle x={selected} authorName={authors[selected.created_by]} read={reads[selected.id]} confirming={confirming} onConfirm={confirm2} onBack={() => setSelected(null)} />
     </div>;
   const contents = items.filter((x) => x.content_type === "content"), rules = items.filter((x) => x.content_type === "rule");
-  const pendingRequired = contents.filter((x) => x.is_required && !reads[x.id]?.confirmed_at);
+  const pendingRequired = contents.filter((x) => x.is_required && !isDraft(x) && !reads[x.id]?.confirmed_at);
   const shown = tag === "Todos" ? contents : contents.filter((x) => Array.isArray(x.tags) && x.tags.includes(tag));
-  const hero = tag === "Todos" ? pendingRequired[0] || shown.find((x) => x.featured) : null;
+  const hero = tag === "Todos" ? pendingRequired[0] || shown.find((x) => x.featured && !isDraft(x)) : null;
   const list = shown.filter((x) => x !== hero);
-  const status = (x) => x.is_required && !reads[x.id]?.confirmed_at ? <span className="bl-st is-req">Obrigatória</span> : reads[x.id] ? <span className="bl-st is-read">
+  const status = (x) => isDraft(x) ? <span className="bl-st is-draft">Rascunho</span> : x.is_required && !reads[x.id]?.confirmed_at ? <span className="bl-st is-req">Obrigatória</span> : reads[x.id] ? <span className="bl-st is-read">
     <Check size={12} /> Lido</span> : <span className="bl-st is-new">Novo</span>;
   return <div className="bl">
   <div className="bl-head">

@@ -40,20 +40,20 @@ export function Home({ p, go, memberPreview = false }) {
     const now2 = /* @__PURE__ */ new Date();
     const [{ data: g }, { data: c }, { data: n }, { data: turnChanges }, { data: availabilityNotifications }] = await Promise.all([
       supabase.from("giras").select("*").eq("status", "published").gte("starts_at", now2.toISOString()).order("starts_at").limit(1).maybeSingle(),
-      supabase.from("house_contents").select("id,title,body,content_type,tags,created_at").eq("content_type", "content").order("created_at", { ascending: false }).limit(3),
+      supabase.from("house_contents").select("*").eq("content_type", "content").order("created_at", { ascending: false }).limit(8),
       supabase.from("notices").select("id,title,body,starts_at,ends_at,published,created_at").eq("published", true).order("created_at", { ascending: false }).limit(3),
       supabase.rpc("get_my_gira_turn_change_notifications", { p_gira_id: null }),
       supabase.rpc("get_my_gira_turn_availability_notifications", { p_gira_id: null })
     ]);
     setGira(g);
-    setContents(c || []);
+    setContents((c || []).filter((x) => !x.is_draft).slice(0, 3));
     setNotices((n || []).filter((x) => (!x.starts_at || new Date(x.starts_at) <= now2) && (!x.ends_at || new Date(x.ends_at) >= now2)));
     setTurnChangeNotifications((turnChanges || []).filter((x) => !x.read_at));
     setGiraNotifications((availabilityNotifications || []).filter((x) => !x.read_at));
     {
-      const [{ data: req }, { data: myReads }] = await Promise.all([supabase.from("house_contents").select("id,title,reminded_at").eq("is_required", true).order("created_at", { ascending: false }), supabase.from("house_content_reads").select("content_id,confirmed_at").eq("profile_id", p.id)]);
+      const [{ data: req }, { data: myReads }] = await Promise.all([supabase.from("house_contents").select("*").eq("is_required", true).order("created_at", { ascending: false }), supabase.from("house_content_reads").select("content_id,confirmed_at").eq("profile_id", p.id)]);
       const ok = new Set((myReads || []).filter((x) => x.confirmed_at).map((x) => x.content_id));
-      setRequiredReads((req || []).filter((x) => !ok.has(x.id)));
+      setRequiredReads((req || []).filter((x) => !x.is_draft && !ok.has(x.id)));
     }
     if (g) {
       const [{ data: r }, { data: ts }] = await Promise.all([supabase.from("gira_responses").select("*").eq("gira_id", g.id).eq("profile_id", p.id).maybeSingle(), g.use_task_list ? supabase.rpc("gira_turn_summary", { p_gira_id: g.id }) : Promise.resolve({ data: [] })]);

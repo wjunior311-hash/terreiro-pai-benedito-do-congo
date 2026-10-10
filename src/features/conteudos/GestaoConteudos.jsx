@@ -4,7 +4,7 @@ import { Check, Plus, FileText, Trash2, ArrowLeft, Pencil, Bell } from "lucide-r
 import { supabase } from "../../lib/supabase.js";
 import { err } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
-import { CONTENT_COLORS, CONTENT_EMOJIS, CONTENT_TAGS, contentPlain, coverStyle, sanitizeContentHtml } from "./conteudo.js";
+import { CONTENT_COLORS, CONTENT_EMOJIS, CONTENT_TAGS, contentPlain, coverStyle, isDraft, sanitizeContentHtml } from "./conteudo.js";
 import { ContentArticle } from "./Conteudos.jsx";
 
 export function RichEditor({ editorRef, initialHtml, onChange, placeholder }) {
@@ -136,7 +136,7 @@ export function Content() {
   useEffect(() => {
     load();
   }, []);
-  const blank = (k) => ({ kind: k, id: null, title: "", summary: "", body: "", tags: [], featured: false, is_required: false, cover_url: "", cover_color: CONTENT_COLORS[0], coverFile: null, starts_at: "", ends_at: "", published: true });
+  const blank = (k) => ({ kind: k, id: null, title: "", summary: "", body: "", tags: [], featured: false, is_required: false, cover_url: "", cover_color: CONTENT_COLORS[0], coverFile: null, starts_at: "", ends_at: "", published: true, is_draft: false, layout: "normal" });
   const startNew = () => {
     setForm(blank(section));
     setPreview(false);
@@ -145,13 +145,15 @@ export function Content() {
     window.scrollTo({ top: 0 });
   };
   const startEdit = (x) => {
-    setForm({ ...blank(x._kind), ...x, title: x.title || "", summary: x.summary || "", body: x.body || "", kind: x._kind, tags: Array.isArray(x.tags) ? x.tags : [], cover_url: x.cover_url || "", cover_color: x.cover_color || CONTENT_COLORS[0], starts_at: toInputDate(x.starts_at), ends_at: toInputDate(x.ends_at), published: x.published !== false, coverFile: null });
+    setForm({ ...blank(x._kind), ...x, title: x.title || "", summary: x.summary || "", body: x.body || "", kind: x._kind, tags: Array.isArray(x.tags) ? x.tags : [], cover_url: x.cover_url || "", cover_color: x.cover_color || CONTENT_COLORS[0], starts_at: toInputDate(x.starts_at), ends_at: toInputDate(x.ends_at), published: x.published !== false, is_draft: Boolean(x.is_draft), layout: x.layout === "abas" ? "abas" : "normal", coverFile: null });
     setPreview(false);
     setMessage("");
     setView("edit");
     window.scrollTo({ top: 0 });
   };
   const set = (patch) => setForm((f) => ({ ...f, ...patch }));
+  // rascunho/abas só aparecem depois que o banco tem essas colunas
+  const hasDraft = items.length > 0 && "is_draft" in items[0];
   const uploadCover = async (file) => {
     const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
     const path = "conteudos/" + Date.now() + "." + ext;
@@ -176,13 +178,13 @@ export function Content() {
       } else {
         let cover = form.cover_url;
         if (form.coverFile) cover = await uploadCover(form.coverFile);
-        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: (form.title || "").trim(), summary: (form.summary || "").trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length } });
+        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: (form.title || "").trim(), summary: (form.summary || "").trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length, ...(hasDraft ? { is_draft: Boolean(form.is_draft), layout: form.layout === "abas" ? "abas" : "normal" } : {}) } });
         if (error) throw error;
       }
       setSaving(false);
       setView("list");
       setForm(null);
-      setMessage(form.id ? "Alterações salvas." : labels[form.kind] + " publicado.");
+      setMessage(form.kind !== "notice" && hasDraft && form.is_draft ? "Salvo como rascunho. Só a gestão vê." : form.id ? "Alterações salvas." : labels[form.kind] + " publicado.");
       load();
     } catch (e) {
       setSaving(false);
@@ -266,6 +268,20 @@ export function Content() {
        <small>Aparece em destaque em Conteúdos.</small>
        </span>
        </label>}
+     {hasDraft && <label className={"bl-toggle" + (form.layout === "abas" ? " is-on" : "")}>
+       <input type="checkbox" checked={form.layout === "abas"} onChange={(e) => set({ layout: e.target.checked ? "abas" : "normal" })} />
+       <span>
+       <b>Mostrar em abas</b>
+       <small>Cada "Título" do texto vira um botão. Quem lê troca de parte sem rolar tudo.</small>
+       </span>
+       </label>}
+     {hasDraft && <label className={"bl-toggle" + (form.is_draft ? " is-on" : "")}>
+       <input type="checkbox" checked={form.is_draft} onChange={(e) => set({ is_draft: e.target.checked })} />
+       <span>
+       <b>Rascunho</b>
+       <small>Só a gestão vê. Desmarque e salve para publicar para todo mundo.</small>
+       </span>
+       </label>}
     </div>}
     {form.kind === "notice" && <>
       <div className="grid">
@@ -288,7 +304,7 @@ export function Content() {
    <div className="gw-actions">
      <span />
      <div className="gw-actions-right">
-     <button className="btn primary" disabled={saving} onClick={save}>{saving ? "Salvando…" : form.id ? "Salvar alterações" : "Publicar"}</button>
+     <button className="btn primary" disabled={saving} onClick={save}>{saving ? "Salvando…" : form.kind !== "notice" && hasDraft && form.is_draft ? "Salvar rascunho" : form.id ? (form.kind !== "notice" && hasDraft && isDraft(items.find((i) => i.id === form.id)) ? "Publicar" : "Salvar alterações") : "Publicar"}</button>
      </div>
      </div>
   </div>;
@@ -316,7 +332,7 @@ export function Content() {
    {x._kind === "content" ? <span className={"bl-thumb" + (x.cover_url ? " has-image" : "")} style={coverStyle(x)} /> : <span className="bl-notice-icon">{x._kind === "notice" ? <Bell size={17} /> : <FileText size={17} />}</span>}
    <div className="bl-admin-text">
      <b>{x.title}</b>
-     <span className="bl-admin-pills">{x.is_required && <span className="bl-st is-req">Obrigatória</span>}{x.featured && <span className="bl-st is-new">Destaque</span>}{x._kind === "notice" && <span className="bl-st">{x.published === false ? "Oculto" : "Publicado"}</span>}</span>
+     <span className="bl-admin-pills">{isDraft(x) && <span className="bl-st is-draft">Rascunho</span>}{x.layout === "abas" && <span className="bl-st">Em abas</span>}{x.is_required && <span className="bl-st is-req">Obrigatória</span>}{x.featured && <span className="bl-st is-new">Destaque</span>}{x._kind === "notice" && <span className="bl-st">{x.published === false ? "Oculto" : "Publicado"}</span>}</span>
     {x._kind !== "notice" && st && <button type="button" className="bl-admin-reads" onClick={() => setReadersOf(x)}>
       <span className="bl-bar bl-bar-sm">
       <i style={{ width: (st.total ? Math.round(done / st.total * 100) : 0) + "%" }} />

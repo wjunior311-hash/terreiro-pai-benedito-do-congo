@@ -63,3 +63,22 @@ export const readingMinutes = (html) => Math.max(1, Math.round(contentPlain(html
 export const contentSummary = (x) => x.summary?.trim() || ((t) => t.length > 140 ? t.slice(0, 140).trim() + "…" : t)(contentPlain(x.body));
 
 export const coverStyle = (x) => x.cover_url ? { backgroundImage: 'url("' + x.cover_url + '")' } : { background: x.cover_color || "#65745A" };
+
+// Conteúdo "em abas": cada Título (H2) vira um botão. O que vem antes do
+// primeiro título é a abertura, mostrada sempre.
+export function splitContentTabs(html) {
+  const box = document.createElement("div");
+  box.innerHTML = sanitizeContentHtml(html);
+  const intro = document.createElement("div");
+  const tabs = [];
+  [...box.childNodes].forEach((n) => {
+    if (n.nodeType === 1 && n.tagName === "H2") {
+      tabs.push({ title: (n.textContent || "").trim() || "Parte " + (tabs.length + 1), box: document.createElement("div") });
+      return;
+    }
+    (tabs.length ? tabs[tabs.length - 1].box : intro).appendChild(n.cloneNode(true));
+  });
+  return { intro: intro.innerHTML.trim(), tabs: tabs.map((t) => ({ title: t.title, html: t.box.innerHTML })) };
+}
+
+export const isDraft = (x) => Boolean(x?.is_draft);
