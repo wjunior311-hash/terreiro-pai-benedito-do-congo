@@ -1,5 +1,5 @@
 // Mural da comunidade.
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Trash2, Pencil, MessageCircle, Send } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
 import { OrixaIcon } from "../../orixaSymbols.jsx";
@@ -7,7 +7,7 @@ import { err, kinds } from "../../lib/helpers.js";
 import { can } from "../acesso.js";
 import { Giras } from "../agenda/Agenda.jsx";
 
-export function Community({ p, draft = null }) {
+export function Community({ p, draft = null, focus = null }) {
   const [posts, setPosts] = useState([]),
     [giras, setGiras] = useState([]),
     [feed, setFeed] = useState("ensinamento"),
@@ -16,7 +16,8 @@ export function Community({ p, draft = null }) {
     [msg, setMsg] = useState(""),
     [composing, setComposing] = useState(false),
     [saving, setSaving] = useState(false),
-    [social, setSocial] = useState(null);
+    [social, setSocial] = useState(null),
+    [highlight, setHighlight] = useState(null);
   const load = async () => {
     const { data } = await supabase.from("community_posts").select("*").order("created_at", { ascending: false });
     if (!data) {
@@ -55,8 +56,22 @@ export function Community({ p, draft = null }) {
   }, [draft]);
   useEffect(() => {
     load();
+    supabase.rpc("mark_mural_seen").then(() => {}, () => {});
     supabase.from("giras").select("id,name,starts_at").eq("status", "published").order("starts_at", { ascending: false }).then(({ data }) => setGiras(data || []));
   }, []);
+  // veio de um aviso / da tela inicial: vai para o espaço certo, rola até a publicação e abre os comentários
+  const handledFocus = useRef(null);
+  useEffect(() => {
+    if (!focus?.id || !posts.length || handledFocus.current === focus.at) return;
+    const post = posts.find((x) => x.id === focus.id);
+    if (!post) return;
+    handledFocus.current = focus.at;
+    setFeed(post.gira_id ? "gira:" + post.gira_id : post.kind);
+    setHighlight({ id: post.id, at: focus.at });
+    const t = setTimeout(() => document.getElementById("post-" + post.id)?.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
+    const t2 = setTimeout(() => setHighlight((h) => h?.at === focus.at ? { ...h, done: true } : h), 2600);
+    return () => { clearTimeout(t); clearTimeout(t2); };
+  }, [focus?.at, posts.length]);
   const isGira = feed.startsWith("gira:"), activeGira = isGira ? feed.slice(5) : null;
   const save = async (e) => {
     e.preventDefault();
@@ -135,7 +150,7 @@ export function Community({ p, draft = null }) {
     <button className="btn primary" disabled={saving || !body.trim()}>{saving ? "Enviando…" : editing ? "Salvar" : "Publicar"}</button>
     </div>
     </div>{msg && <div className="toast">{msg}</div>}</form>}
-  <div className="mu-feed">{shown.map((post) => <Post key={post.id} post={post} p={p} ago={ago} social={social ? social[post.id] || { axe_count: 0, i_reacted: false, comment_count: 0 } : null} onAxe={() => toggleAxe(post)} onCommentCount={(n) => setCommentCount(post.id, n)} edit={() => {
+  <div className="mu-feed">{shown.map((post) => <Post key={post.id} post={post} p={p} ago={ago} focused={highlight?.id === post.id ? highlight : null} social={social ? social[post.id] || { axe_count: 0, i_reacted: false, comment_count: 0 } : null} onAxe={() => toggleAxe(post)} onCommentCount={(n) => setCommentCount(post.id, n)} edit={() => {
     setEditing(post.id);
     setComposing(true);
     setFeed(post.gira_id ? "gira:" + post.gira_id : post.kind);
@@ -145,7 +160,7 @@ export function Community({ p, draft = null }) {
  </div>;
 }
 
-export function Post({ post, p, edit, remove, ago, social = null, onAxe, onCommentCount }) {
+export function Post({ post, p, edit, remove, ago, social = null, onAxe, onCommentCount, focused = null }) {
   const canEdit = post.author_id === p.id, canManage = can(p, "content.manage"), canDelete = canEdit || canManage;
   const [open, setOpen] = useState(false), [comments, setComments] = useState(null), [text, setText] = useState(""), [sending, setSending] = useState(false), [reactors, setReactors] = useState(null), [cmsg, setCmsg] = useState("");
   const loadComments = async () => {
@@ -179,8 +194,13 @@ export function Post({ post, p, edit, remove, ago, social = null, onAxe, onComme
     const { data } = await supabase.rpc("community_post_reactors", { p_post_id: post.id });
     setReactors(data || []);
   };
+  useEffect(() => {
+    if (!focused?.at) return;
+    setOpen(true);
+    loadComments();
+  }, [focused?.at]);
   const first = (n) => String(n || "Membro").trim().split(/\s+/)[0];
-  return <article className="mu-post">
+  return <article className={"mu-post" + (focused && !focused.done ? " is-focus" : "")} id={"post-" + post.id}>
     <header className="mu-post-head">
     <OrixaIcon name={post.author?.orixa_symbol} size={34} />
     <div className="mu-post-who">

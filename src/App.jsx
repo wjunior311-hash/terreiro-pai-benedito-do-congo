@@ -34,7 +34,12 @@ export function App() {
     }),
     [memberPreview, setMemberPreview] = useState(false),
     [scrolled, setScrolled] = useState(false),
-    [muralDraft, setMuralDraft] = useState(null);
+    [muralDraft, setMuralDraft] = useState(null),
+    // publicação do mural a abrir (aviso de axé/comentário ou a tela inicial)
+    [muralFocus, setMuralFocus] = useState(() => {
+      const q = new URLSearchParams(window.location.search);
+      return q.get("tela") === "community" && q.get("post") ? { id: q.get("post"), at: Date.now() } : null;
+    });
   const loadProfile = async (u) => {
     if (!u) {
       setProfile(null);
@@ -75,7 +80,8 @@ export function App() {
     const onMsg = (e) => {
       if (e.data?.type !== "abrir") return;
       try {
-        const t = new URL(e.data.url).searchParams.get("tela");
+        const q = new URL(e.data.url).searchParams, t = q.get("tela");
+        if (t === "community" && q.get("post")) setMuralFocus({ id: q.get("post"), at: Date.now() });
         if (SCREEN_TITLES[t]) setScreen(t);
       } catch (x) { /* ignora */ }
     };
@@ -96,6 +102,7 @@ export function App() {
   };
   const go = (s, payload) => {
     setMuralDraft(payload?.muralDraft || null);
+    setMuralFocus(payload?.post ? { id: payload.post, at: Date.now() } : null);
     setScreen(s);
   };
   const canPreview = hasAnyAdmin(profile);
@@ -121,7 +128,7 @@ export function App() {
   {screen === "home" && <Home p={profile} go={go} memberPreview={memberPreview} />}
   {screen === "giras" && <Giras p={profile} />}
   {screen === "revista" && <RevistaTela p={profile} go={go} />}
-  {screen === "community" && <Community p={profile} draft={muralDraft} />}
+  {screen === "community" && <Community p={profile} draft={muralDraft} focus={muralFocus} />}
   {screen === "content" && <HouseContent p={profile} back={() => setScreen("home")} />} 
   {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}
   {screen === "admin" && !memberPreview && hasAnyAdmin(profile) && <Admin p={profile} />}

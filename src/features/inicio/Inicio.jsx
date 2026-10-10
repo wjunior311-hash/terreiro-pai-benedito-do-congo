@@ -132,6 +132,8 @@ export function Home({ p, go, memberPreview = false }) {
 
   <RevistaHomeCard p={p} go={go} />
 
+  <MuralHomeCard go={go} />
+
   {!memberPreview && <AvisosHomeCard />}
 
   {isManager && <button type="button" className="hm-manage" onClick={() => go("admin")}>
@@ -217,5 +219,37 @@ export function HomeBirthdays({ p, go }) {
       <b>{first(x.name)}</b>
       <small>{when(x)}</small>
     </div>)}</div>}
+  </section>;
+}
+
+// Novidades no meu mural: quem mandou axé / comentou nas minhas publicações
+// desde a última vez que abri o Mural. Toque abre direto na publicação.
+function MuralHomeCard({ go }) {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    supabase.rpc("my_mural_activity").then(({ data, error }) => setItems(error ? [] : data || []));
+  }, []);
+  if (!items.length) return null;
+  const who = (names) => {
+    const n = (names || []).filter(Boolean);
+    if (n.length <= 1) return n[0] || "Alguém";
+    if (n.length === 2) return n[0] + " e " + n[1];
+    return n[0] + ", " + n[1] + " e mais " + (n.length - 2);
+  };
+  const what = (x) => [x.axes > 0 && (x.axes === 1 ? "mandou axé" : x.axes + " axés"), x.comments > 0 && (x.comments === 1 ? "1 comentário" : x.comments + " comentários")].filter(Boolean).join(" · ");
+  return <section className="hm-section" aria-labelledby="hm-mural-title">
+   <div className="hm-section-head">
+     <h2 id="hm-mural-title" className="hm-label">No seu mural</h2>
+     <button type="button" className="home-link" onClick={() => go("community")}>Abrir mural <ChevronRight size={14} /></button>
+   </div>
+   <div className="hm-news">{items.map((x) => <button type="button" className="hm-news-row mu-act" key={x.post_id} onClick={() => go("community", { post: x.post_id })}>
+     <span className="hm-news-icon mu-act-icon" aria-hidden="true">{x.comments > 0 ? "💬" : "🙏"}</span>
+     <span className="hm-news-text">
+       <b>{who(x.names)}</b>
+       <small className="mu-act-what">{what(x)}</small>
+       <small className="mu-act-post">“{String(x.post_body || "").replace(/\s+/g, " ").slice(0, 70)}{(x.post_body || "").length > 70 ? "…" : ""}”</small>
+     </span>
+     <ChevronRight size={16} />
+   </button>)}</div>
   </section>;
 }

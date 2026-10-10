@@ -471,3 +471,11 @@ h1,h2,h3{color:var(--ink)}
 .bl-tab-nav .btn small{font-size:11px;font-weight:700;opacity:.75;letter-spacing:.04em;text-transform:uppercase;display:inline-flex;align-items:center;gap:2px}
 @keyframes bl-tab-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.bl-tab-panel{animation:none}}
+
+/* ---------- Mural: novidades na tela inicial e publicação em foco ---------- */
+.mu-act .mu-act-icon{font-size:16px}
+.mu-act .hm-news-text small.mu-act-what{text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;color:var(--brand-ink)}
+.mu-act .hm-news-text small.mu-act-post{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:400;font-style:italic;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mu-act > svg{color:var(--muted);flex:none}
+.mu-post{transition:background-color .8s ease,box-shadow .8s ease;border-radius:14px;scroll-margin-top:90px}
+.mu-post.is-focus{background:var(--warn-soft);box-shadow:0 0 0 8px var(--warn-soft)}
