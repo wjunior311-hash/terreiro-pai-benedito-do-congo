@@ -126,7 +126,7 @@ export const materias = [
 export const vestimenta = [
   { ic: '✓', bg: '#2f6b3a', t: 'Roupa branca, limpa e passada', d: 'Tecido que não seja transparente. A roupa de gira é só para a gira: não venha com ela da rua.' },
   { ic: '✓', bg: '#2f6b3a', t: 'Homens: calça e camiseta', d: 'Brancas, confortáveis para se movimentar.' },
-  { ic: '✓', bg: '#2f6b3a', t: 'Mulheres: saia comprida e camiseta', d: 'Com calça ou shorts por baixo da saia, para ficar à vontade durante toda a gira.' },
+  { ic: '✓', bg: '#2f6b3a', t: 'Mulheres: saia comprida e camiseta', d: 'Com calça por baixo da saia, para ficar à vontade durante toda a gira.' },
   { ic: '✓', bg: '#2f6b3a', t: 'Pés descalços', d: 'É o nosso contato direto com o chão sagrado. Só não vale para quem tem alguma questão maior que impeça.' },
   { ic: '○', bg: '#8a7f72', t: 'Pano de cabeça (opcional)', d: 'Protege o Orí. Em alguns rituais ele é obrigatório: quando for, a casa avisa antes.' },
   { ic: '○', bg: '#8a7f72', t: 'Fios de contas e guias (opcional)', d: 'Use os seus, se tiver. Não são obrigatórios para estar na gira.' },
