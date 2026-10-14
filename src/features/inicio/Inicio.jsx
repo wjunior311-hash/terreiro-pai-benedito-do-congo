@@ -33,6 +33,7 @@ export function Home({ p, go, memberPreview = false }) {
     [turnChangeNotifications, setTurnChangeNotifications] = useState([]),
     [giraNotifications, setGiraNotifications] = useState([]),
     [requiredReads, setRequiredReads] = useState([]),
+    [myTurnIds, setMyTurnIds] = useState([]),
     [loadingHome, setLoadingHome] = useState(true),
     [showGiraDescription, setShowGiraDescription] = useState(false);
   const load = async () => {
@@ -56,12 +57,14 @@ export function Home({ p, go, memberPreview = false }) {
       setRequiredReads((req || []).filter((x) => !x.is_draft && !ok.has(x.id)));
     }
     if (g) {
-      const [{ data: r }, { data: ts }] = await Promise.all([supabase.from("gira_responses").select("*").eq("gira_id", g.id).eq("profile_id", p.id).maybeSingle(), g.use_task_list ? supabase.rpc("gira_turn_summary", { p_gira_id: g.id }) : Promise.resolve({ data: [] })]);
+      const [{ data: r }, { data: ts }, { data: av }] = await Promise.all([supabase.from("gira_responses").select("*").eq("gira_id", g.id).eq("profile_id", p.id).maybeSingle(), g.use_task_list ? supabase.rpc("gira_turn_summary", { p_gira_id: g.id }) : Promise.resolve({ data: [] }), g.use_task_list ? supabase.from("gira_turn_availability").select("gira_turn_id").eq("profile_id", p.id) : Promise.resolve({ data: [] })]);
       setResp(r);
       setTurns(ts || []);
+      setMyTurnIds((av || []).map((x) => x.gira_turn_id));
     } else {
       setResp(null);
       setTurns([]);
+      setMyTurnIds([]);
     }
     setLoadingHome(false);
   };
@@ -84,7 +87,10 @@ export function Home({ p, go, memberPreview = false }) {
       const open = now >= new Date(d.getTime() - 10 * day) && (now < new Date(d.getTime() - 3 * day) || gira.turn_availability_reopened_until && now < new Date(gira.turn_availability_reopened_until));
       const deadline = now.toDateString() === new Date(d.getTime() - 3 * day).toDateString();
       const released = now >= new Date(d.getTime() - 3 * day) && now < d;
-      if (deadline) attention.push({ key: "deadline", tone: "danger", icon: <ClipboardList size={20} />, title: "Último dia para escolher seu turno", text: gira.name, cta: "Escolher", onClick: () => go("giras") });
+      // já escolheu turno nesta gira? então não pede de novo
+      const chose = turns.some((t) => myTurnIds.includes(t.turn_id));
+      if (chose && (deadline || open)) { /* nada a fazer */ }
+      else if (deadline) attention.push({ key: "deadline", tone: "danger", icon: <ClipboardList size={20} />, title: "Último dia para escolher seu turno", text: gira.name, cta: "Escolher", onClick: () => go("giras") });
       else if (open) attention.push({ key: "turns", tone: "warning", icon: <ClipboardList size={20} />, title: "Escolha seu turno de atividades", text: gira.name, cta: "Escolher", onClick: () => go("giras") });
       else if (released) attention.push({ key: "tasks", tone: "info", icon: <ClipboardList size={20} />, title: "As tarefas da gira foram organizadas", text: "Acompanhe o seu turno no dia da gira", cta: "Ver", onClick: () => go("giras") });
     }
