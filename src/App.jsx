@@ -1,7 +1,7 @@
 // Estrutura do app: login, cabeçalho, telas e menu inferior.
 import { useEffect, useState } from "react";
 import { Home as HomeIcon, CalendarDays, Leaf, UserRound, BookOpen, ShieldCheck, Eye as EyeIcon, ArrowLeft } from "lucide-react";
-import { supabase } from "./lib/supabase.js";
+import { supabase, APP_URL, IS_PASSWORD_RECOVERY } from "./lib/supabase.js";
 import { OrixaIcon, ORIXAS } from "./orixaSymbols.jsx";
 import { TERREIRO_LOGO } from "./logoData.js";
 import { createRoot } from "react-dom/client";
@@ -36,6 +36,7 @@ export function App() {
     [memberPreview, setMemberPreview] = useState(false),
     [scrolled, setScrolled] = useState(false),
     [muralDraft, setMuralDraft] = useState(null),
+    [recovery, setRecovery] = useState(IS_PASSWORD_RECOVERY),
     // publicação do mural a abrir (aviso de axé/comentário ou a tela inicial)
     [muralFocus, setMuralFocus] = useState(() => {
       const q = new URLSearchParams(window.location.search);
@@ -62,7 +63,8 @@ export function App() {
       await loadProfile(data.session?.user);
       setLoading(false);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((ev, s) => {
+      if (ev === "PASSWORD_RECOVERY") setRecovery(true);
       setSession(s);
       loadProfile(s?.user);
     });
@@ -95,6 +97,7 @@ export function App() {
     <p className="muted">Carregando…</p>
     </div>
     </div>;
+  if (recovery && session) return <NovaSenha concluir={() => { setRecovery(false); window.history.replaceState(null, "", window.location.pathname); }} />;
   if (!session) return <Auth />;
   if (!profile) return <div className="auth"><div className="card">Seu cadastro está sendo carregado…</div></div>;
   const logout = async () => {
@@ -154,7 +157,8 @@ export function Auth() {
     [orixa, setOrixa] = useState(""),
     [group, setGroup] = useState(""),
     [message, setMessage] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [forgot, setForgot] = useState(false);
   const normalizeCode = (v) => String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   const validate = async () => {
     const raw = code.trim();
@@ -205,6 +209,7 @@ export function Auth() {
       setBusy(false);
     }
   };
+  if (forgot) return <EsqueciSenha emailInicial={email} voltar={() => { setForgot(false); setMessage(""); }} />;
   return <div className="auth">
     <div className="card">
     <div className="row">
@@ -241,6 +246,7 @@ export function Auth() {
     </Field>
     <button className="btn primary" style={{ width: "100%" }} disabled={busy}>{busy ? "Aguarde…" : register ? "Criar minha conta" : "Entrar"}</button>
     </form>
+    {!register && <button type="button" className="auth-forgot" onClick={() => { setForgot(true); setMessage(""); }}>Esqueci minha senha</button>}
     <button className="btn" style={{ width: "100%", marginTop: 8 }} onClick={() => {
     setRegister(!register);
     setMessage("");
@@ -249,3 +255,65 @@ export function Auth() {
 }
 
 createRoot(document.getElementById("root")).render(<App />);
+
+// "Esqueci minha senha": manda um link por e-mail para criar uma senha nova
+function EsqueciSenha({ emailInicial = "", voltar }) {
+  const [email, setEmail] = useState(emailInicial), [busy, setBusy] = useState(false), [msg, setMsg] = useState(""), [enviado, setEnviado] = useState(false);
+  const enviar = async (e) => {
+    e.preventDefault();
+    if (!/^\S+@\S+\.\S+$/.test(email.trim())) return setMsg("Digite o e-mail que você usa para entrar no app.");
+    setBusy(true); setMsg("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo: APP_URL });
+    setBusy(false);
+    if (error && /rate|seconds|limit/i.test(error.message || "")) return setMsg("Muitos pedidos seguidos. Espere alguns minutos e tente de novo.");
+    if (error) return setMsg("Não foi possível enviar agora: " + err(error));
+    setEnviado(true);
+  };
+  return <div className="auth">
+    <div className="card">
+    <div className="row">
+    <img src={TERREIRO_LOGO} alt="Terreiro Pai Benedito do Congo" className="logo" />
+    <span className="eyebrow">Terreiro Pai Benedito do Congo</span>
+    </div>
+    <h1>Esqueci minha senha</h1>
+    {enviado ? <>
+      <div className="toast">Pronto! Se o e-mail <b>{email.trim()}</b> estiver cadastrado, você vai receber um link para criar uma senha nova.</div>
+      <p className="muted small">Abra o e-mail no celular e toque no link. Não chegou em alguns minutos? Olhe a caixa de <b>spam</b> ou <b>promoções</b>.</p>
+    </> : <form onSubmit={enviar}>
+      <p className="muted small">Digite o e-mail que você usa para entrar. Vamos mandar um link para você criar uma senha nova.</p>
+      <Field label="E-mail"><input className="input" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></Field>
+      {msg && <div className="gw-warning">{msg}</div>}
+      <button className="btn primary" style={{ width: "100%" }} disabled={busy}>{busy ? "Enviando…" : "Enviar link"}</button>
+    </form>}
+    <button className="btn" style={{ width: "100%", marginTop: 8 }} onClick={voltar}>Voltar para entrar</button>
+    </div></div>;
+}
+
+// Chegou pelo link do e-mail: cria a senha nova
+function NovaSenha({ concluir }) {
+  const [s1, setS1] = useState(""), [s2, setS2] = useState(""), [busy, setBusy] = useState(false), [msg, setMsg] = useState("");
+  const salvar = async (e) => {
+    e.preventDefault();
+    if (s1.length < 6) return setMsg("A senha precisa ter pelo menos 6 caracteres.");
+    if (s1 !== s2) return setMsg("As duas senhas não são iguais. Digite de novo.");
+    setBusy(true); setMsg("");
+    const { error } = await supabase.auth.updateUser({ password: s1 });
+    setBusy(false);
+    if (error) return setMsg("Não foi possível salvar: " + err(error) + ". Se o link for antigo, peça um novo em \"Esqueci minha senha\".");
+    concluir();
+  };
+  return <div className="auth">
+    <div className="card">
+    <div className="row">
+    <img src={TERREIRO_LOGO} alt="Terreiro Pai Benedito do Congo" className="logo" />
+    <span className="eyebrow">Terreiro Pai Benedito do Congo</span>
+    </div>
+    <h1>Crie sua senha nova</h1>
+    <form onSubmit={salvar}>
+      <Field label="Nova senha"><input className="input" type="password" autoComplete="new-password" value={s1} onChange={(e) => setS1(e.target.value)} required /></Field>
+      <Field label="Repita a nova senha"><input className="input" type="password" autoComplete="new-password" value={s2} onChange={(e) => setS2(e.target.value)} required /></Field>
+      {msg && <div className="gw-warning">{msg}</div>}
+      <button className="btn primary" style={{ width: "100%" }} disabled={busy}>{busy ? "Salvando…" : "Salvar e entrar"}</button>
+    </form>
+    </div></div>;
+}
