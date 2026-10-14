@@ -248,7 +248,36 @@ export function Profile({ p, back }) {
     </Field>{message && <div className="toast">{message}</div>}<button className="btn primary" onClick={save}>
     <Save size={14} /> Salvar alterações</button>
     </div>
+    <TrocarSenha />
     </div>;
+}
+
+// Trocar a própria senha (ex.: depois de receber uma senha provisória da gestão)
+function TrocarSenha() {
+  const [aberto, setAberto] = useState(false), [s1, setS1] = useState(""), [s2, setS2] = useState(""), [msg, setMsg] = useState(""), [ok, setOk] = useState(false), [busy, setBusy] = useState(false);
+  const salvar = async (e) => {
+    e.preventDefault();
+    setMsg(""); setOk(false);
+    if (s1.length < 6) return setMsg("A senha precisa ter pelo menos 6 caracteres.");
+    if (s1 !== s2) return setMsg("As duas senhas não são iguais. Digite de novo.");
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password: s1 });
+    setBusy(false);
+    if (error) return setMsg("Não foi possível trocar a senha: " + err(error));
+    setOk(true); setS1(""); setS2(""); setMsg("Senha trocada! Use a nova senha da próxima vez que entrar.");
+  };
+  return <div className="card" style={{ marginTop: 14 }}>
+    <div className="row between">
+      <div><h2 style={{ margin: 0 }}>Minha senha</h2><p className="muted small">Troque a senha que você usa para entrar no app.</p></div>
+      {!aberto && <button className="btn" onClick={() => setAberto(true)}>Trocar senha</button>}
+    </div>
+    {aberto && <form onSubmit={salvar}>
+      <Field label="Nova senha"><input className="input" type="password" autoComplete="new-password" value={s1} onChange={(e) => setS1(e.target.value)} /></Field>
+      <Field label="Repita a nova senha"><input className="input" type="password" autoComplete="new-password" value={s2} onChange={(e) => setS2(e.target.value)} /></Field>
+      {msg && <div className={ok ? "toast" : "gw-warning"}>{msg}</div>}
+      <div className="row" style={{ gap: 8 }}><button type="button" className="btn" onClick={() => { setAberto(false); setMsg(""); }}>Fechar</button><button className="btn primary" disabled={busy}>{busy ? "Salvando…" : "Salvar nova senha"}</button></div>
+    </form>}
+  </div>;
 }
 
 export function Finance({ p, back }) {
