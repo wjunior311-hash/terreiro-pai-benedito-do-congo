@@ -12,6 +12,7 @@ import { Home } from "./features/inicio/Inicio.jsx";
 import { Giras } from "./features/agenda/Agenda.jsx";
 import { Community } from "./features/mural/Mural.jsx";
 import { MinhasInsignias, ComemoraInsignias } from "./features/insignias/Insignias.jsx";
+import { Comunidade } from "./features/comunidade/Comunidade.jsx";
 import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
 import { Admin } from "./features/gestao/Gestao.jsx";
@@ -254,7 +255,9 @@ export function Auth() {
   }}>{register ? "Já tenho uma conta" : "Tenho um código de convite"}</button></div></div>;
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+// ?comunidade abre a página aberta (sem login); o resto do app segue igual
+const PAGINA_COMUNIDADE = new URLSearchParams(window.location.search).has("comunidade");
+createRoot(document.getElementById("root")).render(PAGINA_COMUNIDADE ? <Comunidade /> : <App />);
 
 // Desligado até o remetente de e-mail (SMTP) ser configurado no Supabase. Para ligar: true.
 const ESQUECI_SENHA_ATIVO = false;
