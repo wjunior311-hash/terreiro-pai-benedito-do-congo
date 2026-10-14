@@ -11,6 +11,7 @@ import { hasAnyAdmin } from "./features/acesso.js";
 import { Home } from "./features/inicio/Inicio.jsx";
 import { Giras } from "./features/agenda/Agenda.jsx";
 import { Community } from "./features/mural/Mural.jsx";
+import { MinhasInsignias, ComemoraInsignias } from "./features/insignias/Insignias.jsx";
 import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
 import { Admin } from "./features/gestao/Gestao.jsx";
@@ -20,8 +21,8 @@ import "./styles.css";
 import "./app.css";
 import "./tema.css";
 
-const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú" };
-const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home" };
+const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias" };
+const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me" };
 
 export function App() {
   const [session, setSession] = useState(null),
@@ -128,11 +129,13 @@ export function App() {
   {screen === "home" && <Home p={profile} go={go} memberPreview={memberPreview} />}
   {screen === "giras" && <Giras p={profile} />}
   {screen === "revista" && <RevistaTela p={profile} go={go} />}
+  {screen === "insignias" && <MinhasInsignias go={go} />}
   {screen === "community" && <Community p={profile} draft={muralDraft} focus={muralFocus} />}
   {screen === "content" && <HouseContent p={profile} back={() => setScreen("home")} />} 
   {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}
   {screen === "admin" && !memberPreview && hasAnyAdmin(profile) && <Admin p={profile} />}
 </div></main>
+{!memberPreview && <ComemoraInsignias go={go} />}
 <nav className="bottom">
   <div className="bottom-inner">{[["home", "Início", HomeIcon], ["giras", "Agenda", CalendarDays], ["community", "Mural", Leaf], ["content", "Conteúdos", BookOpen], ["me", "Meu espaço", UserRound]].map(([id, label, Icon]) => <button key={id} className={screen === id ? "active" : ""} onClick={() => setScreen(id)}>
   <Icon size={20} />{label}</button>)}</div>

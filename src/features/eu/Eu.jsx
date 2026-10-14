@@ -86,7 +86,14 @@ export function Me({ p, go, logout, memberPreview = false }) {
     <h2>Minha vida na casa</h2>
     <p>Acompanhe sua jornada, suas participações e sua contribuição.</p>
     </div>
-    <div className="me-shortcuts">{!p?.is_pai_de_santo && <button className="me-shortcut" onClick={() => setTab("finance")}>
+    <div className="me-shortcuts"><button className="me-shortcut me-shortcut-in" onClick={() => go("insignias")}>
+    <span className="me-in-ic" aria-hidden="true">🏅</span>
+    <span>
+    <b>Minhas insígnias</b>
+    <small>Missões e selos da sua caminhada</small>
+    </span>
+    <ChevronRight />
+    </button>{!p?.is_pai_de_santo && <button className="me-shortcut" onClick={() => setTab("finance")}>
     <WalletCards />
     <span>
     <b>Meu financeiro</b>
