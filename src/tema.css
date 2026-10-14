@@ -583,3 +583,8 @@ h1,h2,h3{color:var(--ink)}
 .in-ev-item .in-ev-txt{display:grid;gap:2px;flex:1;min-width:0}
 .in-ev-item small{font-size:12.5px;color:var(--muted)}
 .in-ev-item.is-ok small{color:var(--warn-ink);font-weight:700}
+.gw-selo-ic{margin-top:8px}
+.gw-selo-pal{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gw-selo-pal button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:21px;cursor:pointer}
+.gw-selo-pal button.is-on{border-color:var(--gold);background:var(--warn-soft);box-shadow:0 0 0 2px var(--gold)}
+.gw-selo-pal .input{width:84px;height:42px;text-align:center;font-size:18px}

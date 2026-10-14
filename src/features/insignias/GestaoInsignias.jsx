@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../../lib/supabase.js";
 import { err, whatsappLink } from "../../lib/helpers.js";
 import { OrixaIcon } from "../../orixaSymbols.jsx";
-import { INSIGNIAS, NIVEIS, Medalha, nomeInsignia } from "./Insignias.jsx";
+import { INSIGNIAS, NIVEIS, Medalha, nomeInsignia, ICONES_EVENTO } from "./Insignias.jsx";
 
 const ORDEM = ["antena", "regras", "cadastro", "palavra", "responde", "sabedoria", "mao", "axe", "voz"];
 const RECADO = {
@@ -25,8 +25,9 @@ export function GestaoInsignias() {
     supabase.rpc("admin_badges_overview").then(async ({ data, error }) => {
       if (error) setMsg(err(error));
       const ids = [...new Set((data || []).filter((r) => r.badge.startsWith("evento:")).map((r) => r.badge.slice(7)))];
-      const { data: g } = ids.length ? await supabase.from("giras").select("id,name").in("id", ids) : { data: [] };
+      const { data: g } = ids.length ? await supabase.from("giras").select("id,name,exclusive_badge_icon").in("id", ids) : { data: [] };
       const nm = Object.fromEntries((g || []).map((x) => [x.id, x.name]));
+      (g || []).forEach((x) => { if (x.exclusive_badge_icon) ICONES_EVENTO[x.id] = x.exclusive_badge_icon; });
       setRows((data || []).map((r) => r.badge.startsWith("evento:") ? { ...r, title: nm[r.badge.slice(7)] } : r));
     });
   }, []);
@@ -37,7 +38,7 @@ export function GestaoInsignias() {
   }, [rows]);
   if (!rows) return <div className="hm-skeleton" style={{ marginTop: 14 }} />;
   const total = new Set(rows.map((r) => r.profile_id)).size;
-  const titulo = (b) => b.startsWith("evento:") ? "🌟 " + ((porBadge[b] || [])[0]?.title || "Selo de evento") : nomeInsignia(b);
+  const titulo = (b) => b.startsWith("evento:") ? ((porBadge[b] || [])[0]?.title || "Selo de evento") : nomeInsignia(b);
   const badges = [...ORDEM, ...Object.keys(porBadge).filter((b) => b.startsWith("evento:")), ...Object.keys(porBadge).filter((b) => b.startsWith("emi:")).sort()];
   return <div className="in-adm">
     <div className="row between gira-admin-header">

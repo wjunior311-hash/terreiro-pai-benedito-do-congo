@@ -104,3 +104,17 @@ $$;
 update public.giras set exclusive_badge = true where id = 'ac1914b2-5078-4a98-8cc6-b2a810011095';
 
 notify pgrst, 'reload schema';
+
+-- emoji do selo, escolhido no cadastro do evento (vazio = 🌟)
+alter table public.giras add column if not exists exclusive_badge_icon text;
+create or replace function app.editor_set_gira_badge(p_gira_id uuid, p_on boolean, p_icon text) returns void
+language plpgsql security definer set search_path = public, app as $$
+begin
+  if not (app.is_admin() or app.is_master() or app.has_permission('giras.manage')) then raise exception 'Acesso negado'; end if;
+  update public.giras set exclusive_badge = coalesce(p_on, false), exclusive_badge_icon = nullif(left(trim(coalesce(p_icon, '')), 16), '') where id = p_gira_id;
+end $$;
+create or replace function public.editor_set_gira_badge(p_gira_id uuid, p_on boolean, p_icon text) returns void
+language sql security invoker set search_path = public, app as $$ select app.editor_set_gira_badge(p_gira_id, p_on, p_icon) $$;
+grant execute on function app.editor_set_gira_badge(uuid, boolean, text) to authenticated;
+grant execute on function public.editor_set_gira_badge(uuid, boolean, text) to authenticated;
+notify pgrst, 'reload schema';

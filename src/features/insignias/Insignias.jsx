@@ -34,7 +34,14 @@ const emiLabel = (badge, title) => {
   return m ? MESES[+m[2] - 1] + " " + m[1] : title || "Edição";
 };
 export const nomeInsignia = (badge, title) => badge?.startsWith("emi:") ? "Ẹ̀mí Ìlú · " + emiLabel(badge, title) : badge?.startsWith("evento:") ? title || "Selo de evento" : INSIGNIAS[badge]?.nome || badge;
-export const iconeInsignia = (badge) => badge?.startsWith("emi:") ? "📰" : badge?.startsWith("evento:") ? "🌟" : INSIGNIAS[badge]?.ic || "🏅";
+// ícones escolhidos no cadastro de cada evento (preenchido quando o app carrega os eventos)
+export const ICONES_EVENTO = {};
+export const iconeInsignia = (badge) => badge?.startsWith("emi:") ? "📰" : badge?.startsWith("evento:") ? ICONES_EVENTO[badge.slice(7)] || "🌟" : INSIGNIAS[badge]?.ic || "🏅";
+export async function carregarIconesEventos(ids) {
+  if (!ids.length) return;
+  const { data } = await supabase.from("giras").select("id,exclusive_badge_icon").in("id", ids);
+  (data || []).forEach((g) => { if (g.exclusive_badge_icon) ICONES_EVENTO[g.id] = g.exclusive_badge_icon; });
+}
 
 export function useInsignias() {
   const [data, setData] = useState(null);
@@ -70,9 +77,9 @@ export function MinhasInsignias({ go }) {
   useEffect(() => {
     const ids = (data?.state || []).filter((x) => x.kind === "evento").map((x) => x.badge.slice(7));
     if (!ids.length) return;
-    Promise.all([supabase.from("giras").select("id,name,starts_at").in("id", ids), supabase.from("gira_responses").select("gira_id,status").in("gira_id", ids)]).then(([{ data: g }, { data: r }]) => {
+    Promise.all([supabase.from("giras").select("id,name,starts_at,exclusive_badge_icon").in("id", ids), supabase.from("gira_responses").select("gira_id,status").in("gira_id", ids)]).then(([{ data: g }, { data: r }]) => {
       const m = {};
-      (g || []).forEach((x) => { m[x.id] = { ...x }; });
+      (g || []).forEach((x) => { m[x.id] = { ...x }; if (x.exclusive_badge_icon) ICONES_EVENTO[x.id] = x.exclusive_badge_icon; });
       (r || []).forEach((x) => { if (m[x.gira_id]) m[x.gira_id].status = x.status; });
       setEvInfo(m);
     });
@@ -176,12 +183,13 @@ function DetalheInsignia({ k, s = {}, ganha, onClose, go }) {
 export function ComemoraInsignias({ go }) {
   const [novas, setNovas] = useState([]);
   useEffect(() => {
-    supabase.rpc("my_badges").then(({ data, error }) => {
+    supabase.rpc("my_badges").then(async ({ data, error }) => {
       if (error || !data?.awards) return;
       const pend = data.awards.filter((a) => !a.seen_at);
       const porBadge = {};
       pend.forEach((a) => { if (!porBadge[a.badge] || a.level > porBadge[a.badge].level) porBadge[a.badge] = a; });
       const titles = Object.fromEntries((data.state || []).map((s) => [s.badge, s.title]));
+      await carregarIconesEventos(Object.values(porBadge).filter((a) => a.badge.startsWith("evento:")).map((a) => a.badge.slice(7)));
       setNovas(Object.values(porBadge).map((a) => ({ ...a, title: titles[a.badge] })));
     });
   }, []);

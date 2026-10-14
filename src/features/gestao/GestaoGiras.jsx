@@ -156,7 +156,8 @@ export const wizardProgress = { read: (id) => {
   }
 } };
 
-export const emptyGiraInfo = () => ({ name: "", date: "", time: "", activity_type: "gira", entity_lines: [], hasContribution: false, contribution_amount: "", contribution_due_date: "", what_to_bring: "", notes: "", coverMode: "color", cover_color: "#65745A", art_path: "", coverFile: null, exclusive_badge: false });
+const SELO_EMOJIS = ["🌟", "🌳", "🥁", "🎭", "🔥", "🌊", "🍃", "🌺", "🌙", "☀️", "🐚", "🪶", "🎶", "🍲", "🌻", "🏹"];
+export const emptyGiraInfo = () => ({ name: "", date: "", time: "", activity_type: "gira", entity_lines: [], hasContribution: false, contribution_amount: "", contribution_due_date: "", what_to_bring: "", notes: "", coverMode: "color", cover_color: "#65745A", art_path: "", coverFile: null, exclusive_badge: false, exclusive_badge_icon: "" });
 
 export const validateGiraInfo = (g) => {
   const e = {};
@@ -427,7 +428,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
         const structure = await loadGiraStructure(initialId);
         const progress = wizardProgress.read(initialId);
         setStatus(row.status || "published");
-        setG({ name: row.name || "", date: localDateOf(row.starts_at), time: localTimeOf(row.starts_at), activity_type: row.activity_type || "gira", entity_lines: Array.isArray(row.entity_lines) ? row.entity_lines : [], hasContribution: Number(row.contribution_amount || 0) > 0, contribution_amount: Number(row.contribution_amount || 0) > 0 ? String(row.contribution_amount) : "", contribution_due_date: row.contribution_due_date || "", what_to_bring: row.what_to_bring || "", notes: row.notes || "", coverMode: row.art_path ? "image" : "color", cover_color: row.cover_color || "#65745A", art_path: row.art_path || "", coverFile: null, exclusive_badge: !!row.exclusive_badge });
+        setG({ name: row.name || "", date: localDateOf(row.starts_at), time: localTimeOf(row.starts_at), activity_type: row.activity_type || "gira", entity_lines: Array.isArray(row.entity_lines) ? row.entity_lines : [], hasContribution: Number(row.contribution_amount || 0) > 0, contribution_amount: Number(row.contribution_amount || 0) > 0 ? String(row.contribution_amount) : "", contribution_due_date: row.contribution_due_date || "", what_to_bring: row.what_to_bring || "", notes: row.notes || "", coverMode: row.art_path ? "image" : "color", cover_color: row.cover_color || "#65745A", art_path: row.art_path || "", coverFile: null, exclusive_badge: !!row.exclusive_badge, exclusive_badge_icon: row.exclusive_badge_icon || "" });
         setShifts(structure.shifts);
         setTasks(structure.tasks);
         setHasShifts(row.has_activity_shifts ? true : row.status === "draft" && !progress.shiftsAnswered && !structure.shifts.length ? null : false);
@@ -482,7 +483,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
     }
     {
       // selo exclusivo (salvo à parte; se o banco ainda não tiver a função, segue sem ele)
-      const { error: be } = await supabase.rpc("editor_set_gira_badge", { p_gira_id: gid, p_on: !!g.exclusive_badge });
+      const { error: be } = await supabase.rpc("editor_set_gira_badge", { p_gira_id: gid, p_on: !!g.exclusive_badge, p_icon: g.exclusive_badge_icon || "" });
       if (be && !/function|schema cache/i.test(be.message || "")) setMessage("Informações salvas, mas o selo exclusivo não foi atualizado: " + err(be));
     }
     if (status === "published" && g.hasContribution && Number(g.contribution_amount) > 0) {
@@ -668,7 +669,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
   };
   if (!loaded) return <div className="card muted">Carregando gira…</div>;
   const selectedEntities = entityLines.filter((x) => g.entity_lines.includes(x[0]));
-  const previewGira = { id: id || "preview", name: g.name || "Nome da gira", starts_at: g.date && g.time ? (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString() : (/* @__PURE__ */ new Date()).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, art_path: g.coverMode === "image" ? g.coverFile ? URL.createObjectURL(g.coverFile) : g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : null, contribution_amount: g.hasContribution ? Number(g.contribution_amount) || 0 : 0, contribution_due_date: g.hasContribution ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, notes: g.notes, exclusive_badge: !!g.exclusive_badge, use_task_list: !!hasShifts, has_activity_shifts: !!hasShifts, status };
+  const previewGira = { id: id || "preview", name: g.name || "Nome da gira", starts_at: g.date && g.time ? (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString() : (/* @__PURE__ */ new Date()).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, art_path: g.coverMode === "image" ? g.coverFile ? URL.createObjectURL(g.coverFile) : g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : null, contribution_amount: g.hasContribution ? Number(g.contribution_amount) || 0 : 0, contribution_due_date: g.hasContribution ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, notes: g.notes, exclusive_badge: !!g.exclusive_badge, exclusive_badge_icon: g.exclusive_badge_icon, use_task_list: !!hasShifts, has_activity_shifts: !!hasShifts, status };
   const previewData = { phase: previewPhase, turns: (hasShifts ? shifts : []).map((s) => ({ turn_id: s.id, label: shiftLabel(s), shift_date: s.date, capacity: s.capacity || 7 })), tasks: (hasShifts ? tasks : []).map((t) => ({ id: t.id, name: t.name, gira_turn_id: t.shiftId, subtasks: t.subtasks.filter((x) => x.name.trim()) })) };
   if (publishState.done) return <div className="gw-success card">
   <div className="gw-success-mark"><Check size={30} /></div>
@@ -778,6 +779,13 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
      <small>Quem confirmar presença ganha um selo só deste evento nas insígnias. Bom para incentivar eventos com pouca adesão.</small>
      </span>
    </label>
+   {g.exclusive_badge && <div className="field gw-selo-ic">
+     <label>Emoji do selo</label>
+     <div className="gw-selo-pal">{SELO_EMOJIS.map((e) => <button type="button" key={e} aria-label={"Usar " + e} aria-pressed={(g.exclusive_badge_icon || "🌟") === e} className={(g.exclusive_badge_icon || "🌟") === e ? "is-on" : ""} onClick={() => setInfo({ exclusive_badge_icon: e })}>{e}</button>)}
+       <input className="input" aria-label="Outro emoji" placeholder="Outro" maxLength={8} value={SELO_EMOJIS.includes(g.exclusive_badge_icon) ? "" : g.exclusive_badge_icon} onChange={(e) => setInfo({ exclusive_badge_icon: e.target.value.trim() })} />
+     </div>
+     <small className="muted">É assim que o selo vai aparecer nas insígnias de quem participar.</small>
+   </div>}
    <details className="gw-more" open={!!(g.what_to_bring || g.notes || g.art_path || g.coverFile)}>
      <summary>Mais detalhes (opcional): o que levar, observações e capa</summary>
     <div className="field">
