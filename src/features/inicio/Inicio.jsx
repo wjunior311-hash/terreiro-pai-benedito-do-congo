@@ -165,6 +165,8 @@ export function Home({ p, go, memberPreview = false }) {
 
   <HomeBirthdays p={p} go={go} />
 
+  <RankingInsignias go={go} />
+
   {payOpen && <PayModal p={p} settings={fin.settings} items={fin.items} onClose={() => setPayOpen(false)} onSent={fin.reload} />}
   {news.length > 0 && <section className="hm-section" aria-labelledby="hm-news-title">
    <div className="hm-section-head">
@@ -257,5 +259,39 @@ function MuralHomeCard({ go }) {
      </span>
      <ChevronRight size={16} />
    </button>)}</div>
+  </section>;
+}
+
+// Ranking de insígnias: pódio compacto; toque para ver o top 10.
+function RankingInsignias({ go }) {
+  const [rows, setRows] = useState(null), [aberto, setAberto] = useState(false);
+  useEffect(() => {
+    supabase.rpc("badges_ranking").then(({ data, error }) => setRows(error ? [] : data || []));
+  }, []);
+  if (!rows || !rows.length) return null;
+  const nome = (n) => {
+    const parts = standardizeName(n || "").split(" ").filter(Boolean);
+    return parts.length > 1 ? parts[0] + " " + parts[parts.length - 1][0] + "." : parts[0] || "Membro";
+  };
+  const top = rows.filter((r) => r.pos <= 10), podio = top.slice(0, 3), resto = top.slice(3), eu = rows.find((r) => r.is_me);
+  const medalha = ["🥇", "🥈", "🥉"];
+  return <section className="hm-section rk" aria-labelledby="rk-title">
+    <div className="rk-head">
+      <h2 id="rk-title" className="hm-label">🏅 Ranking de insígnias</h2>
+      <button type="button" className="home-link" onClick={() => go("insignias")}>Minhas <ChevronRight size={14} /></button>
+    </div>
+    <div className="rk-podio">{podio.map((r, i) => <div key={r.profile_id} className={"rk-p rk-p" + (i + 1) + (r.is_me ? " is-me" : "")}>
+      <span className="rk-med" aria-hidden="true">{medalha[i]}</span>
+      <OrixaIcon name={r.orixa_symbol} size={30} />
+      <b>{nome(r.name)}</b>
+      <small>{r.points} pts</small>
+    </div>)}</div>
+    {aberto && resto.length > 0 && <ol className="rk-lista" start={4}>{resto.map((r) => <li key={r.profile_id} className={r.is_me ? "is-me" : ""}>
+      <span className="rk-n">{r.pos}º</span><OrixaIcon name={r.orixa_symbol} size={22} /><span className="rk-nome">{nome(r.name)}</span><span className="rk-pts">{r.points}</span>
+    </li>)}</ol>}
+    <div className="rk-foot">
+      {eu ? <span>Você: <b>{eu.pos}º</b> · {eu.points} pts</span> : <span>Cumpra missões e entre no ranking!</span>}
+      {resto.length > 0 && <button type="button" className="rk-mais" onClick={() => setAberto(!aberto)}>{aberto ? "Fechar" : "Ver top 10"}</button>}
+    </div>
   </section>;
 }

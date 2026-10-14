@@ -588,3 +588,23 @@ h1,h2,h3{color:var(--ink)}
 .gw-selo-pal button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:21px;cursor:pointer}
 .gw-selo-pal button.is-on{border-color:var(--gold);background:var(--warn-soft);box-shadow:0 0 0 2px var(--gold)}
 .gw-selo-pal .input{width:84px;height:42px;text-align:center;font-size:18px}
+
+/* ---------- Ranking de insígnias (tela inicial) ---------- */
+.rk{background:linear-gradient(160deg,var(--warn-soft),color-mix(in srgb,var(--warn-soft) 55%,var(--surface)));border:1px solid var(--warn-line);border-radius:20px;padding:12px 14px 10px}
+.rk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.rk-head .hm-label{margin:0}
+.rk-podio{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;align-items:end}
+.rk-p{position:relative;display:grid;justify-items:center;gap:2px;padding:10px 4px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--warn-line);text-align:center;min-width:0}
+.rk-p1{order:2;padding-top:14px;border-color:var(--gold);box-shadow:0 4px 12px rgba(179,138,76,.18)}
+.rk-p2{order:1}.rk-p3{order:3}
+.rk-p b{font-size:13px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-p small{font-size:11.5px;color:var(--warn-ink);font-weight:800}
+.rk-med{position:absolute;top:-10px;font-size:18px}
+.rk-p.is-me,.rk-lista li.is-me{outline:2px solid var(--brand);outline-offset:-2px}
+.rk-lista{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:3px}
+.rk-lista li{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:color-mix(in srgb,var(--surface) 70%,transparent);font-size:13.5px}
+.rk-n{width:26px;font-weight:800;color:var(--warn-ink)}
+.rk-nome{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk-pts{font-weight:800;color:var(--warn-ink)}
+.rk-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:12.5px;color:var(--warn-ink)}
+.rk-mais{border:0;background:none;color:var(--brand-ink);font:inherit;font-weight:800;cursor:pointer;padding:4px 0}
