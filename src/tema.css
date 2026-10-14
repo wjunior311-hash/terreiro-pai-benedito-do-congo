@@ -479,3 +479,12 @@ h1,h2,h3{color:var(--ink)}
 .mu-act > svg{color:var(--muted);flex:none}
 .mu-post{transition:background-color .8s ease,box-shadow .8s ease;border-radius:14px;scroll-margin-top:90px}
 .mu-post.is-focus{background:var(--warn-soft);box-shadow:0 0 0 8px var(--warn-soft)}
+
+/* ---------- Conteúdos e regras: listas mais legíveis ---------- */
+.bl-article .bl-body ol{list-style:none;counter-reset:bl-n;padding-left:0;margin:.4em 0 1.1em}
+.bl-article .bl-body ol>li{counter-increment:bl-n;position:relative;margin:8px 0;padding:11px 14px 11px 50px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;line-height:1.55}
+.bl-article .bl-body ol>li::before{content:counter(bl-n);position:absolute;left:12px;top:10px;width:27px;height:27px;border-radius:50%;background:var(--brand);color:var(--bg);font-weight:800;font-size:13px;line-height:27px;text-align:center}
+.bl-article .bl-body ul{list-style:none;padding-left:0;margin:.3em 0 1.1em}
+.bl-article .bl-body ul>li{position:relative;padding:5px 0 5px 24px;line-height:1.55}
+.bl-article .bl-body ul>li::before{content:"";position:absolute;left:6px;top:calc(5px + .62em);width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.bl-article .bl-body h2{display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
