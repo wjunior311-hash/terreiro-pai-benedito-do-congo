@@ -13,10 +13,11 @@ import { GestaoInsignias } from "../insignias/GestaoInsignias.jsx";
 import { GestaoComunidade } from "../comunidade/GestaoComunidade.jsx";
 import { GiraTurnManager } from "./GestaoGiras.jsx";
 import { AdminFinance } from "../financeiro/GestaoFinanceira.jsx";
+import { GestaoCaminhos } from "../caminhos/Caminho.jsx";
 
 export function Admin({ p }) {
   const full = can(p, "admin.full"), master = !!p?.is_master;
-  const nav = [...full ? [["overview", "Visão"]] : [], ...can(p, "people.manage") ? [["people", "Pessoas"], ["attendance", "Frequência"], ["badges", "Insígnias"]] : [], ...can(p, "giras.manage") ? [["giras", "Giras"]] : [], ...can(p, "finance.view") ? [["finance", "Financeiro"]] : [], ...full ? [["invites", "Convites"]] : [], ...can(p, "content.manage") ? [["content", "Conteúdos"]] : [], ...can(p, "newsletter.manage") ? [["revista", "Revista"]] : [], ...full ? [["questions", "Dúvidas"]] : [], ...master ? [["roles", "Funções"]] : []];
+  const nav = [...full ? [["overview", "Visão"]] : [], ...can(p, "people.manage") ? [["people", "Pessoas"], ["attendance", "Frequência"], ["badges", "Insígnias"], ["caminhos", "Caminhos"]] : [], ...can(p, "giras.manage") ? [["giras", "Giras"]] : [], ...can(p, "finance.view") ? [["finance", "Financeiro"]] : [], ...full ? [["invites", "Convites"]] : [], ...can(p, "content.manage") ? [["content", "Conteúdos"]] : [], ...can(p, "newsletter.manage") ? [["revista", "Revista"]] : [], ...full ? [["questions", "Dúvidas"]] : [], ...master ? [["roles", "Funções"]] : []];
   const [tab, setTab] = useState(nav[0]?.[0] || "overview");
   const podeComunidade = full || master || can(p, "giras.manage");
   const [area, setArea] = useState(() => { try { return sessionStorage.getItem("tpbc-gestao-area") || "casa"; } catch (e) { return "casa"; } });
@@ -32,7 +33,7 @@ export function Admin({ p }) {
   return <div>
     {seletor}
     {!full && <p className="muted small" style={{ margin: "0 2px 10px" }}>Você pode acessar: {subtitle}</p>}
-    <div className="admin-nav">{nav.map(([id, label]) => <button className={"btn " + (tab === id ? "primary" : "")} key={id} onClick={() => setTab(id)}>{label}</button>)}</div>{allowed && <>{tab === "overview" && <AdminOverview onNavigate={setTab} />}{tab === "people" && <People me={p} />}{tab === "attendance" && <Frequencia />}{tab === "badges" && <GestaoInsignias />}{tab === "giras" && <GiraTurnManager p={p} editor={!full} />}{tab === "finance" && <AdminFinance />}{tab === "invites" && <Invites />}{tab === "content" && <Content />}{tab === "revista" && <GestaoRevista p={p} />}{tab === "questions" && <AdminQuestions />}{tab === "roles" && <AdminRoles />}</>}</div>;
+    <div className="admin-nav">{nav.map(([id, label]) => <button className={"btn " + (tab === id ? "primary" : "")} key={id} onClick={() => setTab(id)}>{label}</button>)}</div>{allowed && <>{tab === "overview" && <AdminOverview onNavigate={setTab} />}{tab === "people" && <People me={p} />}{tab === "attendance" && <Frequencia />}{tab === "badges" && <GestaoInsignias />}{tab === "caminhos" && <GestaoCaminhos />}{tab === "giras" && <GiraTurnManager p={p} editor={!full} />}{tab === "finance" && <AdminFinance />}{tab === "invites" && <Invites />}{tab === "content" && <Content />}{tab === "revista" && <GestaoRevista p={p} />}{tab === "questions" && <AdminQuestions />}{tab === "roles" && <AdminRoles />}</>}</div>;
 }
 
 export function AdminOverview({ onNavigate }) {

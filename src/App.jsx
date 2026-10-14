@@ -12,6 +12,7 @@ import { Home } from "./features/inicio/Inicio.jsx";
 import { Giras } from "./features/agenda/Agenda.jsx";
 import { Community } from "./features/mural/Mural.jsx";
 import { MinhasInsignias, ComemoraInsignias } from "./features/insignias/Insignias.jsx";
+import { CaminhoTela } from "./features/caminhos/Caminho.jsx";
 import { Comunidade } from "./features/comunidade/Comunidade.jsx";
 import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
@@ -22,8 +23,8 @@ import "./styles.css";
 import "./app.css";
 import "./tema.css";
 
-const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias" };
-const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me" };
+const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias", caminho: "Caminho" };
+const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me", caminho: "content" };
 
 export function App() {
   const [session, setSession] = useState(null),
@@ -134,8 +135,9 @@ export function App() {
   {screen === "giras" && <Giras p={profile} />}
   {screen === "revista" && <RevistaTela p={profile} go={go} />}
   {screen === "insignias" && <MinhasInsignias go={go} />}
+  {screen === "caminho" && <CaminhoTela />}
   {screen === "community" && <Community p={profile} draft={muralDraft} focus={muralFocus} />}
-  {screen === "content" && <HouseContent p={profile} back={() => setScreen("home")} />} 
+  {screen === "content" && <HouseContent p={profile} go={go} back={() => setScreen("home")} />} 
   {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}
   {screen === "admin" && !memberPreview && hasAnyAdmin(profile) && <Admin p={profile} />}
 </div></main>

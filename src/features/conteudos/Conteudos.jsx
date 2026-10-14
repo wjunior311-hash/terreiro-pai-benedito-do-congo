@@ -4,6 +4,7 @@ import { Check, ChevronRight, ChevronLeft, ArrowLeft, Bell } from "lucide-react"
 import { supabase } from "../../lib/supabase.js";
 import { dateTime, err } from "../../lib/helpers.js";
 import { CONTENT_TAGS, contentSummary, coverStyle, isDraft, readingMinutes, sanitizeContentHtml, splitContentTabs } from "./conteudo.js";
+import { CaminhoAvisoCard } from "../caminhos/Caminho.jsx";
 
 // Corpo em abas: cada Título vira um botão; Anterior / Próxima no fim.
 function ContentTabs({ body }) {
@@ -52,7 +53,7 @@ export function ContentArticle({ x, authorName, read, onBack, onConfirm, confirm
  </article>;
 }
 
-export function HouseContent({ back, p }) {
+export function HouseContent({ back, p, go }) {
   const [items, setItems] = useState([]),
     [notices, setNotices] = useState([]),
     [authors, setAuthors] = useState({}),
@@ -138,7 +139,7 @@ export function HouseContent({ back, p }) {
      </button>)}
     {!list.length && !hero && <div className="mu-empty">Nenhum conteúdo por aqui ainda.</div>}</div>
   </>}
-  {section === "notice" && <div className="bl-list">{notices.length ? notices.map((x) => <div className="bl-notice" key={x.id}>
+  {section === "notice" && <div className="bl-list">{go && <CaminhoAvisoCard go={go} />}{notices.length ? notices.map((x) => <div className="bl-notice" key={x.id}>
     <span className="bl-notice-icon">
     <Bell size={17} />
     </span>

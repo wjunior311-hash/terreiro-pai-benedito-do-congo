@@ -11,6 +11,7 @@ import { PayModal } from "../financeiro/ComoPagar.jsx";
 import { standardizeName } from "../gestao/Pessoas.jsx";
 import { AvisosHomeCard } from "../avisos/AtivarAvisos.jsx";
 import { RevistaHomeCard } from "../revista/Revista.jsx";
+import { useCaminhos, pendenciaCaminho } from "../caminhos/Caminho.jsx";
 
 export const HOME_PHRASE = "Nossa força vem de quem veio antes e de quem caminha conosco.";
 
@@ -78,6 +79,7 @@ export function Home({ p, go, memberPreview = false }) {
     setResp(data);
   };
   const fin = useMemberFinance(p), [payOpen, setPayOpen] = useState(false);
+  const [caminhos] = useCaminhos(), pendCaminho = pendenciaCaminho(caminhos);
   const now = /* @__PURE__ */ new Date();
   const attention = [];
   if (gira) {
@@ -97,6 +99,7 @@ export function Home({ p, go, memberPreview = false }) {
   }
   turnChangeNotifications.slice(0, 1).forEach((n) => attention.push({ key: "turnchange-" + n.id, tone: "warning", icon: <RefreshCw size={19} />, title: "Seu turno foi alterado", text: n.message, cta: "Ver", onClick: () => go("giras") }));
   giraNotifications.slice(0, 1).forEach((n) => attention.push({ key: "gira-" + n.id, tone: "info", icon: <CalendarDays size={20} />, title: "Novidade na agenda", text: n.message, cta: "Abrir", onClick: () => go("giras") }));
+  if (pendCaminho) attention.push({ key: "caminho-" + pendCaminho.e.id, tone: "warning", icon: <span style={{ fontSize: 19 }}>{pendCaminho.c.emoji}</span>, title: pendCaminho.c.title + ": você vai?", text: "Responda até " + new Date(pendCaminho.e.deadline || Date.now()).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }), cta: "Responder", onClick: () => go("caminho") });
   requiredReads.forEach((x) => {
     const reminded = x.reminded_at && now - new Date(x.reminded_at) < 7 * 864e5;
     attention.push({ key: "read-" + x.id, tone: reminded ? "danger" : "warning", icon: <BookOpen size={19} />, title: reminded ? "Lembrete: leitura obrigatória" : "Leitura obrigatória", text: x.title, cta: "Ler", onClick: () => go("content") });
