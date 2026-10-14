@@ -246,7 +246,7 @@ export function Auth() {
     </Field>
     <button className="btn primary" style={{ width: "100%" }} disabled={busy}>{busy ? "Aguarde…" : register ? "Criar minha conta" : "Entrar"}</button>
     </form>
-    {!register && <button type="button" className="auth-forgot" onClick={() => { setForgot(true); setMessage(""); }}>Esqueci minha senha</button>}
+    {!register && ESQUECI_SENHA_ATIVO && <button type="button" className="auth-forgot" onClick={() => { setForgot(true); setMessage(""); }}>Esqueci minha senha</button>}
     <button className="btn" style={{ width: "100%", marginTop: 8 }} onClick={() => {
     setRegister(!register);
     setMessage("");
@@ -255,6 +255,9 @@ export function Auth() {
 }
 
 createRoot(document.getElementById("root")).render(<App />);
+
+// Desligado até o remetente de e-mail (SMTP) ser configurado no Supabase. Para ligar: true.
+const ESQUECI_SENHA_ATIVO = false;
 
 // "Esqueci minha senha": manda um link por e-mail para criar uma senha nova
 function EsqueciSenha({ emailInicial = "", voltar }) {
