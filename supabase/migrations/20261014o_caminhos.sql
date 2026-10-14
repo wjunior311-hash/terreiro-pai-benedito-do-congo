@@ -155,7 +155,7 @@ grant execute on function public.my_caminhos(), public.caminho_responder(uuid, t
 -- ---------- Gira na Praia 2027 ----------
 insert into public.caminhos(slug, title, emoji, intro)
 values ('praia-2027', 'Gira na Praia 2027', '🌊',
-'A primeira gira do ano é na praia, em Itanhaém, em fevereiro de 2027. O trabalho acontece no sábado à noite, na praia.
+'A primeira gira do ano é na praia, em fevereiro de 2027. O trabalho acontece no sábado à noite, na praia.
 
 Para organizar tudo com calma, vamos por etapas. A gira acontece de qualquer jeito: esta pesquisa serve para sabermos quantos vão e se a casa precisa alugar uma casa compartilhada.')
 on conflict (slug) do nothing;
@@ -172,7 +172,7 @@ on conflict (caminho_id, ord) do nothing;
 insert into public.caminho_etapas(caminho_id, ord, kind, title, body)
 select c.id, x.ord, x.kind, x.title, x.body from public.caminhos c,
  (values (2, 'voluntarios', 'Hospedagem',
-          'Depende da etapa 1. Se muita gente quiser casa compartilhada, abre um chamado de quem pode ajudar a procurar casas em Itanhaém. Se a maioria for por conta, cada um organiza a sua hospedagem.'),
+          'Depende da etapa 1. Se muita gente quiser casa compartilhada, abre um chamado de quem pode ajudar a procurar casas. Se a maioria for por conta, cada um organiza a sua hospedagem.'),
          (3, 'info', 'Informações do dia e caronas', 'Praia, horário, o que levar e caronas (quem tem lugar no carro e quem precisa).'),
          (4, 'info', 'Inscrição na gira', 'A gira é criada no app, com valor e pagamento, igual às outras giras.')) x(ord, kind, title, body)
  where c.slug = 'praia-2027'
