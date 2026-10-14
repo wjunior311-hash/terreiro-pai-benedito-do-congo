@@ -33,8 +33,8 @@ const emiLabel = (badge, title) => {
   const m = /emi:(\d{4})-(\d{2})/.exec(badge || "");
   return m ? MESES[+m[2] - 1] + " " + m[1] : title || "Edição";
 };
-export const nomeInsignia = (badge, title) => badge?.startsWith("emi:") ? "Ẹ̀mí Ìlú · " + emiLabel(badge, title) : INSIGNIAS[badge]?.nome || badge;
-export const iconeInsignia = (badge) => badge?.startsWith("emi:") ? "📰" : INSIGNIAS[badge]?.ic || "🏅";
+export const nomeInsignia = (badge, title) => badge?.startsWith("emi:") ? "Ẹ̀mí Ìlú · " + emiLabel(badge, title) : badge?.startsWith("evento:") ? title || "Selo de evento" : INSIGNIAS[badge]?.nome || badge;
+export const iconeInsignia = (badge) => badge?.startsWith("emi:") ? "📰" : badge?.startsWith("evento:") ? "🌟" : INSIGNIAS[badge]?.ic || "🏅";
 
 export function useInsignias() {
   const [data, setData] = useState(null);
@@ -65,9 +65,25 @@ export function MinhasInsignias({ go }) {
   useEffect(() => { supabase.rpc("mark_badges_seen").then(() => {}, () => {}); }, []);
   const st = useMemo(() => Object.fromEntries((data?.state || []).map((s) => [s.badge, s])), [data]);
   const ganhas = useMemo(() => new Set((data?.awards || []).map((a) => a.badge)), [data]);
+  // selos de eventos: datas e minha resposta, para mostrar o que ainda dá para conquistar
+  const [evInfo, setEvInfo] = useState({});
+  useEffect(() => {
+    const ids = (data?.state || []).filter((x) => x.kind === "evento").map((x) => x.badge.slice(7));
+    if (!ids.length) return;
+    Promise.all([supabase.from("giras").select("id,name,starts_at").in("id", ids), supabase.from("gira_responses").select("gira_id,status").in("gira_id", ids)]).then(([{ data: g }, { data: r }]) => {
+      const m = {};
+      (g || []).forEach((x) => { m[x.id] = { ...x }; });
+      (r || []).forEach((x) => { if (m[x.gira_id]) m[x.gira_id].status = x.status; });
+      setEvInfo(m);
+    });
+  }, [data]);
   if (!data) return <div className="in"><div className="hm-skeleton" style={{ marginTop: 16 }} /></div>;
   const emis = (data.state || []).filter((s) => s.kind === "colecao").sort((a, b) => a.badge.localeCompare(b.badge));
-  const conquistadas = ORDEM_UNICAS.filter((k) => ganhas.has(k)).length + ORDEM_NIVEIS.filter((k) => (st[k]?.level || 0) > 0).length + emis.filter((s) => s.value > 0).length;
+  const agora = Date.now();
+  const evs = (data.state || []).filter((s) => s.kind === "evento").map((s) => ({ ...s, info: evInfo[s.badge.slice(7)] || {} }))
+    .filter((s) => s.value > 0 || ganhas.has(s.badge) || !s.info.starts_at || new Date(s.info.starts_at).getTime() > agora)
+    .sort((a, b) => String(a.info.starts_at || "").localeCompare(String(b.info.starts_at || "")));
+  const conquistadas = ORDEM_UNICAS.filter((k) => ganhas.has(k)).length + ORDEM_NIVEIS.filter((k) => (st[k]?.level || 0) > 0).length + emis.filter((s) => s.value > 0).length + evs.filter((s) => s.value > 0 || ganhas.has(s.badge)).length;
   const niveisSomados = ORDEM_NIVEIS.reduce((n, k) => n + (st[k]?.level || 0), 0);
   return <div className="in">
     <header className="in-head">
@@ -113,6 +129,19 @@ export function MinhasInsignias({ go }) {
         <Pontos level={lvl} />
       </button>;
     })}</div>
+
+    {evs.length > 0 && <>
+    <h2 className="in-sec">Selos de eventos <small>exclusivos de quem participa</small></h2>
+    <div className="in-ev">{evs.map((s) => {
+      const ok = s.value > 0 || ganhas.has(s.badge), d = s.info.starts_at ? new Date(s.info.starts_at) : null;
+      return <button type="button" key={s.badge} className={"in-ev-item" + (ok ? " is-ok" : "")} onClick={() => go?.("giras")}>
+        <Medalha badge={s.badge} level={ok ? 1 : 0} size={50} />
+        <span className="in-ev-txt"><b>{s.title}</b>
+        <small>{ok ? "Na sua coleção ✓" : s.info.status === "going" ? "Presença confirmada! O selo chega no dia" + (d ? " " + d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "") + "." : "Confirme presença na Agenda para ganhar" + (d ? " · " + d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "")}</small></span>
+        <ChevronRight size={16} />
+      </button>;
+    })}</div>
+    </>}
 
     <h2 className="in-sec">Coleção Ẹ̀mí Ìlú <small>um selo por edição lida até o fim</small></h2>
     {emis.length ? <div className="in-emi">{emis.map((s) => <button type="button" key={s.badge} className={"in-emi-item" + (s.value > 0 ? " is-ok" : "")} onClick={() => go?.("revista")}>

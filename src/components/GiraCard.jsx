@@ -16,7 +16,7 @@ export function UnifiedGiraCard({ g, mode = "agenda", onOpen, resp, answer, show
     <div className="unified-gira-overlay" />
     <div className="unified-gira-info">
     <div className="unified-gira-topline">
-    <span className="activity-tag">{typeLabel(g.activity_type)}</span>{mode === "home" && <span className="unified-gira-next">PRÓXIMA</span>}</div>
+    <span className="activity-tag">{typeLabel(g.activity_type)}</span>{g.exclusive_badge && <span className="activity-tag gira-selo-tag">🏅 Selo exclusivo</span>}{mode === "home" && <span className="unified-gira-next">PRÓXIMA</span>}</div>
     <h3>{g.name}</h3>
     <p className="unified-gira-meta">
     <CalendarDays size={14} />{dateTime(g.starts_at)}</p>{g.entity_lines?.length > 0 && <div className="unified-gira-chips">{g.entity_lines.map((id) => {

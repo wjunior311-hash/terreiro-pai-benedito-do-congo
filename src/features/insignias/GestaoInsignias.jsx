@@ -17,13 +17,17 @@ const RECADO = {
   axe: "passe no mural do app e mande axé para os irmãos",
   voz: "compartilhe no mural do app como foi a gira para você"
 };
+const recado = (b) => RECADO[b] || (b.startsWith("evento:") ? "esse evento tem selo exclusivo no app! É só confirmar presença na Agenda. Vai ser lindo ter você lá" : null);
 
 export function GestaoInsignias() {
   const [rows, setRows] = useState(null), [msg, setMsg] = useState(""), [aberta, setAberta] = useState(null);
   useEffect(() => {
-    supabase.rpc("admin_badges_overview").then(({ data, error }) => {
+    supabase.rpc("admin_badges_overview").then(async ({ data, error }) => {
       if (error) setMsg(err(error));
-      setRows(data || []);
+      const ids = [...new Set((data || []).filter((r) => r.badge.startsWith("evento:")).map((r) => r.badge.slice(7)))];
+      const { data: g } = ids.length ? await supabase.from("giras").select("id,name").in("id", ids) : { data: [] };
+      const nm = Object.fromEntries((g || []).map((x) => [x.id, x.name]));
+      setRows((data || []).map((r) => r.badge.startsWith("evento:") ? { ...r, title: nm[r.badge.slice(7)] } : r));
     });
   }, []);
   const porBadge = useMemo(() => {
@@ -33,7 +37,8 @@ export function GestaoInsignias() {
   }, [rows]);
   if (!rows) return <div className="hm-skeleton" style={{ marginTop: 14 }} />;
   const total = new Set(rows.map((r) => r.profile_id)).size;
-  const badges = [...ORDEM, ...Object.keys(porBadge).filter((b) => b.startsWith("emi:")).sort()];
+  const titulo = (b) => b.startsWith("evento:") ? "🌟 " + ((porBadge[b] || [])[0]?.title || "Selo de evento") : nomeInsignia(b);
+  const badges = [...ORDEM, ...Object.keys(porBadge).filter((b) => b.startsWith("evento:")), ...Object.keys(porBadge).filter((b) => b.startsWith("emi:")).sort()];
   return <div className="in-adm">
     <div className="row between gira-admin-header">
       <div>
@@ -51,7 +56,7 @@ export function GestaoInsignias() {
         <button type="button" className="in-adm-head" onClick={() => setAberta(aberta === b ? null : b)}>
           <Medalha badge={b} level={tem.length ? 1 : 0} size={42} />
           <span className="in-adm-txt">
-            <b>{nomeInsignia(b)}</b>
+            <b>{titulo(b)}</b>
             <span className="in-bar"><i style={{ width: pct + "%" }} /></span>
             <small>{tem.length} de {total} pessoas ({pct}%)</small>
           </span>
@@ -61,7 +66,7 @@ export function GestaoInsignias() {
           <h4>{faltam.length ? "Ainda não têm (" + faltam.length + ")" : "Todo mundo já tem 🎉"}</h4>
           <div className="in-adm-people">{faltam.map((r) => {
             const nome = String(r.name || "").trim().split(/\s+/)[0];
-            const wa = RECADO[b] && whatsappLink(r.phone, "Axé, " + nome + "! Passando pra lembrar: " + RECADO[b] + ". 🙏🏾");
+            const wa = recado(b) && whatsappLink(r.phone, "Axé, " + nome + "! Passando pra lembrar: " + recado(b) + ". 🙏🏾");
             return <div key={r.profile_id} className="in-adm-person">
               <OrixaIcon name={r.orixa_symbol} size={26} />
               <span>{r.name}{r.kind === "unico" && r.goal > 1 ? <small> · {r.value}/{r.goal}</small> : null}</span>

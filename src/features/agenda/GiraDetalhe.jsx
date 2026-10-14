@@ -280,6 +280,11 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     <Icon size={17} /><span>{label}</span>{badge && <i className={"gd-badge" + (badge === "!" ? " alert" : "")}>{badge}</i>}</button>)}</div>
 
   {tab === "info" && <div className="gd-panel" role="tabpanel">
+  {gira.exclusive_badge && <div className={"gd-selo" + (going ? " is-ok" : "")}>
+    <span className="gd-selo-ic" aria-hidden="true">🏅</span>
+    <span><b>{going ? "Seu selo exclusivo está garantido!" : "Este evento tem selo exclusivo"}</b>
+    <small>{going ? "Ele aparece nas suas insígnias no dia do evento." : "Confirme sua presença e ganhe um selo que só quem participa deste evento tem."}</small></span>
+  </div>}
   <div className="gira-public-actions">
     <button className={"btn " + (going ? "primary is-selected going" : "")} disabled={busy} onClick={() => answer("going")}>
     <Check size={15} /> {going ? "Confirmado: vou participar" : "Vou participar"}</button>
