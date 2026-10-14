@@ -58,13 +58,13 @@ language sql stable security definer set search_path = public, app as $$
   select 'palavra', 'niveis',
          (select count(*) from public.house_content_reads r join public.house_contents c on c.id = r.content_id
            where r.profile_id = p and r.confirmed_at is not null and c.is_required and not c.is_draft)::int,
-         null, array[1, 3, 5, 8, 12, 20], null
+         (select count(*) from public.house_contents c where c.is_required and not c.is_draft)::int, array[1, 3, 5, 8, 12, 20], null
   union all
   select 'sabedoria', 'niveis',
          (select count(distinct r.content_id) from public.house_content_reads r
             join public.house_contents c on c.id = r.content_id
            where r.profile_id = p and c.content_type = 'content' and not c.is_draft)::int,
-         null, array[1, 3, 6, 10, 15, 25], null
+         (select count(*) from public.house_contents c where c.content_type = 'content' and not c.is_draft)::int, array[1, 3, 6, 10, 15, 25], null
   union all
   select 'responde', 'niveis',
          (select count(*) from public.gira_responses x join public.giras g on g.id = x.gira_id
@@ -92,6 +92,7 @@ language sql stable security definer set search_path = public, app as $$
          1, null, e.title
     from public.newsletter_editions e where e.status = 'published'
   union all
+  -- (em palavra e sabedoria, goal = quanto existe hoje: quem leu tudo está "em dia")
   -- selos exclusivos de eventos: confirmou "vou" e o evento já começou
   select 'evento:' || g.id, 'evento',
          (case when g.starts_at <= now() and exists (select 1 from public.gira_responses x

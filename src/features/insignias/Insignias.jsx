@@ -28,6 +28,9 @@ export const INSIGNIAS = {
 const ORDEM_UNICAS = ["antena", "regras", "cadastro"];
 const ORDEM_NIVEIS = ["palavra", "responde", "sabedoria", "mao", "axe", "voz"];
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+// leituras: quando o próximo nível pede mais do que a casa já publicou
+const emDia = (s, prox) => s?.goal != null && prox > s.goal && (s.value || 0) >= s.goal;
+const faltaPublicar = (s, prox) => s?.goal != null && prox > s.goal && (s.value || 0) < s.goal;
 const un = (k, n) => { const u = INSIGNIAS[k]?.un; return u ? (n === 1 ? u[0] : u[1]) : ""; };
 const emiLabel = (badge, title) => {
   const m = /emi:(\d{4})-(\d{2})/.exec(badge || "");
@@ -122,7 +125,7 @@ export function MinhasInsignias({ go }) {
     <div className="in-list">{ORDEM_NIVEIS.map((k) => {
       const s = st[k] || { value: 0, thresholds: [1, 3, 6, 10, 20, 35], level: 0 };
       const th = s.thresholds || [], lvl = s.level || 0, prox = th[lvl], ant = lvl ? th[lvl - 1] : 0;
-      const pct = prox ? Math.round(100 * ((s.value || 0) - ant) / (prox - ant)) : 100;
+      const pct = !prox || emDia(s, prox) ? 100 : Math.round(100 * ((s.value || 0) - ant) / ((faltaPublicar(s, prox) ? s.goal : prox) - ant));
       return <button type="button" key={k} className={"in-row" + (lvl ? " is-ok" : "")} onClick={() => setOpen(k)}>
         <Medalha badge={k} level={lvl} size={56} />
         <span className="in-row-txt">
@@ -130,7 +133,9 @@ export function MinhasInsignias({ go }) {
           <small className="in-lvl">{lvl ? "Nível " + lvl + " · " + NIVEIS[lvl - 1].nome : "Ainda não começou"}</small>
           {prox ? <>
             <span className="in-bar"><i style={{ width: Math.max(4, pct) + "%", background: NIVEIS[lvl].cor }} /></span>
-            <small>{prox - (s.value || 0) === 1 ? "Falta" : "Faltam"} {prox - (s.value || 0)} {un(k, prox - (s.value || 0))} para {NIVEIS[lvl].e} {NIVEIS[lvl].nome}</small>
+            {emDia(s, prox) ? <small className="in-ok">Em dia ✓ Você já leu tudo o que a casa publicou. O próximo nível chega com as novas publicações.</small>
+            : faltaPublicar(s, prox) ? <small>{s.goal - (s.value || 0) === 1 ? "Falta" : "Faltam"} {s.goal - (s.value || 0)} {un(k, s.goal - (s.value || 0))} para ficar em dia</small>
+            : <small>{prox - (s.value || 0) === 1 ? "Falta" : "Faltam"} {prox - (s.value || 0)} {un(k, prox - (s.value || 0))} para {NIVEIS[lvl].e} {NIVEIS[lvl].nome}</small>}
           </> : <small className="in-ok">Nível máximo! 🌳</small>}
         </span>
         <Pontos level={lvl} />
@@ -172,7 +177,8 @@ function DetalheInsignia({ k, s = {}, ganha, onClose, go }) {
       {niveis ? <ol className="in-niveis">{NIVEIS.map((n, i) => <li key={i} className={i < lvl ? "is-on" : ""} style={{ "--in-cor": n.cor }}>
         <span>{n.e}</span><b>{n.nome}</b><small>{(s.thresholds || [])[i]} {un(k, (s.thresholds || [])[i])}</small>{i < lvl && <em>✓</em>}
       </li>)}</ol> : <p className="in-status">{lvl ? "Você já conquistou esta insígnia ✓" : ganha && k === "regras" ? "Você já tinha esta insígnia, mas chegaram regras novas. Leia para manter tudo em dia." : s.goal > 1 ? "Você está em " + (s.value || 0) + " de " + s.goal + "." : "Ainda não conquistada."}</p>}
-      {niveis && <p className="muted small">Você tem {s.value || 0} {un(k, s.value || 0)}.</p>}
+      {niveis && <p className="muted small">Você tem {s.value || 0} {un(k, s.value || 0)}{s.goal != null ? " (de " + s.goal + " publicados até agora)" : ""}.</p>}
+      {niveis && emDia(s, (s.thresholds || [])[lvl]) && <p className="in-status">Em dia ✓ Você já leu tudo. Quando a casa publicar mais, o próximo nível libera.</p>}
       <p className="in-como">💡 {info.como}</p>
       {go && <button type="button" className="btn primary" onClick={() => { onClose(); go(info.go); }}>{info.ir} <ChevronRight size={15} /></button>}
     </div>
