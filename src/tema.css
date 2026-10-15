@@ -816,3 +816,14 @@ h1,h2,h3{color:var(--ink)}
 .cw-adm-opt li small{color:var(--muted)}
 .cw-adm-opt.is-falta{background:var(--surface);border-color:var(--warn-line)}
 .cw-wa{margin-left:auto;font-size:12.5px;font-weight:700;color:#1d7a46;text-decoration:none;padding:4px 10px;border-radius:99px;background:#e2f4e8}
+
+/* ---------- Gestão: menu em gavetas ---------- */
+.gv-nav{display:flex;gap:5px;margin-bottom:10px}
+.gv-nav button{flex:1 1 auto;display:grid;justify-items:center;gap:3px;padding:10px 5px 9px;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;cursor:pointer;min-width:0}
+.gv-nav button span{font-size:22px;line-height:1}
+.gv-nav button b{font-size:10.5px;letter-spacing:-.01em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.gv-nav button.is-on{background:var(--brand-fill);border-color:var(--brand-fill);color:#fff}
+.gv-sub{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;margin-bottom:4px;border-bottom:1px solid var(--line-soft);scrollbar-width:none}
+.gv-sub::-webkit-scrollbar{display:none}
+.gv-sub button{flex:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);font:inherit;font-size:13.5px;font-weight:700;padding:7px 14px;border-radius:99px;cursor:pointer}
+.gv-sub button.is-on{background:var(--brand-soft);border-color:var(--brand-line);color:var(--brand-ink)}

@@ -15,25 +15,48 @@ import { GiraTurnManager } from "./GestaoGiras.jsx";
 import { AdminFinance } from "../financeiro/GestaoFinanceira.jsx";
 import { GestaoCaminhos } from "../caminhos/Caminho.jsx";
 
+// Menu em 5 gavetas fixas. Funcionalidade nova entra numa gaveta existente, não vira botão novo no topo.
+const GAVETAS = [
+  ["visao", "🏠", "Visão"],
+  ["pessoas", "👥", "Pessoas"],
+  ["giras", "🕯️", "Giras"],
+  ["comunicacao", "📣", "Comunicação"],
+  ["financeiro", "💰", "Financeiro"]
+];
+
 export function Admin({ p }) {
   const full = can(p, "admin.full"), master = !!p?.is_master;
-  const nav = [...full ? [["overview", "Visão"]] : [], ...can(p, "people.manage") ? [["people", "Pessoas"], ["attendance", "Frequência"], ["badges", "Insígnias"], ["caminhos", "Caminhos"]] : [], ...can(p, "giras.manage") ? [["giras", "Giras"]] : [], ...can(p, "finance.view") ? [["finance", "Financeiro"]] : [], ...full ? [["invites", "Convites"]] : [], ...can(p, "content.manage") ? [["content", "Conteúdos"]] : [], ...can(p, "newsletter.manage") ? [["revista", "Revista"]] : [], ...full ? [["questions", "Dúvidas"]] : [], ...master ? [["roles", "Funções"]] : []];
-  const [tab, setTab] = useState(nav[0]?.[0] || "overview");
   const podeComunidade = full || master || can(p, "giras.manage");
-  const [area, setArea] = useState(() => { try { return sessionStorage.getItem("tpbc-gestao-area") || "casa"; } catch (e) { return "casa"; } });
-  const trocarArea = (a) => { setArea(a); try { sessionStorage.setItem("tpbc-gestao-area", a); } catch (e) { /* ok */ } };
-  if (!nav.length) return null;
-  const seletor = podeComunidade && <div className="gc-area" role="group" aria-label="Área da gestão">
-    <button type="button" aria-pressed={area === "casa"} onClick={() => trocarArea("casa")}>🏠 Gestão da Casa</button>
-    <button type="button" aria-pressed={area === "com"} onClick={() => trocarArea("com")}>🌍 Gestão da Comunidade</button>
-  </div>;
-  if (podeComunidade && area === "com") return <div>{seletor}<GestaoComunidade /></div>;
-  const allowed = nav.some(([id]) => id === tab);
-  const subtitle = full ? "Pessoas, giras, financeiro e conteúdos" : nav.map((x) => x[1]).join(", ");
+  // [id, gaveta, rótulo, permitido]
+  const itens = [
+    ["overview", "visao", "Visão", full],
+    ["people", "pessoas", "Cadastro", can(p, "people.manage")],
+    ["invites", "pessoas", "Convites", full],
+    ["attendance", "pessoas", "Frequência", can(p, "people.manage")],
+    ["badges", "pessoas", "Insígnias", can(p, "people.manage")],
+    ["roles", "pessoas", "Funções", master],
+    ["giras", "giras", "Giras da casa", can(p, "giras.manage")],
+    ["comunidade", "giras", "Comunidade", podeComunidade],
+    ["content", "comunicacao", "Conteúdos", can(p, "content.manage")],
+    ["revista", "comunicacao", "Revista", can(p, "newsletter.manage")],
+    ["caminhos", "comunicacao", "Caminhos", can(p, "people.manage")],
+    ["questions", "comunicacao", "Dúvidas", full],
+    ["finance", "financeiro", "Financeiro", can(p, "finance.view")]
+  ].filter((x) => x[3]);
+  const gavetas = GAVETAS.filter(([g]) => itens.some((x) => x[1] === g));
+  const [tab, setTabRaw] = useState(() => { try { const t = sessionStorage.getItem("tpbc-gestao-tab"); if (itens.some((x) => x[0] === t)) return t; } catch (e) { /* ok */ } return itens[0]?.[0] || "overview"; });
+  const setTab = (t) => { setTabRaw(t); try { sessionStorage.setItem("tpbc-gestao-tab", t); } catch (e) { /* ok */ } };
+  if (!itens.length) return null;
+  const atual = itens.find((x) => x[0] === tab) || itens[0];
+  const gaveta = atual[1], subs = itens.filter((x) => x[1] === gaveta);
+  const abrirGaveta = (g) => { const primeiro = itens.find((x) => x[1] === g); if (primeiro) setTab(primeiro[0]); };
+  const t = atual[0];
   return <div>
-    {seletor}
-    {!full && <p className="muted small" style={{ margin: "0 2px 10px" }}>Você pode acessar: {subtitle}</p>}
-    <div className="admin-nav">{nav.map(([id, label]) => <button className={"btn " + (tab === id ? "primary" : "")} key={id} onClick={() => setTab(id)}>{label}</button>)}</div>{allowed && <>{tab === "overview" && <AdminOverview onNavigate={setTab} />}{tab === "people" && <People me={p} />}{tab === "attendance" && <Frequencia />}{tab === "badges" && <GestaoInsignias />}{tab === "caminhos" && <GestaoCaminhos />}{tab === "giras" && <GiraTurnManager p={p} editor={!full} />}{tab === "finance" && <AdminFinance />}{tab === "invites" && <Invites />}{tab === "content" && <Content />}{tab === "revista" && <GestaoRevista p={p} />}{tab === "questions" && <AdminQuestions />}{tab === "roles" && <AdminRoles />}</>}</div>;
+    {!full && <p className="muted small" style={{ margin: "0 2px 10px" }}>Você pode acessar: {itens.map((x) => x[2]).join(", ")}</p>}
+    {gavetas.length > 1 && <nav className="gv-nav" style={{ "--gv-n": gavetas.length }} aria-label="Áreas da gestão">{gavetas.map(([g, ic, nome]) => <button type="button" key={g} aria-current={g === gaveta ? "page" : undefined} className={g === gaveta ? "is-on" : ""} onClick={() => abrirGaveta(g)}><span aria-hidden="true">{ic}</span><b>{nome}</b></button>)}</nav>}
+    {subs.length > 1 && <div className="gv-sub" role="tablist">{subs.map(([id, , nome]) => <button type="button" role="tab" key={id} aria-selected={id === t} className={id === t ? "is-on" : ""} onClick={() => setTab(id)}>{nome}</button>)}</div>}
+    {t === "overview" && <AdminOverview onNavigate={setTab} />}{t === "people" && <People me={p} />}{t === "attendance" && <Frequencia />}{t === "badges" && <GestaoInsignias />}{t === "caminhos" && <GestaoCaminhos />}{t === "giras" && <GiraTurnManager p={p} editor={!full} />}{t === "comunidade" && <GestaoComunidade />}{t === "finance" && <AdminFinance />}{t === "invites" && <Invites />}{t === "content" && <Content />}{t === "revista" && <GestaoRevista p={p} />}{t === "questions" && <AdminQuestions />}{t === "roles" && <AdminRoles />}
+  </div>;
 }
 
 export function AdminOverview({ onNavigate }) {
