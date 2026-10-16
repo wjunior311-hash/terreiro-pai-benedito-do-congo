@@ -9,6 +9,9 @@ import { Giras } from "../agenda/Agenda.jsx";
 import { GiraDetail } from "../agenda/GiraDetalhe.jsx";
 
 export function AdminGiraTurnControl({ gira, editor = false }) {
+  // regra nova (giras a partir de 19/10/2026): pais de santo não ocupam vaga
+  const regraNova = new Date(gira.starts_at) >= new Date("2026-10-19T00:00:00-03:00");
+  const conta = (t) => regraNova ? t.people.filter((x) => !x.pai).length : t.people.length;
   const [turns, setTurns] = useState([]),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false),
@@ -20,13 +23,13 @@ export function AdminGiraTurnControl({ gira, editor = false }) {
       return;
     }
     const ids = (t || []).map((x) => x.id);
-    const [{ data: a, error: ae }, { data: p, error: pe }] = ids.length ? await Promise.all([supabase.from("gira_turn_availability").select("gira_turn_id,profile_id").in("gira_turn_id", ids), supabase.from("profiles").select("id,name").eq("is_active", true).order("name")]) : [{ data: [], error: null }, { data: [], error: null }];
+    const [{ data: a, error: ae }, { data: p, error: pe }] = ids.length ? await Promise.all([supabase.from("gira_turn_availability").select("gira_turn_id,profile_id").in("gira_turn_id", ids), supabase.from("profiles").select("id,name,is_pai_de_santo").eq("is_active", true).order("name")]) : [{ data: [], error: null }, { data: [], error: null }];
     if (ae || pe) {
       setMessage(err(ae || pe));
       return;
     }
-    const names = Object.fromEntries((p || []).map((x) => [x.id, x.name]));
-    const rows = (t || []).map((turn) => ({ ...turn, people: (a || []).filter((x) => x.gira_turn_id === turn.id).map((x) => ({ id: x.profile_id, name: names[x.profile_id] || "Pessoa" })).sort((a2, b) => a2.name.localeCompare(b.name, "pt-BR")) }));
+    const names = Object.fromEntries((p || []).map((x) => [x.id, x.name])), pais = new Set((p || []).filter((x) => x.is_pai_de_santo).map((x) => x.id));
+    const rows = (t || []).map((turn) => ({ ...turn, people: (a || []).filter((x) => x.gira_turn_id === turn.id).map((x) => ({ id: x.profile_id, name: names[x.profile_id] || "Pessoa", pai: pais.has(x.profile_id) })).sort((a2, b) => a2.name.localeCompare(b.name, "pt-BR")) }));
     setTurns(rows);
     setCapacityDrafts(Object.fromEntries(rows.map((x) => [x.id, String(x.capacity || "")])));
   };
@@ -62,7 +65,7 @@ export function AdminGiraTurnControl({ gira, editor = false }) {
   const move = async (person, from, to) => {
     if (!to || busy) return;
     const target = turns.find((x) => x.id === to);
-    if (target && target.capacity > 0 && target.people.length >= target.capacity) {
+    if (target && target.capacity > 0 && conta(target) >= target.capacity && !(regraNova && person.pai)) {
       setMessage("Esse turno está completo.");
       return;
     }
@@ -87,7 +90,7 @@ export function AdminGiraTurnControl({ gira, editor = false }) {
     <b>{turn.label}</b>
     <span className="muted small">{turn.shift_date ? (/* @__PURE__ */ new Date(turn.shift_date + "T12:00:00")).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" }) : ""}</span>
     </div>
-    <span className="pill">{turn.people.length}/{turn.capacity || "—"}</span>
+    <span className="pill">{conta(turn)}/{turn.capacity || "—"}</span>
     </div>
     <div className="gira-admin-turn-capacity">
     <label className="muted small">Capacidade</label>
@@ -97,21 +100,21 @@ export function AdminGiraTurnControl({ gira, editor = false }) {
     </div>
     </div>{turn.people.length ? <div className="gira-admin-turn-people">{turn.people.map((person) => <div className="gira-admin-turn-person" key={person.id}>
     <div>
-    <b>{person.name}</b>
+    <b>{person.name}</b>{regraNova && person.pai && <small className="muted"> · Pai/Mãe da casa, não ocupa vaga</small>}
     </div>
     <div className="gira-admin-turn-move">
     <select className="select" value="" disabled={busy} onChange={(e) => {
     const to = e.target.value;
     if (to) {
       const target = turns.find((x) => x.id === to);
-      if (target && target.capacity > 0 && target.people.length >= target.capacity) {
+      if (target && target.capacity > 0 && conta(target) >= target.capacity && !(regraNova && person.pai)) {
         setMessage("Esse turno está completo.");
         return;
       }
       if (window.confirm("Mover " + person.name + " de " + turn.label + " para " + target.label + "?")) move(person, turn.id, to);
     }
   }}>
-    <option value="">Mover para…</option>{turns.filter((x) => x.id !== turn.id).map((x) => <option value={x.id} key={x.id} disabled={x.capacity > 0 && x.people.length >= x.capacity}>{x.label}{x.capacity > 0 ? " · " + x.people.length + "/" + x.capacity : ""}</option>)}</select>
+    <option value="">Mover para…</option>{turns.filter((x) => x.id !== turn.id).map((x) => <option value={x.id} key={x.id} disabled={x.capacity > 0 && conta(x) >= x.capacity && !(regraNova && person.pai)}>{x.label}{x.capacity > 0 ? " · " + conta(x) + "/" + x.capacity : ""}</option>)}</select>
     </div>
     </div>)}</div> : <p className="muted small">Ninguém alocado neste turno.</p>}</div>)}</div>
     </div>;

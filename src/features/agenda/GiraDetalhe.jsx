@@ -204,6 +204,8 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     setTurnAvailabilityNotifications((v) => v.filter((x) => x.id !== id));
   };
   const availableLabel = (t) => `${t.occupied}/${t.capacity} pessoas`;
+  // regra nova (giras a partir de 19/10/2026): um turno por pessoa; pais de santo não ocupam vaga
+  const regraNova = new Date(gira.starts_at) >= new Date("2026-10-19T00:00:00-03:00"), umTurno = regraNova && !p.is_pai_de_santo;
   const taskGroups = {};
   tasks.forEach((t) => (taskGroups[t.gira_turn_id] ??= []).push(t));
   const myTurns = turns.filter((t) => availability.includes(t.turn_id));
@@ -344,11 +346,11 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   {!hasTaskAgenda ? noShiftsMsg : !going ? notGoingMsg("escolher seu turno") : <>
   <div className="card">
     <span className="eyebrow">DISPONIBILIDADE</span>{open ? <>
-    <h3>Marque um ou mais turnos em que você pode participar.</h3>
-    <p className="muted small">A capacidade é atualizada conforme outras pessoas fazem suas escolhas.</p>
+    <h3>{umTurno ? "Escolha o turno em que você vai ajudar." : "Marque um ou mais turnos em que você pode participar."}</h3>
+    <p className="muted small">{umTurno ? (availability.length ? "Cada pessoa fica em um turno só, para ninguém se sobrecarregar. Para trocar, toque no seu turno para desmarcar e escolha outro." : "Cada pessoa fica em um turno só, para ninguém se sobrecarregar.") : "A capacidade é atualizada conforme outras pessoas fazem suas escolhas."}</p>
     <div className="turn-choice-grid">{turns.map((t) => {
-    const selected = availability.includes(t.turn_id), full = t.is_full && !selected;
-    return <button key={t.turn_id} className={"btn " + (selected ? "primary" : "")} disabled={busy || full} onClick={() => toggle(t.turn_id)}>
+    const selected = availability.includes(t.turn_id), full = t.is_full && !selected && !(regraNova && p.is_pai_de_santo), travado = umTurno && !selected && availability.length > 0;
+    return <button key={t.turn_id} className={"btn " + (selected ? "primary" : "")} disabled={busy || full || travado} onClick={() => toggle(t.turn_id)}>
       <b>{t.label}</b>
       <small>{formatShiftDate(t.shift_date)}</small>{(turnTaskNames[t.turn_id] || []).length > 0 && <small className="gira-turn-task-names">{turnTaskNames[t.turn_id].join(" · ")}</small>}<span>{full ? "COMPLETO" : availableLabel(t)}</span>
       </button>;
