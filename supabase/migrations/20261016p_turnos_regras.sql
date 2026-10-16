@@ -132,3 +132,5 @@ notify pgrst, 'reload schema';
 
 -- (aplicado em 16/10 à tarde) limite de turnos ajustável por gira: giras.max_turns_per_person (padrão 1).
 -- EncontrAÇÃO: até 3 turnos por pessoa. set_gira_turn_availability passou a usar esse limite.
+-- (16/10, depois) grupos de turnos: gira_turns.group_name + group_max. Limite vale dentro de cada grupo.
+-- EncontrAÇÃO: "Organização" (Antes do evento, Montagem) escolhe 1; "Durante o evento" (Turnos 1–6) até 3.

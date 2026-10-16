@@ -827,3 +827,8 @@ h1,h2,h3{color:var(--ink)}
 .gv-sub::-webkit-scrollbar{display:none}
 .gv-sub button{flex:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);font:inherit;font-size:13.5px;font-weight:700;padding:7px 14px;border-radius:99px;cursor:pointer}
 .gv-sub button.is-on{background:var(--brand-soft);border-color:var(--brand-line);color:var(--brand-ink)}
+.turn-group{margin-top:14px}
+.turn-group+.turn-group{padding-top:14px;border-top:1px dashed var(--line)}
+.turn-group-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px;margin-bottom:8px}
+.turn-group-head b{font-size:15px}
+.turn-group-head small{color:var(--muted);font-size:12.5px;font-weight:600}
