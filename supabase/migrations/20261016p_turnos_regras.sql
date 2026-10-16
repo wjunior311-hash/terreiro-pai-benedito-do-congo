@@ -129,3 +129,6 @@ end $$;
 select cron.schedule('tpbc-turnos', '0 * * * *', 'select app.push_turn_reminders()');
 
 notify pgrst, 'reload schema';
+
+-- (aplicado em 16/10 à tarde) limite de turnos ajustável por gira: giras.max_turns_per_person (padrão 1).
+-- EncontrAÇÃO: até 3 turnos por pessoa. set_gira_turn_availability passou a usar esse limite.

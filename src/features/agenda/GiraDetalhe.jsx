@@ -205,7 +205,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   };
   const availableLabel = (t) => `${t.occupied}/${t.capacity} pessoas`;
   // regra nova (giras a partir de 19/10/2026): um turno por pessoa; pais de santo não ocupam vaga
-  const regraNova = new Date(gira.starts_at) >= new Date("2026-10-19T00:00:00-03:00"), umTurno = regraNova && !p.is_pai_de_santo;
+  const regraNova = new Date(gira.starts_at) >= new Date("2026-10-19T00:00:00-03:00"), maxTurnos = regraNova && !p.is_pai_de_santo ? (gira.max_turns_per_person || 1) : 0, umTurno = maxTurnos === 1;
   const taskGroups = {};
   tasks.forEach((t) => (taskGroups[t.gira_turn_id] ??= []).push(t));
   const myTurns = turns.filter((t) => availability.includes(t.turn_id));
@@ -346,10 +346,10 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   {!hasTaskAgenda ? noShiftsMsg : !going ? notGoingMsg("escolher seu turno") : <>
   <div className="card">
     <span className="eyebrow">DISPONIBILIDADE</span>{open ? <>
-    <h3>{umTurno ? "Escolha o turno em que você vai ajudar." : "Marque um ou mais turnos em que você pode participar."}</h3>
-    <p className="muted small">{umTurno ? (availability.length ? "Cada pessoa fica em um turno só, para ninguém se sobrecarregar. Para trocar, toque no seu turno para desmarcar e escolha outro." : "Cada pessoa fica em um turno só, para ninguém se sobrecarregar.") : "A capacidade é atualizada conforme outras pessoas fazem suas escolhas."}</p>
+    <h3>{umTurno ? "Escolha o turno em que você vai ajudar." : maxTurnos > 1 ? "Escolha até " + maxTurnos + " turnos em que você vai ajudar." : "Marque um ou mais turnos em que você pode participar."}</h3>
+    <p className="muted small">{umTurno ? (availability.length ? "Cada pessoa fica em um turno só, para ninguém se sobrecarregar. Para trocar, toque no seu turno para desmarcar e escolha outro." : "Cada pessoa fica em um turno só, para ninguém se sobrecarregar.") : maxTurnos > 1 ? "Nesta gira cada pessoa pode ficar em até " + maxTurnos + " turnos." + (availability.length >= maxTurnos ? " Para trocar, toque num dos seus turnos para desmarcar." : " Você escolheu " + availability.length + " de " + maxTurnos + ".") : "A capacidade é atualizada conforme outras pessoas fazem suas escolhas."}</p>
     <div className="turn-choice-grid">{turns.map((t) => {
-    const selected = availability.includes(t.turn_id), full = t.is_full && !selected && !(regraNova && p.is_pai_de_santo), travado = umTurno && !selected && availability.length > 0;
+    const selected = availability.includes(t.turn_id), full = t.is_full && !selected && !(regraNova && p.is_pai_de_santo), travado = maxTurnos > 0 && !selected && availability.length >= maxTurnos;
     return <button key={t.turn_id} className={"btn " + (selected ? "primary" : "")} disabled={busy || full || travado} onClick={() => toggle(t.turn_id)}>
       <b>{t.label}</b>
       <small>{formatShiftDate(t.shift_date)}</small>{(turnTaskNames[t.turn_id] || []).length > 0 && <small className="gira-turn-task-names">{turnTaskNames[t.turn_id].join(" · ")}</small>}<span>{full ? "COMPLETO" : availableLabel(t)}</span>
