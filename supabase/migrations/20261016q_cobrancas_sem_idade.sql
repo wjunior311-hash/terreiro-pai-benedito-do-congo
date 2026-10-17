@@ -3,3 +3,11 @@
 -- (app.admin_create_extra_charge_batch) passam a incluir todos os filhos ativos, exceto pais de santo
 -- e quem está marcado como "não paga" (is_financial_payer = false).
 -- Aplicado direto no Supabase em 16/10; Gira na Cachoeira recebeu cobrança para Dandara, Marina e Helena.
+
+-- (atualização) Regra definida pelo Wagner: contribuição de evento é cobrada de TODOS que confirmam presença,
+-- sem exceção (inclusive pais de santo e quem é "não paga"). Isenções valem só para a mensalidade.
+--   * app.sync_event_charge(gira, pessoa): confirmou -> cobrança "unpaid" (cria ou reativa);
+--     não vai / sem confirmação -> cobrança em aberto vira "not_applicable" (paga nunca é mexida; com comprovante pendente também não).
+--   * trigger gira_responses_charge chama isso a cada confirmação.
+--   * app.sync_gira_contribution_charge passa a usar a mesma regra.
+--   * app.admin_create_extra_charge_batch ("para todos") inclui todos os ativos, sem isenções.
