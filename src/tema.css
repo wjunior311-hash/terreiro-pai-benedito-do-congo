@@ -840,3 +840,12 @@ h1,h2,h3{color:var(--ink)}
 .la-adm{display:grid;gap:12px}
 .la-head h3{margin:2px 0 4px}
 .la-baixar{justify-self:start}
+
+/* ---------- Assumir turno de quem está em dois ---------- */
+.at-card{border-color:var(--warn-line);background:linear-gradient(180deg,var(--surface),var(--surface-2))}
+.at-card h3{margin:4px 0 6px}
+.at-list{display:grid;gap:8px;margin-top:10px}
+.at-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.at-item b{display:block;font-size:14.5px}
+.at-item small{color:var(--muted);font-size:12.5px;line-height:1.35;display:block}
+.at-item .btn{flex:none}

@@ -6,6 +6,32 @@ import { err, lineInfo, money, typeLabel } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
 import { useReadableCover } from "../../components/GiraCard.jsx";
 
+// quem está sem turno assume o lugar de quem está em dois (só nos turnos abertos para troca)
+function AssumirTurno({ gira, onDone }) {
+  const [ofertas, setOfertas] = useState(null), [busy, setBusy] = useState(false), [msg, setMsg] = useState("");
+  const carregar = () => supabase.rpc("double_turn_offers", { p_gira: gira.id }).then(({ data }) => setOfertas(Array.isArray(data) ? data : []));
+  useEffect(() => { carregar(); }, [gira.id]);
+  if (!ofertas || !ofertas.length) return null;
+  const assumir = async (o) => {
+    if (!window.confirm("Assumir o lugar de " + o.from_name + " em " + o.label + "?")) return;
+    setBusy(true); setMsg("");
+    const { error } = await supabase.rpc("take_double_turn", { p_turn: o.turn_id, p_from: o.from_id });
+    setBusy(false);
+    if (error) { setMsg(err(error)); carregar(); return; }
+    onDone();
+  };
+  return <div className="card at-card">
+    <span className="eyebrow">VOCÊ AINDA ESTÁ SEM TURNO</span>
+    <h3>Assuma o lugar de quem está em dois turnos</h3>
+    <p className="muted small">Algumas pessoas ficaram com dois turnos. Escolha um desses lugares: você entra e a pessoa fica só com o outro turno dela.</p>
+    {msg && <div className="gw-warning">{msg}</div>}
+    <div className="at-list">{ofertas.map((o) => <div className="at-item" key={o.turn_id + o.from_id}>
+      <div><b>{o.label}</b><small>Lugar de {o.from_name}{o.tasks ? " · " + o.tasks : ""}</small></div>
+      <button className="btn primary" disabled={busy} onClick={() => assumir(o)}>Assumir</button>
+    </div>)}</div>
+  </div>;
+}
+
 export function GiraDetail({ p, gira, back, preview = null }) {
   const isPreview = !!preview;
   const [subtasks, setSubtasks] = useState({}), [turnTaskNames, setTurnTaskNames] = useState({});
@@ -24,7 +50,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     [msg, setMsg] = useState(""),
     [busy, setBusy] = useState(false),
     [swap, setSwap] = useState({ current: "", requested: [], message: "" }),
-    [tab, setTab] = useState(preview?.phase === "day" ? "tasks" : "info"),
+    [tab, setTab] = useState(() => { try { const a = sessionStorage.getItem("tpbc-abrir-aba"); if (a) { sessionStorage.removeItem("tpbc-abrir-aba"); return a; } } catch (e) { /* ok */ } return preview?.phase === "day" ? "tasks" : "info"; }),
     [tabTouched, setTabTouched] = useState(false);
   const start = new Date(gira.starts_at), now = /* @__PURE__ */ new Date(), hasTaskAgenda = !!gira.use_task_list, open = isPreview ? hasTaskAgenda && preview.phase === "choose" : hasTaskAgenda && now >= new Date(start.getTime() - 10 * 864e5) && (now < new Date(start.getTime() - 3 * 864e5) || gira.turn_availability_reopened_until && now < new Date(gira.turn_availability_reopened_until)), released = isPreview ? hasTaskAgenda && preview.phase === "day" : hasTaskAgenda && now >= new Date(start.getTime() - 3 * 864e5) && !(gira.turn_availability_reopened_until && now < new Date(gira.turn_availability_reopened_until));
   const formatShiftDate = (d) => d ? (/* @__PURE__ */ new Date(d + "T12:00:00")).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" }) : "";
@@ -360,6 +386,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
 
   {tab === "turn" && <div className="gd-panel" role="tabpanel">
   {!hasTaskAgenda ? noShiftsMsg : !going ? notGoingMsg("escolher seu turno") : <>
+  {!isPreview && !availability.length && <AssumirTurno gira={gira} onDone={load} />}
   <div className="card">
     <span className="eyebrow">DISPONIBILIDADE</span>{open ? <>
     {grupos.length > 1 ? <>

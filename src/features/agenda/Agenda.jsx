@@ -25,6 +25,10 @@ export function Giras({ p }) {
     supabase.from("giras").select("*").eq("status", "published").order("starts_at").then(({ data }) => {
       setGiras(data || []);
       setLoading(false);
+      try {
+        const abrir = sessionStorage.getItem("tpbc-abrir-gira");
+        if (abrir) { sessionStorage.removeItem("tpbc-abrir-gira"); const g = (data || []).find((x) => x.id === abrir); if (g) setSelected(g); }
+      } catch (e) { /* ok */ }
     });
   }, []);
   if (selected) return <GiraDetail p={p} gira={selected} back={() => setSelected(null)} />;
