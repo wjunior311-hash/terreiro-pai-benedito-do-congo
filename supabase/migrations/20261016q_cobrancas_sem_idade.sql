@@ -1,0 +1,5 @@
+-- 2026-10-16 (q) — Regra de idade (menor de 18 não paga) vale só para a mensalidade.
+-- Contribuição de evento (app.sync_gira_contribution_charge) e cobrança avulsa "para todos"
+-- (app.admin_create_extra_charge_batch) passam a incluir todos os filhos ativos, exceto pais de santo
+-- e quem está marcado como "não paga" (is_financial_payer = false).
+-- Aplicado direto no Supabase em 16/10; Gira na Cachoeira recebeu cobrança para Dandara, Marina e Helena.
