@@ -12,6 +12,7 @@ import { standardizeName } from "../gestao/Pessoas.jsx";
 import { AvisosHomeCard } from "../avisos/AtivarAvisos.jsx";
 import { RevistaHomeCard } from "../revista/Revista.jsx";
 import { useCaminhos, pendenciaCaminho } from "../caminhos/Caminho.jsx";
+import { useAccessDocs, AccessDocModal } from "../giras/ListaAcesso.jsx";
 
 export const HOME_PHRASE = "Nossa força vem de quem veio antes e de quem caminha conosco.";
 
@@ -80,6 +81,7 @@ export function Home({ p, go, memberPreview = false }) {
   };
   const fin = useMemberFinance(p), [payOpen, setPayOpen] = useState(false);
   const [caminhos] = useCaminhos(), pendCaminho = pendenciaCaminho(caminhos);
+  const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null);
   const now = /* @__PURE__ */ new Date();
   const attention = [];
   if (gira) {
@@ -99,6 +101,7 @@ export function Home({ p, go, memberPreview = false }) {
   }
   turnChangeNotifications.slice(0, 1).forEach((n) => attention.push({ key: "turnchange-" + n.id, tone: "warning", icon: <RefreshCw size={19} />, title: "Seu turno foi alterado", text: n.message, cta: "Ver", onClick: () => go("giras") }));
   giraNotifications.slice(0, 1).forEach((n) => attention.push({ key: "gira-" + n.id, tone: "info", icon: <CalendarDays size={20} />, title: "Novidade na agenda", text: n.message, cta: "Abrir", onClick: () => go("giras") }));
+  docs.filter((d) => !d.sent).forEach((d) => attention.push({ key: "docs-" + d.gira_id, tone: "warning", icon: <ShieldCheck size={20} />, title: "Envie seu nome completo e RG", text: "Lista de acesso · " + d.gira, cta: "Enviar", onClick: () => setDocOpen(d) }));
   if (pendCaminho) attention.push({ key: "caminho-" + pendCaminho.e.id, tone: "warning", icon: <span style={{ fontSize: 19 }}>{pendCaminho.c.emoji}</span>, title: pendCaminho.c.title + ": você vai?", text: "Responda até " + new Date(pendCaminho.e.deadline || Date.now()).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }), cta: "Responder", onClick: () => go("caminho") });
   requiredReads.forEach((x) => {
     const reminded = x.reminded_at && now - new Date(x.reminded_at) < 7 * 864e5;
@@ -170,6 +173,7 @@ export function Home({ p, go, memberPreview = false }) {
 
   <RankingInsignias go={go} />
 
+  {docOpen && <AccessDocModal item={docOpen} onClose={() => setDocOpen(null)} onSaved={() => { setDocOpen(null); reloadDocs(); }} />}
   {payOpen && <PayModal p={p} settings={fin.settings} items={fin.items} onClose={() => setPayOpen(false)} onSent={fin.reload} />}
   {news.length > 0 && <section className="hm-section" aria-labelledby="hm-news-title">
    <div className="hm-section-head">

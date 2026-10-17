@@ -832,3 +832,11 @@ h1,h2,h3{color:var(--ink)}
 .turn-group-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px;margin-bottom:8px}
 .turn-group-head b{font-size:15px}
 .turn-group-head small{color:var(--muted);font-size:12.5px;font-weight:600}
+
+/* ---------- Lista de acesso (nome + RG) ---------- */
+.la-modal{display:grid;gap:12px}
+.la-field{display:grid;gap:6px;font-weight:700;font-size:14px}
+.la-send{width:100%}
+.la-adm{display:grid;gap:12px}
+.la-head h3{margin:2px 0 4px}
+.la-baixar{justify-self:start}
