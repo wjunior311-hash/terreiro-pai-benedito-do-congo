@@ -1,0 +1,2 @@
+-- 2026-10-17 (u) — Responsáveis de cada tarefa visíveis para os filhos da casa.
+-- app.gira_task_assignees(gira) -> (task_id, profile_id, primeiro nome). Todos continuam vendo e marcando todas as tarefas do turno.

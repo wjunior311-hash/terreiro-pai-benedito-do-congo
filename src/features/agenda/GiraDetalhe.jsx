@@ -34,7 +34,7 @@ function AssumirTurno({ gira, onDone }) {
 
 export function GiraDetail({ p, gira, back, preview = null }) {
   const isPreview = !!preview;
-  const [subtasks, setSubtasks] = useState({}), [turnTaskNames, setTurnTaskNames] = useState({});
+  const [subtasks, setSubtasks] = useState({}), [turnTaskNames, setTurnTaskNames] = useState({}), [responsaveis, setResponsaveis] = useState({});
   const [resp, setResp] = useState(null),
     [turns, setTurns] = useState([]),
     [availability, setAvailability] = useState([]),
@@ -95,8 +95,9 @@ export function GiraDetail({ p, gira, back, preview = null }) {
       setTurnTaskNames(tm);
     } else setTurnTaskNames({});
     if (released) {
-      const { data: ts } = await supabase.rpc("gira_turn_tasks", { p_gira_id: gira.id });
+      const [{ data: ts }, { data: resp }] = await Promise.all([supabase.rpc("gira_turn_tasks", { p_gira_id: gira.id }), supabase.rpc("gira_task_assignees", { p_gira: gira.id })]);
       setTasks(ts || []);
+      { const rm = {}; (resp || []).forEach((v) => (rm[v.task_id] ??= []).push(v)); setResponsaveis(rm); }
       {
         const tids = (ts || []).map((v) => v.id);
         if (tids.length) {
@@ -492,7 +493,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
       {!isTurnToday && <p className="muted small">Você poderá marcar as tarefas no dia deste turno.</p>}{list.map((task) => <button key={task.id} className={"list-item gd-task " + (statuses[task.id]?.done ? "task-done" : "")} disabled={!isTurnToday || busy} onClick={() => toggleTask(task)}>
       <span className="gd-check">{statuses[task.id]?.done && <Check size={15} />}</span>
       <span className="gd-task-text">
-      <b>{task.name}</b>{task.instructions && <small className="muted">{task.instructions}</small>}{(subtasks[task.id] || []).length > 0 && <ul className="gira-subtasks">{subtasks[task.id].map((s) => <li key={s.id}>{s.title}</li>)}</ul>}</span>
+      <b>{task.name}</b>{(responsaveis[task.id] || []).length > 0 && <small className={"gd-resp" + (responsaveis[task.id].some((r) => r.profile_id === p.id) ? " is-mine" : "")}>👤 {responsaveis[task.id].some((r) => r.profile_id === p.id) ? "Sua tarefa" + (responsaveis[task.id].length > 1 ? ", com " + responsaveis[task.id].filter((r) => r.profile_id !== p.id).map((r) => r.name).join(" e ") : "") : responsaveis[task.id].map((r) => r.name).join(" e ")}</small>}{task.instructions && <small className="muted">{task.instructions}</small>}{(subtasks[task.id] || []).length > 0 && <ul className="gira-subtasks">{subtasks[task.id].map((s) => <li key={s.id}>{s.title}</li>)}</ul>}</span>
       </button>)}{!list.length && <p className="muted small">Nenhuma tarefa cadastrada para este turno.</p>}</div>;
   })}</>}
   </div>}

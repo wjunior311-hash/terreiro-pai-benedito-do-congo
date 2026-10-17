@@ -849,3 +849,6 @@ h1,h2,h3{color:var(--ink)}
 .at-item b{display:block;font-size:14.5px}
 .at-item small{color:var(--muted);font-size:12.5px;line-height:1.35;display:block}
 .at-item .btn{flex:none}
+.gd-resp{justify-self:start;display:inline-block;margin-top:4px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.gd-resp.is-mine{color:var(--brand-ink);background:var(--brand-soft);padding:2px 8px;border-radius:99px}
+.task-done .gd-resp{text-decoration:none;opacity:.8}
