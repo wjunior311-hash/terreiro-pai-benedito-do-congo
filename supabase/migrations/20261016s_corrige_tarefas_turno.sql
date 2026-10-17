@@ -1,0 +1,3 @@
+-- 2026-10-16 (s) — Correção: app.gira_turn_tasks dava erro ("structure of query does not match")
+-- porque usava "select t from" num retorno SETOF tasks. Trocado por "select t.* from".
+-- Sintoma: aba Tarefas mostrava "Nenhuma tarefa cadastrada para este turno".
