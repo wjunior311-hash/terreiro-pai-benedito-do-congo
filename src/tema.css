@@ -901,3 +901,28 @@ h1,h2,h3{color:var(--ink)}
 .rv-atalho-txt small{font-size:11px;letter-spacing:.14em;font-weight:800;color:#f5c518}
 .rv-atalho-txt b{font-family:var(--serif);font-size:22px;line-height:1.1}
 .rv-atalho-txt span{font-size:13px;opacity:.85}
+
+/* Resumo da gira (gestão) */
+.rg{display:grid;gap:12px}
+.rg .la-head h3{margin:2px 0 4px}
+.rg-acoes{display:flex;flex-wrap:wrap;gap:8px}
+.rg-sec{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:12px 14px}
+.rg-sec.is-alerta{border-color:var(--warn-line)}
+.rg-sec summary{cursor:pointer;font-weight:800;display:flex;align-items:center;gap:8px;list-style:none}
+.rg-sec summary::-webkit-details-marker{display:none}
+.rg-sec summary::after{content:"›";margin-left:6px;color:var(--muted);transition:transform .2s;font-size:20px;line-height:1}
+.rg-sec[open] summary::after{transform:rotate(90deg)}
+.rg-sec summary b{margin-left:auto;font-size:13px;color:var(--muted);font-weight:700}
+.rg-corpo{margin-top:10px;display:grid;gap:8px}
+.rg-corpo ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rg-corpo li{display:flex;align-items:center;gap:8px;font-size:14px}
+.rg-nome{display:grid;gap:1px;min-width:0;flex:1}
+.rg-nome small{color:var(--muted);font-size:12.5px;line-height:1.35}
+.rg-sub{margin:6px 0 0;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rg-sub small{text-transform:none;letter-spacing:0;font-weight:600}
+.rg-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rg-chips span{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.rg-itens li{padding:8px 10px;border-radius:12px;background:var(--surface-2)}
+.rg-itens li.is-ok .rg-conta{color:var(--brand-ink)}
+.rg-conta{font-weight:800;font-size:13px;color:var(--warn-ink,#b7791f);white-space:nowrap}
+.rg .la-adm .la-head{display:none}

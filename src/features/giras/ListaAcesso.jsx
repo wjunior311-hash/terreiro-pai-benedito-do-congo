@@ -45,39 +45,25 @@ export function AccessDocModal({ item, onClose, onSaved }) {
 
 const dataBR = (iso) => new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
 
-export function GestaoListaAcesso() {
-  const [giras, setGiras] = useState(null), [sel, setSel] = useState(""), [rows, setRows] = useState(null), [msg, setMsg] = useState("");
+export function AcessoBloco({ gira: g, cabecalho }) {
+  const [rows, setRows] = useState(null), [msg, setMsg] = useState("");
   useEffect(() => {
-    supabase.rpc("admin_access_doc_giras").then(({ data, error }) => {
-      if (error) setMsg(err(error));
-      const g = Array.isArray(data) ? data : [];
-      setGiras(g);
-      if (g[0]) setSel(g[0].id);
-    });
-  }, []);
-  useEffect(() => {
-    if (!sel) return;
+    if (!g?.id) return;
     setRows(null);
-    supabase.rpc("admin_access_docs", { p_gira: sel }).then(({ data, error }) => { if (error) setMsg(err(error)); setRows(data || []); });
-  }, [sel]);
-  if (!giras) return <div className="hm-skeleton" style={{ marginTop: 14 }} />;
-  if (!giras.length) return <div className="mu-empty">Nenhum evento pedindo lista de acesso.</div>;
-  const g = giras.find((x) => x.id === sel);
+    supabase.rpc("admin_access_docs", { p_gira: g.id }).then(({ data, error }) => { if (error) setMsg(err(error)); setRows(data || []); });
+  }, [g?.id]);
   const enviados = (rows || []).filter((r) => r.full_name), faltam = (rows || []).filter((r) => !r.full_name);
   const baixar = () => {
     const linhas = [["Nº", "Nome completo", "RG"]];
     enviados.slice().sort((a, b) => a.full_name.localeCompare(b.full_name, "pt-BR")).forEach((r, i) => linhas.push([i + 1, r.full_name, r.rg || ""]));
-    const csv = "﻿" + linhas.map((l) => l.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(";")).join("\r\n");
+    const csv = "\uFEFF" + linhas.map((l) => l.map((c) => '"' + String(c).replace(/"/g, '""') + '"').join(";")).join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    a.download = "lista-de-acesso-" + (g?.name || "evento").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-") + ".csv";
+    a.download = "lista-de-acesso-" + (g?.name || "evento").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-") + ".csv";
     document.body.appendChild(a); a.click(); a.remove();
   };
   return <div className="la-adm">
-    {giras.length > 1 && <select className="select" value={sel} onChange={(e) => setSel(e.target.value)}>{giras.map((x) => <option key={x.id} value={x.id}>{x.name} · {dataBR(x.starts_at)}</option>)}</select>}
-    <div className="la-head">
-      <div><span className="eyebrow">LISTA DE ACESSO</span><h3>{g?.name}</h3><p className="muted small">Quem pagou envia nome completo e RG pelo app. Os RGs são apagados 1 dia depois do evento.</p></div>
-    </div>
+    {cabecalho}
     {msg && <div className="gw-warning">{msg}</div>}
     {!rows ? <div className="hm-skeleton" /> : <>
       <div className="in-resumo">
@@ -85,7 +71,7 @@ export function GestaoListaAcesso() {
         <div><b>{enviados.length}</b><small>enviaram</small></div>
         <div><b>{faltam.length}</b><small>faltam</small></div>
       </div>
-      <button className="btn primary la-baixar" disabled={!enviados.length} onClick={baixar}>Baixar planilha ({enviados.length})</button>
+      <button className="btn primary la-baixar" disabled={!enviados.length} onClick={baixar}>Baixar planilha de acesso ({enviados.length})</button>
       {faltam.length > 0 && <details className="cw-adm-opt is-falta" open>
         <summary>Ainda não enviaram <b>{faltam.length}</b></summary>
         <ul>{faltam.map((r) => {
@@ -99,4 +85,24 @@ export function GestaoListaAcesso() {
       </details>}
     </>}
   </div>;
+}
+
+export function GestaoListaAcesso() {
+  const [giras, setGiras] = useState(null), [sel, setSel] = useState(""), [msg, setMsg] = useState("");
+  useEffect(() => {
+    supabase.rpc("admin_access_doc_giras").then(({ data, error }) => {
+      if (error) setMsg(err(error));
+      const g = Array.isArray(data) ? data : [];
+      setGiras(g);
+      if (g[0]) setSel(g[0].id);
+    });
+  }, []);
+  if (!giras) return <div className="hm-skeleton" style={{ marginTop: 14 }} />;
+  if (!giras.length) return <div className="mu-empty">Nenhum evento pedindo lista de acesso.</div>;
+  const g = giras.find((x) => x.id === sel);
+  return <>
+    {giras.length > 1 && <select className="select" value={sel} onChange={(e) => setSel(e.target.value)}>{giras.map((x) => <option key={x.id} value={x.id}>{x.name} · {dataBR(x.starts_at)}</option>)}</select>}
+    {msg && <div className="gw-warning">{msg}</div>}
+    <AcessoBloco gira={g} cabecalho={<div className="la-head"><div><span className="eyebrow">LISTA DE ACESSO</span><h3>{g?.name}</h3><p className="muted small">Quem pagou envia nome completo e RG pelo app. Os RGs são apagados 1 dia depois do evento.</p></div></div>} />
+  </>;
 }
