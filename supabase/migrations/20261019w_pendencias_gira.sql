@@ -4,3 +4,4 @@
 --   * giras.bring_per_person: quantos itens cada um escolhe no "O que vou levar".
 --   * app.my_gira_pending(): tarefas do Início (ler / escolher itens), só para quem confirmou presença.
 --   * app.ack_gira_info(gira), app.admin_gira_pending(gira) (quem leu e quantos itens escolheu).
+-- giras.guide_text: texto-guia novo (o app mostra guide_text no lugar de what_to_bring quando existir).
