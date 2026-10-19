@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase.js";
 import { dateTime, err } from "../../lib/helpers.js";
 import { CONTENT_TAGS, contentSummary, coverStyle, isDraft, readingMinutes, sanitizeContentHtml, splitContentTabs } from "./conteudo.js";
 import { CaminhoAvisoCard } from "../caminhos/Caminho.jsx";
+import { RevistaAtalho } from "../revista/Revista.jsx";
 
 // Corpo em abas: cada Título vira um botão; Anterior / Próxima no fim.
 function ContentTabs({ body }) {
@@ -115,6 +116,7 @@ export function HouseContent({ back, p, go }) {
     <h1>Conteúdos</h1>
     <p className="muted">Ensinamentos, avisos e regras da casa</p>
     </div>
+  {go && <RevistaAtalho p={p} go={go} />}
   <div className="bl-seg" role="tablist">{[["content", "Conteúdos"], ["notice", "Avisos"], ["rule", "Regras"]].map(([k, l]) => <button key={k} role="tab" aria-selected={section === k} className={section === k ? "is-on" : ""} onClick={() => {
     setSection(k);
     setTag("Todos");

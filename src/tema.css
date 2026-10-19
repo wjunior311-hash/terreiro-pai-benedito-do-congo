@@ -895,3 +895,9 @@ h1,h2,h3{color:var(--ink)}
 .rv-cal-item b{font-size:15px}
 .rv-cal-item span:nth-child(2){color:var(--rv-cor-txt);font-weight:700;font-size:13px}
 .rv-hero-text h2.rv-h2-longo{font-size:clamp(28px,9.4vw,44px)}
+.rv-atalho{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:4px 0 14px;padding:10px 14px 10px 10px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(135deg,#231c16,#3a2a18);color:#f5f0e6;font:inherit;cursor:pointer}
+.rv-atalho-capa{flex:none;width:52px;height:66px;border-radius:10px;background-size:cover;background-position:center;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.rv-atalho-txt{flex:1;display:grid;gap:1px}
+.rv-atalho-txt small{font-size:11px;letter-spacing:.14em;font-weight:800;color:#f5c518}
+.rv-atalho-txt b{font-family:var(--serif);font-size:22px;line-height:1.1}
+.rv-atalho-txt span{font-size:13px;opacity:.85}

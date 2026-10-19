@@ -55,6 +55,19 @@ export function RevistaHomeCard({ p, go }) {
   </button>;
 }
 
+// Atalho em Conteúdos: todas as edições da revista
+export function RevistaAtalho({ p, go }) {
+  const [rows] = useEdicoes(p);
+  const pub = (rows || []).filter((e) => e.status === "published");
+  if (!pub.length) return null;
+  const ed = edicaoPorSlug(pub[0].slug), naoLidas = pub.filter((e) => !e.read?.finished_at).length;
+  return <button type="button" className="rv-atalho" onClick={() => go("revista")}>
+    <span className="rv-atalho-capa" style={{ backgroundImage: `url("${ed.capa.img}")` }} />
+    <span className="rv-atalho-txt"><small>REVISTA DA CASA</small><b>Ẹ̀mí Ìlú</b><span>{pub.length} {pub.length === 1 ? "edição" : "edições"}{naoLidas ? " · " + naoLidas + " para ler" : " · todas lidas ✓"}</span></span>
+    <ArrowRight size={18} />
+  </button>;
+}
+
 // Tela "Revista": última edição + edições anteriores
 export function RevistaTela({ p, go }) {
   const [rows, reload] = useEdicoes(p), [open, setOpen] = useState(null);
