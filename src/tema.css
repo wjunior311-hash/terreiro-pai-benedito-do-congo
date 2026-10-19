@@ -881,3 +881,8 @@ h1,h2,h3{color:var(--ink)}
 .gd-map{justify-content:center;text-align:center;text-decoration:none;font-weight:800}
 .gd-gmaps{background:#e8f0fe;color:#1a56c4;border-color:#c6d8fb}
 .gd-waze{background:#e3f6fd;color:#0a6f93;border-color:#b9e6f6}
+.gd-fechada{display:grid;gap:6px;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--surface-2);margin-bottom:12px}
+.gd-fechada b{font-size:15px}
+.gd-fechada small{color:var(--muted);font-size:13px;line-height:1.4}
+.gd-fechada .btn{justify-self:start;text-decoration:none;margin-top:4px}
+.gd-prazo-resp{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--warn-ink)}

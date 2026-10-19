@@ -1,0 +1,4 @@
+-- 2026-10-19 (x) — Local da gira e prazo de respostas
+--   * giras.address: endereço; o app mostra botões Google Maps e Waze.
+--   * giras.responses_until: depois disso a gira "não aceita mais respostas" (trigger gira_responses_prazo bloqueia, exceto gestão).
+-- Gira na Cachoeira: endereço Estrada dos Pintos, 2095 (Atibaia) e respostas até 20/10 12h.

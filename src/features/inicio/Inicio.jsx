@@ -88,7 +88,7 @@ export function Home({ p, go, memberPreview = false }) {
   const attention = [];
   if (gira) {
     const d = new Date(gira.starts_at), day = 864e5, dateText = d.toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "2-digit" });
-    if (!resp?.status) attention.push({ key: "presence", tone: "warning", icon: <CalendarDays size={20} />, title: "Confirme sua presença", text: gira.name + " · " + dateText, cta: "Responder", onClick: () => document.getElementById("hm-next-gira")?.scrollIntoView({ behavior: "smooth", block: "center" }) });
+    if (!resp?.status && !(gira.responses_until && now > new Date(gira.responses_until))) attention.push({ key: "presence", tone: "warning", icon: <CalendarDays size={20} />, title: "Confirme sua presença", text: gira.name + " · " + dateText, cta: "Responder", onClick: () => document.getElementById("hm-next-gira")?.scrollIntoView({ behavior: "smooth", block: "center" }) });
     if (resp?.status === "going" && gira.use_task_list) {
       const open = now >= new Date(d.getTime() - 10 * day) && (now < new Date(d.getTime() - 3 * day) || gira.turn_availability_reopened_until && now < new Date(gira.turn_availability_reopened_until));
       const deadline = now.toDateString() === new Date(d.getTime() - 3 * day).toDateString();

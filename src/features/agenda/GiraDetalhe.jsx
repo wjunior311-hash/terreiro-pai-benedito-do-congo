@@ -233,6 +233,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   };
   const availableLabel = (t) => `${t.occupied}/${t.capacity} pessoas`;
   // regra nova (giras a partir de 19/10/2026): um turno por pessoa; pais de santo não ocupam vaga
+  const respFechada = !!gira.responses_until && new Date() > new Date(gira.responses_until);
   const [precisaLer, setPrecisaLer] = useState(null), [leuAgora, setLeuAgora] = useState(false);
   useEffect(() => {
     if (isPreview) return;
@@ -341,12 +342,18 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     <span><b>{going ? "Seu selo exclusivo está garantido!" : "Este evento tem selo exclusivo"}</b>
     <small>{going ? "Ele aparece nas suas insígnias no dia do evento." : "Confirme sua presença e ganhe um selo que só quem participa deste evento tem."}</small></span>
   </div>}
+  {respFechada ? <div className="gd-fechada">
+    <b>🔒 Esta gira não aceita mais respostas</b>
+    <small>{going ? "Sua presença está confirmada." : resp?.status === "not_going" ? "Você marcou que não vai." : "O prazo para confirmar presença terminou."} Precisa de algo? Fale com os Pais da Casa.</small>
+    <a className="btn" href="?tela=contact">💬 Fale com os Pais da Casa</a>
+  </div> : <>
+  {gira.responses_until && <p className="gd-prazo-resp">⏳ Respostas até {(() => { const d = new Date(gira.responses_until); return d.toLocaleDateString("pt-BR", { weekday: "long" }).replace("-feira", "") + ", " + d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " às " + d.getHours() + "h" + (d.getMinutes() ? String(d.getMinutes()).padStart(2, "0") : ""); })()}</p>}
   <div className="gira-public-actions">
     <button className={"btn " + (going ? "primary is-selected going" : "")} disabled={busy} onClick={() => answer("going")}>
     <Check size={15} /> {going ? "Confirmado: vou participar" : "Vou participar"}</button>
     <button className={"btn " + (resp?.status === "not_going" ? "is-selected not-going" : "")} disabled={busy} onClick={() => answer("not_going")}>
     <X size={15} /> {resp?.status === "not_going" ? "Confirmado: não vou" : "Não vou participar"}</button>
-    </div>{resp?.status && <div className={"gira-response-confirmation " + resp.status}>
+    </div></>}{resp?.status && <div className={"gira-response-confirmation " + resp.status}>
     <Check size={16} />
     <span>
     <b>{going ? "Presença confirmada." : "Resposta registrada."}</b> {going ? "Você marcou que vai participar desta gira." : "Você marcou que não vai participar desta gira."}</span>
