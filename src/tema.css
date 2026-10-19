@@ -873,3 +873,11 @@ h1,h2,h3{color:var(--ink)}
 .ol-falta{margin-top:10px}
 .gd-li{margin-top:14px;width:100%}
 .gd-li-ok{margin:12px 0 0;display:flex;gap:6px;align-items:center;color:var(--brand-ink);font-weight:700}
+
+/* ---------- Local da gira (mapas) ---------- */
+.gd-local{display:grid;gap:8px}
+.gd-local-end{font-size:15px;line-height:1.4}
+.gd-local-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.gd-map{justify-content:center;text-align:center;text-decoration:none;font-weight:800}
+.gd-gmaps{background:#e8f0fe;color:#1a56c4;border-color:#c6d8fb}
+.gd-waze{background:#e3f6fd;color:#0a6f93;border-color:#b9e6f6}

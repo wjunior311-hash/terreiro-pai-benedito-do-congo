@@ -374,6 +374,14 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     return x ? <span key={id}>{x[1]} {x[2]}</span> : null;
   })}</div></div></div>}
   </div>
+  {gira.address && <div className="card gd-local">
+    <span className="eyebrow">LOCAL</span>
+    <b className="gd-local-end">📍 {gira.address}</b>
+    <div className="gd-local-btns">
+      <a className="btn gd-map gd-gmaps" href={"https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(gira.address)} target="_blank" rel="noreferrer">🗺️ Google Maps</a>
+      <a className="btn gd-map gd-waze" href={"https://waze.com/ul?navigate=yes&q=" + encodeURIComponent(gira.address)} target="_blank" rel="noreferrer">🚗 Waze</a>
+    </div>
+  </div>}
   {(gira.guide_text || gira.what_to_bring) && <div className="card gira-public-section">
     <div className="gira-public-section-title">
     <span className="gira-public-info-icon"><ShoppingBag size={16} /></span>
