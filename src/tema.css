@@ -886,3 +886,12 @@ h1,h2,h3{color:var(--ink)}
 .gd-fechada small{color:var(--muted);font-size:13px;line-height:1.4}
 .gd-fechada .btn{justify-self:start;text-decoration:none;margin-top:4px}
 .gd-prazo-resp{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--warn-ink)}
+.rv-lista{margin:0 0 16px;padding:0;list-style:none;display:grid;gap:8px}
+.rv-lista li{position:relative;padding:10px 12px 10px 30px;border-radius:12px;background:var(--rv-cor-soft);line-height:1.45}
+.rv-lista li::before{content:"";position:absolute;left:13px;top:18px;width:7px;height:7px;border-radius:50%;background:var(--rv-cor)}
+.rv-cal{display:grid;gap:14px;margin:0 0 16px}
+.rv-cal-mes small{display:block;font-size:12px;letter-spacing:.12em;font-weight:800;color:var(--rv-cor-txt);margin-bottom:6px}
+.rv-cal-item{display:grid;grid-template-columns:54px 50px 1fr;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.08)}
+.rv-cal-item b{font-size:15px}
+.rv-cal-item span:nth-child(2){color:var(--rv-cor-txt);font-weight:700;font-size:13px}
+.rv-hero-text h2.rv-h2-longo{font-size:clamp(28px,9.4vw,44px)}

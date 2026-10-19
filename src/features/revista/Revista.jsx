@@ -8,9 +8,11 @@ import { can } from "../acesso.js";
 import { useMemberFinance } from "../financeiro/regras.js";
 import { PayModal } from "../financeiro/ComoPagar.jsx";
 import * as ed202610 from "./edicoes/2026-10.js";
+import * as ed202608 from "./edicoes/2026-08.js";
+import * as ed202606 from "./edicoes/2026-06.js";
 
 // todas as edições que existem no app (a mais nova primeiro)
-export const EDICOES = [ed202610];
+export const EDICOES = [ed202610, ed202608, ed202606];
 export const edicaoPorSlug = (slug) => EDICOES.find((e) => e.slug === slug);
 
 const firstName = (n) => {
@@ -155,7 +157,7 @@ export function Revista({ p, slug, back, go = null, preview = false }) {
       <div className="rv-hero-shade" />
       <div className="rv-hero-text">
         <span className="rv-secao rv-in1">{m.secao}</span>
-        <h2 className="rv-in2">{m.titulo}</h2>
+        <h2 className={"rv-in2" + (Math.max(...m.titulo.split(" ").map((w) => w.length)) > 12 ? " rv-h2-longo" : "")}>{m.titulo}</h2>
       </div>
     </div>
     <div className="rv-body" key={idx}>
@@ -200,6 +202,8 @@ function Bloco({ b, m, ed, p, go, manager, chipSel, setChip }) {
       <span className="rv-livro-capa" style={{ background: l.cor }}>{l.titulo.split(":")[0]}{l.capa && <img src={l.capa} alt={"Capa de " + l.titulo} loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.style.display = "none"; }} />}</span>
       <span><b>{l.titulo}</b><small>{l.autor}</small><p>{l.texto}</p></span>
     </div>)}</div>;
+    case "lista": return <ul className="rv-lista">{b.itens.map((x) => <li key={x}>{x}</li>)}</ul>;
+    case "cal": return <div className="rv-cal">{b.meses.map((mm) => <div key={mm.mes} className="rv-cal-mes"><small>{mm.mes}</small>{mm.itens.map((x) => <div key={x.d + x.t} className="rv-cal-item"><b>{x.d}</b><span>{x.h}</span><span>{x.t}</span></div>)}</div>)}</div>;
     case "pergunta": return <div className="rv-pergunta"><small>PARA PENSAR</small><b>{b.texto}</b></div>;
     default: return null;
   }
@@ -212,11 +216,11 @@ function Banho({ banho }) {
     {banho.ingredientes.map((x, i) => <button key={x} className={"rv-ing" + (tem[i] ? " on" : "")} aria-pressed={!!tem[i]} onClick={() => setTem((v) => ({ ...v, [i]: !v[i] }))}>
       <span className="rv-ing-box">{tem[i] && <Check size={15} />}</span><span>{x}</span>
     </button>)}
-    <div className="rv-modo" role="group" aria-label="Tipo de folha">
+    {banho.frescas && banho.secas && <><div className="rv-modo" role="group" aria-label="Tipo de folha">
       <button className={modo === "frescas" ? "on" : ""} onClick={() => setModo("frescas")}>Folhas frescas</button>
       <button className={modo === "secas" ? "on" : ""} onClick={() => setModo("secas")}>Folhas de saquinho</button>
     </div>
-    <p className="rv-modo-txt" key={modo}>{banho[modo]}</p>
+    <p className="rv-modo-txt" key={modo}>{banho[modo]}</p></>}
   </div>;
 }
 
