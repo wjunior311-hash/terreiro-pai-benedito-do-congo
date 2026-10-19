@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase.js";
 import { err, lineInfo, money, typeLabel } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
 import { useReadableCover } from "../../components/GiraCard.jsx";
+import { OQueLevar } from "./OQueLevar.jsx";
 
 // quem está sem turno assume o lugar de quem está em dois (só nos turnos abertos para troca)
 function AssumirTurno({ gira, onDone }) {
@@ -373,6 +374,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     </div>
     <p className="gira-public-preserve">{gira.what_to_bring}</p>
     </div>}
+  {!isPreview && <OQueLevar gira={gira} going={going} />}
   {gira.notes && <div className="card gira-public-section">
     <div className="gira-public-section-title">
     <span className="gira-public-info-icon"><MessageSquare size={16} /></span>
