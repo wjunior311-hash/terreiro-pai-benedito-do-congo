@@ -70,6 +70,14 @@ export function HouseContent({ back, p, go }) {
     setItems(c || []);
     setNotices(n || []);
     setReads(Object.fromEntries((r || []).map((x) => [x.content_id, x])));
+    try {
+      const alvo = sessionStorage.getItem("tpbc-abrir-conteudo");
+      if (alvo) {
+        sessionStorage.removeItem("tpbc-abrir-conteudo");
+        const x = (c || []).find((i) => i.id === alvo);
+        if (x) { setSelected(x); window.scrollTo({ top: 0 }); if (!(r || []).some((i) => i.content_id === x.id)) supabase.rpc("mark_house_content_read", { p_content_id: x.id }); }
+      }
+    } catch (e) { /* ok */ }
     const ids = [...new Set((c || []).map((x) => x.created_by).filter(Boolean))];
     if (ids.length) {
       const { data: pr } = await supabase.from("profiles").select("id,name").in("id", ids);

@@ -111,7 +111,7 @@ export function Home({ p, go, memberPreview = false }) {
   if (pendCaminho) attention.push({ key: "caminho-" + pendCaminho.e.id, tone: "warning", icon: <span style={{ fontSize: 19 }}>{pendCaminho.c.emoji}</span>, title: pendCaminho.c.title + ": você vai?", text: "Responda até " + new Date(pendCaminho.e.deadline || Date.now()).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }), cta: "Responder", onClick: () => go("caminho") });
   requiredReads.forEach((x) => {
     const reminded = x.reminded_at && now - new Date(x.reminded_at) < 7 * 864e5;
-    attention.push({ key: "read-" + x.id, tone: reminded ? "danger" : "warning", icon: <BookOpen size={19} />, title: reminded ? "Lembrete: leitura obrigatória" : "Leitura obrigatória", text: x.title, cta: "Ler", onClick: () => go("content") });
+    attention.push({ key: "read-" + x.id, tone: reminded ? "danger" : "warning", icon: <BookOpen size={19} />, title: reminded ? "Lembrete: leitura obrigatória" : "Leitura obrigatória", text: x.title, cta: "Ler", onClick: () => { try { sessionStorage.setItem("tpbc-abrir-conteudo", x.id); } catch (e) { /* ok */ } go("content"); } });
   });
   const seen = async (x) => {
     await supabase.rpc("mark_payment_proof_seen", { p_id: x.id });
