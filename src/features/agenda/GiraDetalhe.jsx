@@ -374,7 +374,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     return x ? <span key={id}>{x[1]} {x[2]}</span> : null;
   })}</div></div></div>}
   </div>
-  {gira.what_to_bring && <div className="card gira-public-section">
+  {(gira.guide_text || gira.what_to_bring) && <div className="card gira-public-section">
     <div className="gira-public-section-title">
     <span className="gira-public-info-icon"><ShoppingBag size={16} /></span>
     <div>
@@ -382,7 +382,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     <h3>Prepare-se para a Gira</h3>
     </div>
     </div>
-    <p className="gira-public-preserve">{gira.what_to_bring}</p>
+    <p className="gira-public-preserve">{gira.guide_text || gira.what_to_bring}</p>
     {going && precisaLer !== null && (precisaLer ? <button className="btn primary gd-li" disabled={busy} onClick={marcarLido}><Check size={15} /> Li as informações</button> : leuAgora && <p className="gd-li-ok"><Check size={15} /> Obrigado! Informações lidas.</p>)}
     </div>}
   {!isPreview && <OQueLevar gira={gira} going={going} />}
