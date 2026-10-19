@@ -233,6 +233,16 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   };
   const availableLabel = (t) => `${t.occupied}/${t.capacity} pessoas`;
   // regra nova (giras a partir de 19/10/2026): um turno por pessoa; pais de santo não ocupam vaga
+  const [precisaLer, setPrecisaLer] = useState(null), [leuAgora, setLeuAgora] = useState(false);
+  useEffect(() => {
+    if (isPreview) return;
+    supabase.rpc("my_gira_pending").then(({ data }) => { const x = (data || []).find((v) => v.gira_id === gira.id); setPrecisaLer(!!x?.needs_read); });
+  }, [gira.id, resp?.status]);
+  const marcarLido = async () => {
+    const { error } = await supabase.rpc("ack_gira_info", { p_gira: gira.id });
+    if (error) return setMsg(err(error));
+    setPrecisaLer(false); setLeuAgora(true);
+  };
   const regraNova = new Date(gira.starts_at) >= new Date("2026-10-19T00:00:00-03:00"), maxTurnos = regraNova && !p.is_pai_de_santo ? (gira.max_turns_per_person || 1) : 0, umTurno = maxTurnos === 1;
   // grupos de turnos (ex.: "Organização" escolhe 1, "Durante o evento" até 3)
   const grupos = [];
@@ -368,11 +378,12 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     <div className="gira-public-section-title">
     <span className="gira-public-info-icon"><ShoppingBag size={16} /></span>
     <div>
-    <span className="eyebrow">O QUE LEVAR</span>
+    <span className="eyebrow">INFORMAÇÕES</span>
     <h3>Prepare-se para a Gira</h3>
     </div>
     </div>
     <p className="gira-public-preserve">{gira.what_to_bring}</p>
+    {going && precisaLer !== null && (precisaLer ? <button className="btn primary gd-li" disabled={busy} onClick={marcarLido}><Check size={15} /> Li as informações</button> : leuAgora && <p className="gd-li-ok"><Check size={15} /> Obrigado! Informações lidas.</p>)}
     </div>}
   {!isPreview && <OQueLevar gira={gira} going={going} />}
   {gira.notes && <div className="card gira-public-section">

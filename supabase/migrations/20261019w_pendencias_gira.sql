@@ -1,0 +1,6 @@
+-- 2026-10-19 (w) — Pendências da gira no Início
+--   * giras.info_ack_at: quando a gestão quer que todos leiam as informações novas.
+--   * gira_info_reads: quem leu (botão "Li as informações" no texto da gira).
+--   * giras.bring_per_person: quantos itens cada um escolhe no "O que vou levar".
+--   * app.my_gira_pending(): tarefas do Início (ler / escolher itens), só para quem confirmou presença.
+--   * app.ack_gira_info(gira), app.admin_gira_pending(gira) (quem leu e quantos itens escolheu).

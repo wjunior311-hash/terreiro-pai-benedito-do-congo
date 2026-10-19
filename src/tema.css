@@ -871,3 +871,5 @@ h1,h2,h3{color:var(--ink)}
 .ol-who{color:var(--ink-2)!important;font-weight:600}
 .ol-item .btn{flex:none}
 .ol-falta{margin-top:10px}
+.gd-li{margin-top:14px;width:100%}
+.gd-li-ok{margin:12px 0 0;display:flex;gap:6px;align-items:center;color:var(--brand-ink);font-weight:700}

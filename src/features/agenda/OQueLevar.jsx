@@ -8,6 +8,10 @@ export function OQueLevar({ gira, going }) {
   const max = gira.bring_per_person || 0;
   const carregar = () => supabase.rpc("gira_bring_list", { p_gira: gira.id }).then(({ data }) => setItens(Array.isArray(data) ? data : []));
   useEffect(() => { carregar(); }, [gira.id]);
+  useEffect(() => {
+    if (!itens?.length) return;
+    try { if (sessionStorage.getItem("tpbc-rolar") === "o-que-levar") { sessionStorage.removeItem("tpbc-rolar"); setTimeout(() => document.getElementById("o-que-levar")?.scrollIntoView({ behavior: "smooth", block: "start" }), 300); } } catch (e) { /* ok */ }
+  }, [itens?.length]);
   if (!itens || !itens.length) return null;
   const meus = itens.filter((i) => i.mine).length;
   const completo = max > 0 && meus >= max;

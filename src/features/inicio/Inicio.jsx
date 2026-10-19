@@ -81,7 +81,9 @@ export function Home({ p, go, memberPreview = false }) {
   };
   const fin = useMemberFinance(p), [payOpen, setPayOpen] = useState(false);
   const [caminhos] = useCaminhos(), pendCaminho = pendenciaCaminho(caminhos);
-  const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null);
+  const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null), [pendGira, setPendGira] = useState([]);
+  useEffect(() => { supabase.rpc("my_gira_pending").then(({ data }) => setPendGira(Array.isArray(data) ? data : [])); }, [p.id]);
+  const abrirGira = (id, rolar) => { try { sessionStorage.setItem("tpbc-abrir-gira", id); if (rolar) sessionStorage.setItem("tpbc-rolar", rolar); } catch (e) { /* ok */ } go("giras"); };
   const now = /* @__PURE__ */ new Date();
   const attention = [];
   if (gira) {
@@ -101,6 +103,10 @@ export function Home({ p, go, memberPreview = false }) {
   }
   turnChangeNotifications.slice(0, 1).forEach((n) => attention.push({ key: "turnchange-" + n.id, tone: "warning", icon: <RefreshCw size={19} />, title: "Seu turno foi alterado", text: n.message, cta: "Ver", onClick: () => go("giras") }));
   giraNotifications.slice(0, 1).forEach((n) => attention.push({ key: "gira-" + n.id, tone: "info", icon: <CalendarDays size={20} />, title: "Novidade na agenda", text: n.message, cta: "Abrir", onClick: () => go("giras") }));
+  pendGira.forEach((g) => {
+    if (g.needs_read) attention.push({ key: "ler-" + g.gira_id, tone: "warning", icon: <BookOpen size={19} />, title: "Leia as novidades da " + g.name, text: "Horários, roupa e o que levar na mochila", cta: "Ler", onClick: () => abrirGira(g.gira_id) });
+    if (g.has_items && (g.max || 1) > g.mine) attention.push({ key: "levar-" + g.gira_id, tone: "warning", icon: <ClipboardList size={19} />, title: "Escolha " + ((g.max || 1) - g.mine) + (((g.max || 1) - g.mine) === 1 ? " item" : " itens") + " para levar", text: g.name + " · café coletivo", cta: "Escolher", onClick: () => abrirGira(g.gira_id, "o-que-levar") });
+  });
   docs.filter((d) => !d.sent).forEach((d) => attention.push({ key: "docs-" + d.gira_id, tone: "warning", icon: <ShieldCheck size={20} />, title: "Envie seu nome completo e RG", text: "Lista de acesso · " + d.gira, cta: "Enviar", onClick: () => setDocOpen(d) }));
   if (pendCaminho) attention.push({ key: "caminho-" + pendCaminho.e.id, tone: "warning", icon: <span style={{ fontSize: 19 }}>{pendCaminho.c.emoji}</span>, title: pendCaminho.c.title + ": você vai?", text: "Responda até " + new Date(pendCaminho.e.deadline || Date.now()).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }), cta: "Responder", onClick: () => go("caminho") });
   requiredReads.forEach((x) => {
