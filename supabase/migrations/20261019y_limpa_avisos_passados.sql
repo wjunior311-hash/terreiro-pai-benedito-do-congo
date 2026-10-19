@@ -1,0 +1,4 @@
+-- 2026-10-19 (y) — Avisos de giras que já passaram saem do Início
+-- app.limpa_avisos_giras_passadas(): marca como lidos os avisos de disponibilidade/troca de turno
+-- de giras que começaram há mais de 6 horas. Roda de hora em hora (cron tpbc-limpa-avisos-giras).
+-- Primeira execução em 19/10 limpou 76 avisos antigos (Ancestrais, Desenvolvimento, Batizado Rael).
