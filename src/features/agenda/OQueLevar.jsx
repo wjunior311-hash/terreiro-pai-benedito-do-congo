@@ -13,7 +13,8 @@ export function OQueLevar({ gira, going }) {
     try { if (sessionStorage.getItem("tpbc-rolar") === "o-que-levar") { sessionStorage.removeItem("tpbc-rolar"); setTimeout(() => document.getElementById("o-que-levar")?.scrollIntoView({ behavior: "smooth", block: "start" }), 300); } } catch (e) { /* ok */ }
   }, [itens?.length]);
   if (!itens || !itens.length) return null;
-  const meus = itens.filter((i) => i.mine).length;
+  const meus = itens.filter((i) => i.mine).reduce((n, i) => n + (i.weight || 1), 0);
+  const temPeso = itens.some((i) => (i.weight || 1) > 1);
   const completo = max > 0 && meus >= max;
   const tocar = async (i) => {
     setBusy(i.id); setMsg("");
@@ -29,7 +30,8 @@ export function OQueLevar({ gira, going }) {
     <span className="eyebrow">O QUE VOU LEVAR</span>
     <h3>Cada um traz um pouquinho</h3>
     {max > 0 && <div className={"ol-regra" + (completo ? " is-ok" : "")}>
-      {completo ? <b>✅ Pronto! Você escolheu seus {max} itens.</b> : <b>Cada pessoa escolhe {max} itens para levar.</b>}
+      {completo ? <b>✅ Pronto! Você já escolheu o que vai levar.</b> : <b>Cada pessoa escolhe {max} itens para levar.</b>}
+      {temPeso && !completo && <small className="ol-peso-dica">Os itens marcados com <span className="ol-peso">vale por 2</span> já contam como os {max}.</small>}
       <small>{completo ? "Para trocar, toque em um dos seus itens para desmarcar e escolha outro." : going ? "Você escolheu " + meus + " de " + max + ". Quem não escolher, combina com a gestão uma contribuição para o almoço." : "Confirme sua presença para escolher. Quem não escolher, combina com a gestão uma contribuição para o almoço."}</small>
     </div>}
     {msg && <div className="gw-warning">{msg}</div>}
@@ -40,7 +42,7 @@ export function OQueLevar({ gira, going }) {
         const bloqueado = !going || cheio || (completo && !i.mine);
         return <div className={"ol-item" + (i.mine ? " is-mine" : "") + (i.taken >= i.slots ? " is-full" : "")} key={i.id}>
           <div className="ol-txt">
-            <b>{i.name}</b>
+            <b>{i.name}{(i.weight || 1) > 1 && <span className="ol-peso">vale por {i.weight} itens</span>}</b>
             <small>{i.portion}{i.portion ? " · " : ""}{i.taken >= i.slots ? "completo" : i.taken + " de " + i.slots + (i.slots === 1 ? " pessoa" : " pessoas")}</small>
             {(i.mine || i.who.length > 0) && <small className="ol-who">👤 {[...(i.mine ? ["Você"] : []), ...i.who].join(", ")}</small>}
           </div>

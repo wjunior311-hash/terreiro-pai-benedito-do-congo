@@ -82,7 +82,7 @@ export function GestaoResumoGira() {
     if (g.needs_ack) L.push("📖 Leram as informações: " + leram.length + " de " + vao.length);
     if (r.items.length) {
       L.push("", "*O que vão levar*");
-      r.items.forEach((i) => L.push("• " + i.name + (i.portion ? " (" + i.portion + ")" : "") + " — " + i.who.length + "/" + i.slots + (i.who.length ? ": " + i.who.map(primeiro).join(", ") : "")));
+      r.items.forEach((i) => L.push("• " + i.name + ((i.weight || 1) > 1 ? " [vale por " + i.weight + "]" : "") + (i.portion ? " (" + i.portion + ")" : "") + " — " + i.who.length + "/" + i.slots + (i.who.length ? ": " + i.who.map(primeiro).join(", ") : "")));
     }
     if (r.turns.length) {
       L.push("", "*Turnos*");
@@ -168,7 +168,7 @@ export function GestaoResumoGira() {
         r.items.forEach((i) => { let c = cats.find((x) => x.nome === (i.category || "")); if (!c) cats.push(c = { nome: i.category || "", itens: [] }); c.itens.push(i); });
         return cats.map((c) => <div key={c.nome} className="rg-cat">{c.nome && <p className="rg-sub">{c.nome}</p>}
           <ul className="rg-itens">{c.itens.map((i) => <li key={i.id} className={i.who.length >= i.slots ? "is-ok" : ""}>
-            <span className="rg-nome"><b>{i.name}</b><small>{i.portion}{i.portion ? " · " : ""}{i.who.length ? i.who.join(", ") : "ninguém ainda"}</small></span>
+            <span className="rg-nome"><b>{i.name}{(i.weight || 1) > 1 && <span className="ol-peso">vale por {i.weight}</span>}</b><small>{i.portion}{i.portion ? " · " : ""}{i.who.length ? i.who.join(", ") : "ninguém ainda"}</small></span>
             <span className="rg-conta">{i.who.length}/{i.slots}</span></li>)}</ul></div>);
       })()}
       {semItens.length > 0 && <><p className="rg-sub">Ainda não escolheram {g.bring_per_person} itens <small>(combinar contribuição do almoço)</small></p>
