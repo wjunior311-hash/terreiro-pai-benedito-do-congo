@@ -33,7 +33,7 @@ export function App() {
     [screen, setScreen] = useState(() => {
       // aviso do celular abre direto na tela certa (?tela=giras)
       const q = new URLSearchParams(window.location.search), t = q.get("tela");
-      try { if (q.get("gira")) sessionStorage.setItem("tpbc-abrir-gira", q.get("gira")); if (q.get("aba")) sessionStorage.setItem("tpbc-abrir-aba", q.get("aba")); } catch (e) { /* ok */ }
+      try { if (q.get("gira")) sessionStorage.setItem("tpbc-abrir-gira", q.get("gira")); if (q.get("aba")) sessionStorage.setItem("tpbc-abrir-aba", q.get("aba")); if (q.get("pagar")) sessionStorage.setItem("tpbc-abrir-pagar", "1"); } catch (e) { /* ok */ }
       return SCREEN_TITLES[t] ? t : "home";
     }),
     [memberPreview, setMemberPreview] = useState(false),

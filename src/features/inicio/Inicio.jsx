@@ -80,6 +80,11 @@ export function Home({ p, go, memberPreview = false }) {
     setResp(data);
   };
   const fin = useMemberFinance(p), [payOpen, setPayOpen] = useState(false);
+  // link direto ?pagar=1 abre o "Como pagar" assim que as cobranças carregam
+  useEffect(() => {
+    if (!fin.items.length) return;
+    try { if (sessionStorage.getItem("tpbc-abrir-pagar")) { sessionStorage.removeItem("tpbc-abrir-pagar"); setPayOpen(true); } } catch (e) { /* ok */ }
+  }, [fin.items.length]);
   const [caminhos] = useCaminhos(), pendCaminho = pendenciaCaminho(caminhos);
   const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null), [pendGira, setPendGira] = useState([]);
   useEffect(() => { supabase.rpc("my_gira_pending").then(({ data }) => setPendGira(Array.isArray(data) ? data : [])); }, [p.id]);
