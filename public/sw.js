@@ -10,8 +10,8 @@ self.addEventListener('push',e=>{
   e.waitUntil(self.registration.showNotification(title,{
     body:d.body||'',
     tag:d.tag||undefined,
-    icon:'/terreiro-pai-benedito-do-congo/logo.jpg',
-    badge:'/terreiro-pai-benedito-do-congo/logo.jpg',
+    icon:'/logo.jpg',
+    badge:'/logo.jpg',
     data:{url:d.url||self.registration.scope}
   }));
 });

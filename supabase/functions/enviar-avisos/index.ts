@@ -5,7 +5,7 @@
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const SITE = "https://wjunior311-hash.github.io/terreiro-pai-benedito-do-congo/";
+const SITE = "https://terreiropaibeneditodocongo.com.br/";
 
 Deno.serve(async (req) => {
   if (req.headers.get("x-push-secret") !== Deno.env.get("PUSH_SECRET")) {

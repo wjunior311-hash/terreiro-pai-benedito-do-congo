@@ -1,5 +1,5 @@
 // Página aberta à comunidade (sem login): inscrição nas giras abertas.
-// Endereço: …/terreiro-pai-benedito-do-congo/?comunidade  (ou ?comunidade=<id da gira> para uma gira só por link)
+// Endereço: terreiropaibeneditodocongo.com.br/?comunidade  (ou ?comunidade=<id da gira> para uma gira só por link)
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase.js";
 

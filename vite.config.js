@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/terreiro-pai-benedito-do-congo/'
+  base: '/'
 })
