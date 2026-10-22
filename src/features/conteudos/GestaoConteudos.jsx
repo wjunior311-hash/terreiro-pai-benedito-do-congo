@@ -136,7 +136,7 @@ export function Content() {
   useEffect(() => {
     load();
   }, []);
-  const blank = (k) => ({ kind: k, id: null, title: "", summary: "", body: "", tags: [], featured: false, is_required: false, cover_url: "", cover_color: CONTENT_COLORS[0], coverFile: null, starts_at: "", ends_at: "", published: true, is_draft: false, layout: "normal" });
+  const blank = (k) => ({ kind: k, id: null, title: "", summary: "", body: "", tags: [], featured: false, is_required: false, cover_url: "", cover_color: CONTENT_COLORS[0], coverFile: null, starts_at: "", ends_at: "", published: true, is_draft: false, layout: "normal", is_public: false });
   const startNew = () => {
     setForm(blank(section));
     setPreview(false);
@@ -178,7 +178,7 @@ export function Content() {
       } else {
         let cover = form.cover_url;
         if (form.coverFile) cover = await uploadCover(form.coverFile);
-        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: (form.title || "").trim(), summary: (form.summary || "").trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length, ...(hasDraft ? { is_draft: Boolean(form.is_draft), layout: form.layout === "abas" ? "abas" : "normal" } : {}) } });
+        const { error } = await supabase.rpc("editor_save_house_content", { p_id: form.id || null, p_data: { title: (form.title || "").trim(), summary: (form.summary || "").trim(), body: html, content_type: form.kind, tags: form.kind === "content" ? form.tags : [], featured: form.kind === "content" && form.featured, is_required: form.is_required, is_public: form.kind === "content" && !!form.is_public, cover_url: form.kind === "content" ? cover || "" : "", cover_color: form.kind === "content" ? form.cover_color : "", sort_order: form.id ? form.sort_order || 0 : items.length, ...(hasDraft ? { is_draft: Boolean(form.is_draft), layout: form.layout === "abas" ? "abas" : "normal" } : {}) } });
         if (error) throw error;
       }
       setSaving(false);
@@ -261,6 +261,13 @@ export function Content() {
        <small>Termina com "Li e entendi" e fica na tela inicial até a pessoa confirmar.</small>
        </span>
        </label>
+     {isContent && <label className={"bl-toggle" + (form.is_public ? " is-on" : "")}>
+       <input type="checkbox" checked={!!form.is_public} onChange={(e) => set({ is_public: e.target.checked })} />
+       <span>
+       <b>Aberto ao público</b>
+       <small>Aparece também no site aberto, para quem não é da casa (sem login).</small>
+       </span>
+       </label>}
      {isContent && <label className={"bl-toggle" + (form.featured ? " is-on" : "")}>
        <input type="checkbox" checked={form.featured} onChange={(e) => set({ featured: e.target.checked })} />
        <span>
@@ -332,7 +339,7 @@ export function Content() {
    {x._kind === "content" ? <span className={"bl-thumb" + (x.cover_url ? " has-image" : "")} style={coverStyle(x)} /> : <span className="bl-notice-icon">{x._kind === "notice" ? <Bell size={17} /> : <FileText size={17} />}</span>}
    <div className="bl-admin-text">
      <b>{x.title}</b>
-     <span className="bl-admin-pills">{isDraft(x) && <span className="bl-st is-draft">Rascunho</span>}{x.layout === "abas" && <span className="bl-st">Em abas</span>}{x.is_required && <span className="bl-st is-req">Obrigatória</span>}{x.featured && <span className="bl-st is-new">Destaque</span>}{x._kind === "notice" && <span className="bl-st">{x.published === false ? "Oculto" : "Publicado"}</span>}</span>
+     <span className="bl-admin-pills">{isDraft(x) && <span className="bl-st is-draft">Rascunho</span>}{x.layout === "abas" && <span className="bl-st">Em abas</span>}{x.is_required && <span className="bl-st is-req">Obrigatória</span>}{x.featured && <span className="bl-st is-new">Destaque</span>}{x.is_public && <span className="bl-st is-read">No site</span>}{x._kind === "notice" && <span className="bl-st">{x.published === false ? "Oculto" : "Publicado"}</span>}</span>
     {x._kind !== "notice" && st && <button type="button" className="bl-admin-reads" onClick={() => setReadersOf(x)}>
       <span className="bl-bar bl-bar-sm">
       <i style={{ width: (st.total ? Math.round(done / st.total * 100) : 0) + "%" }} />

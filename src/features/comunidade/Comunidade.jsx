@@ -46,12 +46,20 @@ export function Comunidade() {
   const carregar = async () => {
     const id = soGira && soGira.length > 30 ? soGira : null;
     const { data, error } = await supabase.rpc("public_giras", id ? { p_gira: id } : {});
-    if (error) { setErro("Não conseguimos carregar as giras agora. Tente de novo em instantes."); setGiras([]); }
-    else setGiras(data || []);
     const tokens = lerTokens();
     if (tokens.length) { const { data: m } = await supabase.rpc("public_my_signups", { p_tokens: tokens }); setMinhas(m || []); }
+    if (error) { setErro("Não conseguimos carregar as giras agora. Tente de novo em instantes."); setGiras([]); }
+    else setGiras(data || []);
   };
   useEffect(() => { document.title = "Inscrições · Terreiro Pai Benedito do Congo"; carregar(); }, []);
+  // veio do botão "Confirmar presença" do site (?comunidade=<id>): já abre a inscrição dessa gira
+  const [autoAberto, setAutoAberto] = useState(false);
+  useEffect(() => {
+    if (autoAberto || !giras || !soGira || soGira.length < 30) return;
+    setAutoAberto(true);
+    const g = giras.find((x) => x.id === soGira);
+    if (g && !minhas.some((m) => m.gira_id === g.id && m.status !== "cancel")) abrir(g);
+  }, [giras]);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(""), 2600); return () => clearTimeout(t); }, [toast]);
   const ir = (t) => { setTela(t); window.scrollTo({ top: 0 }); };
 
@@ -180,6 +188,7 @@ export function Comunidade() {
     </>;
   } else {
     corpo = <>
+      <a className="cm-site" href={import.meta.env.BASE_URL}>← Voltar para o site</a>
       <img className="cm-logo" src={LOGO} alt="Terreiro de Umbanda Pai Benedito do Congo" />
       <div className="cm-hero"><span className="cm-eyebrow">Giras abertas à comunidade</span><h2>Venha girar com a gente</h2><p>Escolha a gira, faça sua inscrição em um minuto e guarde a sua confirmação.</p></div>
       {ativas.length > 0 && <section className="cm-sec"><h2 className="cm-sec-h">Minhas inscrições</h2>{ativas.map((m) => <button type="button" className="cm-tile" key={m.token} onClick={() => { setVer(m.token); setCancelando(false); ir("ticket"); }}><span className="ic">🎟️</span><span><b>{m.gira_name}</b><small>{statusTxt(m)}</small></span></button>)}</section>}

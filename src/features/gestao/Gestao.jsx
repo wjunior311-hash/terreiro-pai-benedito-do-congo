@@ -15,6 +15,7 @@ import { GiraTurnManager } from "./GestaoGiras.jsx";
 import { AdminFinance } from "../financeiro/GestaoFinanceira.jsx";
 import { GestaoCaminhos } from "../caminhos/Caminho.jsx";
 import { GestaoResumoGira } from "../giras/ResumoGira.jsx";
+import { GestaoInteressados } from "../publico/Interessados.jsx";
 
 // Menu em 5 gavetas fixas. Funcionalidade nova entra numa gaveta existente, não vira botão novo no topo.
 const GAVETAS = [
@@ -43,6 +44,7 @@ export function Admin({ p }) {
     ["revista", "comunicacao", "Revista", can(p, "newsletter.manage")],
     ["caminhos", "comunicacao", "Caminhos", can(p, "people.manage")],
     ["questions", "comunicacao", "Dúvidas", full],
+    ["interessados", "comunicacao", "Interessados", can(p, "content.manage")],
     ["finance", "financeiro", "Financeiro", can(p, "finance.view")]
   ].filter((x) => x[3]);
   const gavetas = GAVETAS.filter(([g]) => itens.some((x) => x[1] === g));
@@ -57,7 +59,7 @@ export function Admin({ p }) {
     {!full && <p className="muted small" style={{ margin: "0 2px 10px" }}>Você pode acessar: {itens.map((x) => x[2]).join(", ")}</p>}
     {gavetas.length > 1 && <nav className="gv-nav" style={{ "--gv-n": gavetas.length }} aria-label="Áreas da gestão">{gavetas.map(([g, ic, nome]) => <button type="button" key={g} aria-current={g === gaveta ? "page" : undefined} className={g === gaveta ? "is-on" : ""} onClick={() => abrirGaveta(g)}><span aria-hidden="true">{ic}</span><b>{nome}</b></button>)}</nav>}
     {subs.length > 1 && <div className="gv-sub" role="tablist">{subs.map(([id, , nome]) => <button type="button" role="tab" key={id} aria-selected={id === t} className={id === t ? "is-on" : ""} onClick={() => setTab(id)}>{nome}</button>)}</div>}
-    {t === "overview" && <AdminOverview onNavigate={setTab} />}{t === "people" && <People me={p} />}{t === "attendance" && <Frequencia />}{t === "badges" && <GestaoInsignias />}{t === "caminhos" && <GestaoCaminhos />}{t === "giras" && <GiraTurnManager p={p} editor={!full} />}{t === "comunidade" && <GestaoComunidade />}{t === "resumo" && <GestaoResumoGira />}{t === "finance" && <AdminFinance />}{t === "invites" && <Invites />}{t === "content" && <Content />}{t === "revista" && <GestaoRevista p={p} />}{t === "questions" && <AdminQuestions />}{t === "roles" && <AdminRoles />}
+    {t === "overview" && <AdminOverview onNavigate={setTab} />}{t === "people" && <People me={p} />}{t === "attendance" && <Frequencia />}{t === "badges" && <GestaoInsignias />}{t === "caminhos" && <GestaoCaminhos />}{t === "giras" && <GiraTurnManager p={p} editor={!full} />}{t === "comunidade" && <GestaoComunidade />}{t === "resumo" && <GestaoResumoGira />}{t === "finance" && <AdminFinance />}{t === "invites" && <Invites />}{t === "content" && <Content />}{t === "revista" && <GestaoRevista p={p} />}{t === "questions" && <AdminQuestions />}{t === "interessados" && <GestaoInteressados />}{t === "roles" && <AdminRoles />}
   </div>;
 }
 

@@ -22,6 +22,7 @@ import { RevistaTela } from "./features/revista/Revista.jsx";
 import "./styles.css";
 import "./app.css";
 import "./tema.css";
+import { Publico } from "./features/publico/Publico.jsx";
 
 const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias", caminho: "Caminho" };
 const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me", caminho: "content" };
@@ -40,6 +41,8 @@ export function App() {
     [scrolled, setScrolled] = useState(false),
     [muralDraft, setMuralDraft] = useState(null),
     [recovery, setRecovery] = useState(IS_PASSWORD_RECOVERY),
+    // sem login: mostra a página aberta; "Sou filho da casa" (ou links do app: ?entrar, ?tela=…) vai para o login
+    [entrar, setEntrar] = useState(() => { const q = new URLSearchParams(window.location.search); return IS_PASSWORD_RECOVERY || ["entrar", "tela", "gira", "pagar"].some((k) => q.has(k)); }),
     // publicação do mural a abrir (aviso de axé/comentário ou a tela inicial)
     [muralFocus, setMuralFocus] = useState(() => {
       const q = new URLSearchParams(window.location.search);
@@ -101,7 +104,7 @@ export function App() {
     </div>
     </div>;
   if (recovery && session) return <NovaSenha concluir={() => { setRecovery(false); window.history.replaceState(null, "", window.location.pathname); }} />;
-  if (!session) return <Auth />;
+  if (!session) return entrar ? <Auth voltar={() => { setEntrar(false); window.scrollTo({ top: 0 }); }} /> : <Publico onEntrar={() => { setEntrar(true); window.scrollTo({ top: 0 }); }} />;
   if (!profile) return <div className="auth"><div className="card">Seu cadastro está sendo carregado…</div></div>;
   const logout = async () => {
     await supabase.auth.signOut();
@@ -150,7 +153,7 @@ export function App() {
 </div>;
 }
 
-export function Auth() {
+export function Auth({ voltar } = {}) {
   const [register, setRegister] = useState(false),
     [code, setCode] = useState(""),
     [invite, setInvite] = useState(null),
@@ -216,6 +219,7 @@ export function Auth() {
   if (forgot) return <EsqueciSenha emailInicial={email} voltar={() => { setForgot(false); setMessage(""); }} />;
   return <div className="auth">
     <div className="card">
+    {voltar && <button type="button" className="auth-voltar" onClick={voltar}>← Voltar para o site</button>}
     <div className="row">
     <img src={TERREIRO_LOGO} alt="Terreiro Pai Benedito do Congo" className="logo" />
     <span className="eyebrow">Terreiro Pai Benedito do Congo</span>
