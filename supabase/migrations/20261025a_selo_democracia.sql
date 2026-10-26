@@ -1,0 +1,4 @@
+-- Selo comemorativo "Democracia" (eleições 2026): kind 'especial' em app.badge_state para todos
+-- os perfis criados até 28/10/2026; rótulo em app.badge_label. Aplicado em 25/10/2026, seguido de
+-- app.sync_all_badges(false) e um aviso (tag insignia-democracia) para os 52 filhos ativos.
+-- (definição completa das funções aplicada direto no banco; ver app.badge_state / app.badge_label)
