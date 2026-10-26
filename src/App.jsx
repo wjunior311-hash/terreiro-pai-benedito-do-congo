@@ -105,6 +105,8 @@ export function App() {
     </div>;
   if (recovery && session) return <NovaSenha concluir={() => { setRecovery(false); window.history.replaceState(null, "", window.location.pathname); }} />;
   if (!session) return entrar ? <Auth voltar={() => { setEntrar(false); window.scrollTo({ top: 0 }); }} /> : <Publico onEntrar={() => { setEntrar(true); window.scrollTo({ top: 0 }); }} />;
+  // filho logado abrindo o site aberto (?site): mostra a página pública com "Voltar para o app"
+  if (VER_SITE) return <Publico logado onEntrar={() => { window.location.href = import.meta.env.BASE_URL; }} />;
   if (!profile) return <div className="auth"><div className="card">Seu cadastro está sendo carregado…</div></div>;
   const logout = async () => {
     await supabase.auth.signOut();
@@ -262,6 +264,8 @@ export function Auth({ voltar } = {}) {
   }}>{register ? "Já tenho uma conta" : "Tenho um código de convite"}</button></div></div>;
 }
 
+// ?site mostra a página aberta mesmo para quem está logado
+const VER_SITE = new URLSearchParams(window.location.search).has("site");
 // ?comunidade abre a página aberta (sem login); o resto do app segue igual
 const PAGINA_COMUNIDADE = new URLSearchParams(window.location.search).has("comunidade");
 createRoot(document.getElementById("root")).render(PAGINA_COMUNIDADE ? <Comunidade /> : <App />);

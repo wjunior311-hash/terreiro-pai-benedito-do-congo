@@ -1,7 +1,7 @@
 // Área "Meu espaço": perfil, financeiro pessoal, contato com os Pais, instalar app.
 import { useEffect, useState } from "react";
 import { CalendarDays, UserRound, WalletCards, BookOpen, ShieldCheck, LogOut, RefreshCw, ChevronRight, Save, ArrowLeft, Download } from "lucide-react";
-import { supabase } from "../../lib/supabase.js";
+import { supabase, APP_URL } from "../../lib/supabase.js";
 import { OrixaIcon, ORIXAS } from "../../orixaSymbols.jsx";
 import { err, groups, money, formatPhone, phoneDigits } from "../../lib/helpers.js";
 import { AvisosOption } from "../avisos/AtivarAvisos.jsx";
@@ -125,6 +125,7 @@ export function Me({ p, go, logout, memberPreview = false }) {
     <ChevronRight />
     </button>
     </div>
+    <SiteDaCasa />
     <div className="me-section-head me-other-head">
     <h2>Outras opções</h2>
     <p>Configurações e recursos do aplicativo.</p>
@@ -419,4 +420,21 @@ export function ProfileMenu({ setTab, p }) {
     </button>
     </div>
     </div>;
+}
+
+// Atalho para o site aberto (o que visitantes veem) e para compartilhar o link
+const MSG_SITE = "Oi! 🙏🏾 O terreiro que eu frequento, o Terreiro Pai Benedito do Congo, agora tem um site! Lá você vê as giras abertas, faz sua inscrição em 1 minuto e tem um guia pra quem nunca foi numa gira. Dá uma olhada: ";
+function SiteDaCasa() {
+  const [copiado, setCopiado] = useState(false);
+  const compartilhar = async () => {
+    try { if (navigator.share) { await navigator.share({ title: "Terreiro Pai Benedito do Congo", text: MSG_SITE, url: APP_URL }); return; } } catch (e) { return; }
+    window.open("https://wa.me/?text=" + encodeURIComponent(MSG_SITE + APP_URL), "_blank");
+  };
+  const copiar = async () => { try { await navigator.clipboard.writeText(APP_URL); setCopiado(true); setTimeout(() => setCopiado(false), 2000); } catch (e) { /* ok */ } };
+  return <div className="card me-site">
+    <span className="me-site-ic" aria-hidden="true">🌐</span>
+    <div className="me-site-tx"><b>Site da casa</b><small>A página aberta para visitantes: giras abertas, inscrição e como chegar.</small>
+      <button type="button" className="me-site-link" onClick={copiar}>{copiado ? "Link copiado ✓" : APP_URL.replace(/^https?:\/\//, "").replace(/\/$/, "")}</button></div>
+    <div className="me-site-bt"><a className="btn" href={APP_URL + "?site"}>Ver o site</a><button type="button" className="btn primary" onClick={compartilhar}>Compartilhar</button></div>
+  </div>;
 }

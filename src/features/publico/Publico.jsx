@@ -42,7 +42,7 @@ function Artigo({ x, voltar }) {
   </div>;
 }
 
-export function Publico({ onEntrar }) {
+export function Publico({ onEntrar, logado = false }) {
   const [giras, setGiras] = useState(null), [conteudos, setConteudos] = useState([]), [lendo, setLendo] = useState(null), [guia, setGuia] = useState(false);
   const [form, setForm] = useState({ nome: "", tel: "" }), [enviando, setEnviando] = useState(false), [ok, setOk] = useState(false), [erro, setErro] = useState("");
   useEffect(() => {
@@ -65,7 +65,7 @@ export function Publico({ onEntrar }) {
 
   const festa = festaAtiva();
   return <div className={"pb" + (festa ? " pb-festa" : "")}>
-    <div className="pb-top"><img src={MARCA} alt="Terreiro Pai Benedito do Congo" /><button type="button" className="pb-btn claro" onClick={onEntrar}>Sou filho da casa</button></div>
+    <div className="pb-top"><img src={MARCA} alt="Terreiro Pai Benedito do Congo" /><button type="button" className="pb-btn claro" onClick={onEntrar}>{logado ? "← Voltar para o app" : "Sou filho da casa"}</button></div>
     {festa && <div className="pb-faixa-festa">★ Eleições 2026 · Hoje é dia de festa na casa! ★</div>}
 
     <section className="pb-hero">
@@ -147,7 +147,7 @@ export function Publico({ onEntrar }) {
       <div className="pb-redes"><a href={INSTAGRAM} target="_blank" rel="noreferrer">📷 @comunidade.tpbc</a><a href={WHATSAPP} target="_blank" rel="noreferrer">💬 WhatsApp</a></div>
       <small>Terreiro de Umbanda Pai Benedito do Congo</small>
       <small>{ENDERECO}</small>
-      <button type="button" className="pb-entrar" onClick={onEntrar}>É filho da casa? Entrar →</button>
+      <button type="button" className="pb-entrar" onClick={onEntrar}>{logado ? "← Voltar para o app" : "É filho da casa? Entrar →"}</button>
     </footer>
   </div>;
 }
