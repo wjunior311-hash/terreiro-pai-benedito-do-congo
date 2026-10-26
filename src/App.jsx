@@ -16,6 +16,9 @@ import { CaminhoTela } from "./features/caminhos/Caminho.jsx";
 import { Comunidade } from "./features/comunidade/Comunidade.jsx";
 import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
+import { MeuEspaco } from "./features/perfil/MeuEspaco.jsx";
+import { PessoaAvatar } from "./features/perfil/PessoaAvatar.jsx";
+import { novoMeuEspaco } from "./features/perfil/perfil.js";
 import { Admin } from "./features/gestao/Gestao.jsx";
 import { refreshPushSubscription } from "./features/avisos/push.js";
 import { RevistaTela } from "./features/revista/Revista.jsx";
@@ -131,7 +134,7 @@ export function App() {
     setMemberPreview(!memberPreview);
     setScreen("home");
   }}><EyeIcon size={16} /><span>{memberPreview ? "Voltar p/ ADM" : "Ver como membro"}</span></button>}
-    <button className="hdr-me" aria-label="Meu espaço" onClick={() => setScreen("me")}><OrixaIcon name={profile.orixa_symbol} size={28} /></button>
+    <button className="hdr-me" aria-label="Meu espaço" onClick={() => setScreen("me")}><PessoaAvatar p={profile} size={28} /></button>
   </div>
 </header>
 {canPreview && memberPreview && <div className="preview-banner">
@@ -144,7 +147,7 @@ export function App() {
   {screen === "caminho" && <CaminhoTela />}
   {screen === "community" && <Community p={profile} draft={muralDraft} focus={muralFocus} />}
   {screen === "content" && <HouseContent p={profile} go={go} back={() => setScreen("home")} />} 
-  {screen === "me" && <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}
+  {screen === "me" && (novoMeuEspaco() ? <MeuEspaco p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} recarregar={() => loadProfile(session?.user)} /> : <Me p={profile} go={setScreen} logout={logout} memberPreview={memberPreview} />)} {screen === "contact" && <ContactParents back={() => setScreen("home")} />}
   {screen === "admin" && !memberPreview && hasAnyAdmin(profile) && <Admin p={profile} />}
 </div></main>
 {!memberPreview && <ComemoraInsignias go={go} />}

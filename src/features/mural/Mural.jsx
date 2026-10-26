@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Trash2, Pencil, MessageCircle, Send } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
 import { OrixaIcon } from "../../orixaSymbols.jsx";
+import { PessoaAvatar } from "../perfil/PessoaAvatar.jsx";
+import { novoMeuEspaco } from "../perfil/perfil.js";
 import { err, kinds } from "../../lib/helpers.js";
 import { can } from "../acesso.js";
 import { Giras } from "../agenda/Agenda.jsx";
@@ -25,7 +27,7 @@ export function Community({ p, draft = null, focus = null }) {
       return;
     }
     const ids = [...new Set(data.map((x) => x.author_id))], gs = [...new Set(data.map((x) => x.gira_id).filter(Boolean))];
-    const [{ data: pr }, { data: gr }] = await Promise.all([ids.length ? supabase.from("profiles").select("id,name,orixa_symbol").in("id", ids) : { data: [] }, gs.length ? supabase.from("giras").select("id,name,starts_at").in("id", gs) : { data: [] }]);
+    const [{ data: pr }, { data: gr }] = await Promise.all([ids.length ? supabase.from("profiles").select("id,name,orixa_symbol,avatar_mode,avatar").in("id", ids) : { data: [] }, gs.length ? supabase.from("giras").select("id,name,starts_at").in("id", gs) : { data: [] }]);
     const pm = Object.fromEntries((pr || []).map((x) => [x.id, x])), gm = Object.fromEntries((gr || []).map((x) => [x.id, x]));
     setPosts(data.map((x) => ({ ...x, author: pm[x.author_id], gira: gm[x.gira_id] })));
     loadSocial(data.map((x) => x.id));
@@ -166,7 +168,14 @@ export function Post({ post, p, edit, remove, ago, social = null, onAxe, onComme
   const loadComments = async () => {
     const { data, error } = await supabase.rpc("community_post_comments_list", { p_post_id: post.id });
     if (error) return setCmsg(err(error));
-    setComments(data || []);
+    let lista = data || [];
+    if (novoMeuEspaco() && lista.length) {
+      const ids = [...new Set(lista.map((c) => c.author_id).filter(Boolean))];
+      const { data: av } = await supabase.from("profiles").select("id,avatar_mode,avatar").in("id", ids);
+      const m = Object.fromEntries((av || []).map((x) => [x.id, x]));
+      lista = lista.map((c) => ({ ...c, avatar_mode: m[c.author_id]?.avatar_mode, avatar: m[c.author_id]?.avatar }));
+    }
+    setComments(lista);
     onCommentCount?.((data || []).length);
   };
   const toggleComments = () => {
@@ -202,7 +211,7 @@ export function Post({ post, p, edit, remove, ago, social = null, onAxe, onComme
   const first = (n) => String(n || "Membro").trim().split(/\s+/)[0];
   return <article className={"mu-post" + (focused && !focused.done ? " is-focus" : "")} id={"post-" + post.id}>
     <header className="mu-post-head">
-    <OrixaIcon name={post.author?.orixa_symbol} size={34} />
+    <PessoaAvatar p={post.author} size={34} />
     <div className="mu-post-who">
     <b>{post.author?.name || "Membro"}</b>
     <small>{ago ? ago(post.created_at) : ""}{!post.gira && kinds.find((k) => k[0] === post.kind) ? " · " + kinds.find((k) => k[0] === post.kind)[1] : ""}{post.gira ? " · 🌿 " + post.gira.name : ""}</small>
@@ -219,7 +228,7 @@ export function Post({ post, p, edit, remove, ago, social = null, onAxe, onComme
     <Trash2 size={13} /> Excluir</button>}</div>}
     {open && <div className="mu-comments">
       {comments === null ? <span className="skeleton skeleton-line" style={{ width: "60%" }} /> : comments.map((c) => <div className="mu-cm" key={c.id}>
-        <OrixaIcon name={c.orixa_symbol} size={26} />
+        <PessoaAvatar p={c} size={26} />
         <div className="mu-cm-bubble">
           <b>{c.name || "Membro"}</b> <small>{ago ? ago(c.created_at) : ""}</small>
           <p>{c.body}</p>
