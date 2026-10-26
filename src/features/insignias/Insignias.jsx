@@ -23,6 +23,7 @@ export const INSIGNIAS = {
   responde: { nome: "Responde presente", ic: "🙋🏾", desc: "Responda se vai ou não a cada gira. Dizer “não vou” também conta: o importante é a casa saber.", como: "Na tela inicial ou na Agenda, responda à confirmação de presença.", go: "giras", ir: "Abrir a Agenda", un: ["gira respondida", "giras respondidas"] },
   mao: { nome: "Mão na massa", ic: "🧺", desc: "Escolha seu turno de atividades nas giras e marque suas tarefas como feitas.", como: "Na Agenda, abra a gira e escolha seu turno.", go: "giras", ir: "Abrir a Agenda", un: ["contribuição", "contribuições"] },
   axe: { nome: "Axé que circula", ic: "🙏🏾", desc: "Mande axé nas publicações dos seus irmãos no mural.", como: "No Mural, toque em 🙏🏾 Axé nas publicações.", go: "community", ir: "Abrir o Mural", un: ["axé enviado", "axés enviados"] },
+  democracia: { nome: "Democracia", ic: "⭐", desc: "Selo comemorativo das eleições de 2026, para toda a casa.", como: "Presente da casa para todos os filhos.", go: "home", ir: "Voltar ao Início" },
   voz: { nome: "Voz da comunidade", ic: "💬", desc: "Compartilhe no mural: publique o que sentiu, o que aprendeu, ou comente as publicações dos irmãos.", como: "No Mural, escreva ou comente.", go: "community", ir: "Abrir o Mural", un: ["participação", "participações"] }
 };
 const ORDEM_UNICAS = ["antena", "regras", "cadastro"];
@@ -93,7 +94,8 @@ export function MinhasInsignias({ go }) {
   const evs = (data.state || []).filter((s) => s.kind === "evento").map((s) => ({ ...s, info: evInfo[s.badge.slice(7)] || {} }))
     .filter((s) => s.value > 0 || ganhas.has(s.badge) || !s.info.starts_at || new Date(s.info.starts_at).getTime() > agora)
     .sort((a, b) => String(a.info.starts_at || "").localeCompare(String(b.info.starts_at || "")));
-  const conquistadas = ORDEM_UNICAS.filter((k) => ganhas.has(k)).length + ORDEM_NIVEIS.filter((k) => (st[k]?.level || 0) > 0).length + emis.filter((s) => s.value > 0).length + evs.filter((s) => s.value > 0 || ganhas.has(s.badge)).length;
+  const especiais = (data.state || []).filter((s) => s.kind === "especial");
+  const conquistadas = ORDEM_UNICAS.filter((k) => ganhas.has(k)).length + ORDEM_NIVEIS.filter((k) => (st[k]?.level || 0) > 0).length + emis.filter((s) => s.value > 0).length + evs.filter((s) => s.value > 0 || ganhas.has(s.badge)).length + especiais.filter((s) => s.value > 0 || ganhas.has(s.badge)).length;
   const niveisSomados = ORDEM_NIVEIS.reduce((n, k) => n + (st[k]?.level || 0), 0);
   return <div className="in">
     <header className="in-head">
@@ -142,6 +144,13 @@ export function MinhasInsignias({ go }) {
       </button>;
     })}</div>
 
+    {especiais.length > 0 && <>
+    <h2 className="in-sec">Selos especiais <small>presentes da casa</small></h2>
+    <div className="in-ev">{especiais.map((s) => <div key={s.badge} className="in-ev-item is-ok">
+      <Medalha badge={s.badge} level={1} size={50} />
+      <span className="in-ev-txt"><b>{INSIGNIAS[s.badge]?.nome || s.title}</b><small>{INSIGNIAS[s.badge]?.desc || "Na sua coleção ✓"}</small></span>
+    </div>)}</div>
+    </>}
     {evs.length > 0 && <>
     <h2 className="in-sec">Selos de eventos <small>exclusivos de quem participa</small></h2>
     <div className="in-ev">{evs.map((s) => {

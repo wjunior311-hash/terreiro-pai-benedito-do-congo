@@ -1,4 +1,5 @@
 // Tela inicial: saudação, "Precisa da sua atenção", próxima gira, aniversariantes e novidades.
+import { festaAtiva } from "../festa/festa.js";
 import { useEffect, useState } from "react";
 import { CalendarDays, WalletCards, BookOpen, ShieldCheck, Check, X, RefreshCw, ChevronRight, ClipboardList, Bell, Cake } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
@@ -139,6 +140,7 @@ export function Home({ p, go, memberPreview = false }) {
   };
   const firstName = String(p.name || "").trim().split(" ")[0];
   return <div className="home-page hm">
+    {festaAtiva() && <div className="festa-banner"><span className="est" style={{ right: 18, top: 10, fontSize: 46 }}>★</span><span className="est" style={{ right: 70, top: 54, fontSize: 22 }}>★</span><span className="est" style={{ right: 26, top: 84, fontSize: 16 }}>★</span><span className="est" style={{ right: -10, bottom: -26, fontSize: 110, opacity: .18, color: "#fff" }}>★</span><small>ELEIÇÕES 2026</small><h2>Hoje é dia de festa!</h2><p>A casa celebra junto a democracia. Axé e boa semana pra todos nós!</p></div>}
   <header className="hm-hello">
    <span className="hm-date">{now.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}</span>
    <h1>Olá{firstName ? ", " + firstName : ""}</h1>

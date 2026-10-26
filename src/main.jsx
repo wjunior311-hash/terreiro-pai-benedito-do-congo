@@ -1,3 +1,4 @@
+import "./features/festa/festa.js";
 import "./App.jsx";
 
 // build version: 2026-10-07

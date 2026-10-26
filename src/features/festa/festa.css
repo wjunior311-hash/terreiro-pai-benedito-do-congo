@@ -1,0 +1,16 @@
+/* Tema comemorativo — só vale com html.tema-festa */
+html.tema-festa{--bg:#fff4f2;--surface:#ffffff;--surface-2:#fff0ed;--surface-3:#ffe3de;--surface-4:#fcd3cb;--line-soft:#fbe0da;--line:#f6cfc6;--line-strong:#efb4a7;
+  --ink:#3a1414;--ink-2:#5c2321;--muted:#8a4a44;--brand:#c8102e;--brand-ink:#c8102e;--brand-2:#e2453c;--brand-fill:#d81e2c;--brand-line:#f5b5ad;--brand-soft:#ffe1dc;
+  --gold:#f2b705;--warn-ink:#9a5b00;--warn-soft:#fff3d6;--warn-line:#f7d98c;--earth:#8a1c1c}
+@media (prefers-color-scheme:dark){html.tema-festa{--bg:#1a0b0d;--surface:#26100f;--surface-2:#2e1413;--surface-3:#3a1817;--surface-4:#451d1b;--line-soft:#3a1a19;--line:#4a2120;--line-strong:#5e2a28;
+  --ink:#fde9e6;--ink-2:#f3cfc9;--muted:#d29d95;--brand:#ff4b55;--brand-ink:#ff6b6b;--brand-2:#ff7a6b;--brand-fill:#e3262c;--brand-line:#6e2a2a;--brand-soft:#3d1717;--gold:#ffd23f}}
+html.tema-festa body{background:var(--bg) radial-gradient(circle at 1px 1px,rgba(200,16,46,.07) 1px,transparent 0) 0 0/18px 18px!important}
+html.tema-festa .hdr{background:linear-gradient(120deg,#b0081f,#e3262c)!important;color:#fff!important;overflow:hidden}
+html.tema-festa .hdr h1,html.tema-festa .hdr small,html.tema-festa .hdr .hdr-back{color:#fff!important}
+html.tema-festa .hdr:after{content:"★";position:absolute;right:110px;top:-18px;font-size:90px;color:rgba(255,255,255,.12);pointer-events:none}
+html.tema-festa .bottom{border-top:3px solid #c8102e!important}
+.festa-banner{margin:4px 0 14px;border-radius:24px;padding:20px 20px 18px;color:#fff;background:linear-gradient(135deg,#c8102e,#e8392e 60%,#f25c2a);position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(200,16,46,.3)}
+.festa-banner .est{position:absolute;color:#ffd23f;line-height:1;pointer-events:none}
+.festa-banner small{font-weight:800;letter-spacing:.16em;font-size:11px;color:#ffd23f;position:relative}
+.festa-banner h2{font-size:24px;line-height:1.15;margin:4px 0 6px;font-weight:700;position:relative;color:#fff!important}
+.festa-banner p{font-size:14px;position:relative;max-width:260px;color:#fff!important;margin:0}
