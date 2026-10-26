@@ -130,7 +130,7 @@ declare v_n int := 0; r record;
 begin
   if (now() at time zone 'America/Sao_Paulo')::date <> date '2026-10-28' then return 0; end if;
   for r in select id from public.profiles where is_active loop
-    perform app.push_enqueue(r.id, 'Seu Meu espaço ficou novo ✨',
+    perform app.push_enqueue(r.id, 'Personalize do seu jeito ✨',
       'Crie seu avatar, escolha capa, cor e frase, e mostre suas insígnias. Quem criar o avatar ganha a insígnia Autorretrato 🎨',
       '?tela=me', 'meu-espaco:2026-10-28');
     v_n := v_n + 1;
