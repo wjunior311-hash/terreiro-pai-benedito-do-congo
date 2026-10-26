@@ -23,10 +23,11 @@ export const INSIGNIAS = {
   responde: { nome: "Responde presente", ic: "🙋🏾", desc: "Responda se vai ou não a cada gira. Dizer “não vou” também conta: o importante é a casa saber.", como: "Na tela inicial ou na Agenda, responda à confirmação de presença.", go: "giras", ir: "Abrir a Agenda", un: ["gira respondida", "giras respondidas"] },
   mao: { nome: "Mão na massa", ic: "🧺", desc: "Escolha seu turno de atividades nas giras e marque suas tarefas como feitas.", como: "Na Agenda, abra a gira e escolha seu turno.", go: "giras", ir: "Abrir a Agenda", un: ["contribuição", "contribuições"] },
   axe: { nome: "Axé que circula", ic: "🙏🏾", desc: "Mande axé nas publicações dos seus irmãos no mural.", como: "No Mural, toque em 🙏🏾 Axé nas publicações.", go: "community", ir: "Abrir o Mural", un: ["axé enviado", "axés enviados"] },
+  avatar: { nome: "Autorretrato", ic: "🎨", desc: "Crie o seu avatar no ateliê do Meu espaço e salve. O símbolo do seu Orixá vai sempre junto.", como: "Em Meu espaço, toque em “✎ Personalizar” e depois em “Criar meu avatar”.", go: "me", ir: "Criar meu avatar" },
   democracia: { nome: "Democracia", ic: "⭐", desc: "Selo comemorativo das eleições de 2026, para toda a casa.", como: "Presente da casa para todos os filhos.", go: "home", ir: "Voltar ao Início" },
   voz: { nome: "Voz da comunidade", ic: "💬", desc: "Compartilhe no mural: publique o que sentiu, o que aprendeu, ou comente as publicações dos irmãos.", como: "No Mural, escreva ou comente.", go: "community", ir: "Abrir o Mural", un: ["participação", "participações"] }
 };
-const ORDEM_UNICAS = ["antena", "regras", "cadastro"];
+const ORDEM_UNICAS_TODAS = ["antena", "regras", "cadastro", "avatar"];
 const ORDEM_NIVEIS = ["palavra", "responde", "sabedoria", "mao", "axe", "voz"];
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 // leituras: quando o próximo nível pede mais do que a casa já publicou
@@ -75,6 +76,8 @@ export function MinhasInsignias({ go }) {
   const [open, setOpen] = useState(null);
   useEffect(() => { supabase.rpc("mark_badges_seen").then(() => {}, () => {}); }, []);
   const st = useMemo(() => Object.fromEntries((data?.state || []).map((s) => [s.badge, s])), [data]);
+  // "Autorretrato" só aparece quando o banco manda (a partir de 28/10, ou para quem já criou o avatar)
+  const ORDEM_UNICAS = ORDEM_UNICAS_TODAS.filter((k) => k !== "avatar" || st.avatar);
   const ganhas = useMemo(() => new Set((data?.awards || []).map((a) => a.badge)), [data]);
   // selos de eventos: datas e minha resposta, para mostrar o que ainda dá para conquistar
   const [evInfo, setEvInfo] = useState({});
