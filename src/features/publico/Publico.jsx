@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase.js";
 import { contentSummary, coverStyle, readingMinutes, sanitizeContentHtml } from "../conteudos/conteudo.js";
 import { maskTel } from "../comunidade/Comunidade.jsx";
 import "./publico.css";
+import { festaAtiva } from "../festa/festa.js";
 
 const BASE = import.meta.env.BASE_URL;
 const MARCA = BASE + "marca-casa.png";
@@ -62,8 +63,10 @@ export function Publico({ onEntrar }) {
   };
   if (lendo) return <Artigo x={lendo} voltar={() => { setLendo(null); setTimeout(() => rolar("pb-conteudos"), 50); }} />;
 
-  return <div className="pb">
+  const festa = festaAtiva();
+  return <div className={"pb" + (festa ? " pb-festa" : "")}>
     <div className="pb-top"><img src={MARCA} alt="Terreiro Pai Benedito do Congo" /><button type="button" className="pb-btn claro" onClick={onEntrar}>Sou filho da casa</button></div>
+    {festa && <div className="pb-faixa-festa">★ Eleições 2026 · Hoje é dia de festa na casa! ★</div>}
 
     <section className="pb-hero">
       <span className="pb-eyebrow ouro">Terreiro de Umbanda</span>

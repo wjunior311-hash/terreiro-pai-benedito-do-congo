@@ -101,3 +101,15 @@ html:has(.pb),body:has(.pb){background:#f7f1e7!important}
 .pb-artigo-corpo h2,.pb-artigo-corpo h3{margin:18px 0 8px}
 .pb-aviso-mini{background:#fff;border:1px solid var(--linha);border-radius:20px;padding:16px;display:grid;gap:10px;font-size:14px;margin-bottom:24px}
 .auth-voltar{display:block;margin:0 0 14px;padding:0;background:none;border:0;font:inherit;font-weight:700;color:inherit;opacity:.75;cursor:pointer}
+/* tema comemorativo (eleições 2026) — some sozinho junto com o do app */
+.pb.pb-festa{--noite:#a3091f;--terra:#d81e2c;--ouro:#ffd23f;--areia:#fff4f2;--areia2:#ffe3de;--linha:#f6cfc6;--verde:#b0081f}
+html:has(.pb-festa),body:has(.pb-festa){background:#fff4f2!important}
+.pb-festa .pb-hero{background:radial-gradient(circle at 85% 10%,#f25c2a,transparent 55%),linear-gradient(135deg,#a3091f,#d81e2c)}
+.pb-festa .pb-hero:after{content:"★";border:0;width:auto;height:auto;right:-6px;bottom:-40px;font-size:190px;line-height:1;color:rgba(255,210,63,.22)}
+.pb-festa .pb-hero:before{content:"★  ★";position:absolute;right:22px;top:16px;color:#ffd23f;font-size:22px;letter-spacing:6px}
+.pb-festa .pb-hero p{color:#ffe3de}
+.pb-festa .pb-sobre{background:linear-gradient(135deg,#a3091f,#d81e2c)}
+.pb-festa .pb-sobre p{color:#ffe3de}
+.pb-festa .pb-rodape{background:#7d0618}
+.pb-festa .pb-avise{background:linear-gradient(140deg,#ffe08a,#ffd23f)}
+.pb-faixa-festa{margin:0 14px 10px;border-radius:99px;background:#d81e2c;color:#ffd23f;text-align:center;font:800 12.5px/1.2 Inter,sans-serif;letter-spacing:.06em;padding:9px 12px}
