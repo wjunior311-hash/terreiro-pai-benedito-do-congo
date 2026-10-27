@@ -113,3 +113,4 @@ html:has(.pb-festa),body:has(.pb-festa){background:#fff4f2!important}
 .pb-festa .pb-rodape{background:#7d0618}
 .pb-festa .pb-avise{background:linear-gradient(140deg,#ffe08a,#ffd23f)}
 .pb-faixa-festa{margin:0 14px 10px;border-radius:99px;background:#d81e2c;color:#ffd23f;text-align:center;font:800 12.5px/1.2 Inter,sans-serif;letter-spacing:.06em;padding:9px 12px}
+.pb-gira-tx p.pb-gira-resumo{font-size:13.5px;color:var(--ink,#2b241d);margin-top:6px;line-height:1.4;white-space:pre-line}

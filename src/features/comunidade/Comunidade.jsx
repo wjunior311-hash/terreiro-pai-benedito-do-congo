@@ -2,6 +2,7 @@
 // Endereço: terreiropaibeneditodocongo.com.br/?comunidade  (ou ?comunidade=<id da gira> para uma gira só por link)
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase.js";
+import { compressProof } from "../financeiro/regras.js";
 
 const LOGO = import.meta.env.BASE_URL + "marca-casa.png";
 const CHAVE = "tpbc-inscricoes";
@@ -26,6 +27,44 @@ function Fase({ g }) {
   </div>;
 }
 
+const reais = (v) => Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+const diaPrazo = (q) => q ? new Date(q).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "";
+const Preco = ({ fee }) => fee?.fee ? <span className="cm-chip pay">Contribuição {reais(fee.fee)}</span> : <span className="cm-chip ok">Gratuita</span>;
+const lerArquivo = (blob) => new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = () => bad(new Error("Não foi possível ler o arquivo.")); r.readAsDataURL(blob); });
+
+// contribuição de quem é de fora: Pix + comprovante anexado aqui mesmo
+function Pagamento({ m, pay, onSent }) {
+  const [busy, setBusy] = useState(false), [erro, setErro] = useState(""), [copiou, setCopiou] = useState(false), [outro, setOutro] = useState(false);
+  const copiar = async () => { try { await navigator.clipboard.writeText(pay.pix); setCopiou(true); setTimeout(() => setCopiou(false), 2000); } catch (e) { /* mostra a chave na tela */ } };
+  const enviar = async (ev) => {
+    const file = ev.target.files?.[0]; ev.target.value = "";
+    if (!file) return;
+    setBusy(true); setErro("");
+    try {
+      const c = await compressProof(file);
+      const { error } = await supabase.rpc("public_send_proof", { p_token: m.token, p_data: await lerArquivo(c.blob) });
+      if (error) throw error;
+      setOutro(false); onSent();
+    } catch (e) { setErro(msgErro(e)); }
+    setBusy(false);
+  };
+  if (m.status === "cancel") return null;
+  if (pay.pay === "pago") return <div className="cm-status ok"><span className="em">💳</span><span>Contribuição confirmada<small>Recebemos seus {reais(pay.fee)}. Sua vaga está garantida.</small></span></div>;
+  const anexar = <label className={"cm-btn" + (pay.pay === "enviado" ? "" : " primary") + (busy ? " is-busy" : "")}><input type="file" accept="image/*,application/pdf" hidden disabled={busy} onChange={enviar} />{busy ? "Enviando…" : pay.pay === "enviado" ? "Trocar o comprovante" : "📎 Anexar comprovante"}</label>;
+  if (pay.pay === "enviado" && !outro) return <><div className="cm-status pend"><span className="em">⏳</span><span>Comprovante enviado<small>A casa vai conferir o pagamento e sua vaga fica garantida. Não precisa fazer mais nada.</small></span></div>
+    <button type="button" className="cm-link" onClick={() => setOutro(true)}>Mandei o comprovante errado</button></>;
+  return <div className="cm-pay">
+    <div className="cm-pay-top"><small className="cm-eyebrow muted">Falta a contribuição</small><b>{reais(pay.fee)}</b><span>por pessoa · pague até {diaPrazo(pay.until)}</span></div>
+    <ol className="cm-pay-passos">
+      <li><b>Faça o Pix</b> para a chave da casa:<div className="cm-pix"><code>{pay.pix}</code><button type="button" className="cm-btn sm" onClick={copiar}>{copiou ? "Copiado ✓" : "Copiar"}</button></div></li>
+      <li><b>Anexe o comprovante</b> aqui (foto ou print da tela).</li>
+    </ol>
+    {anexar}
+    {erro && <span className="cm-err">{erro}</span>}
+    <p className="cm-nota">Sua vaga fica reservada até {diaPrazo(pay.until)}. Sem o comprovante até lá, ela passa para a próxima pessoa da lista.</p>
+  </div>;
+}
+
 function Data({ q, cor }) {
   const dm = diaMes(q);
   return <div className="cm-date" style={{ "--cor": cor || "#3f6a3a" }}><b>{dm.dia}</b><small>{dm.mes}</small></div>;
@@ -42,14 +81,25 @@ export function Comunidade() {
   const [form, setForm] = useState({ nome: "", tel: "", idade: "" }), [ferr, setFerr] = useState({}), [aceitou, setAceitou] = useState(false), [busy, setBusy] = useState(false);
   const [minhas, setMinhas] = useState([]), [ver, setVer] = useState(null), [cancelando, setCancelando] = useState(false), [toast, setToast] = useState("");
   const [cons, setCons] = useState(""), [consRes, setConsRes] = useState(null);
+  const [fees, setFees] = useState({}), [pays, setPays] = useState({});
+  const carregarFees = async (lista) => {
+    const r = await Promise.all((lista || []).map((g) => supabase.rpc("public_gira_fee", { p_gira: g.id }).then(({ data }) => [g.id, data])));
+    setFees(Object.fromEntries(r.filter((x) => x[1])));
+  };
+  const carregarPays = async () => {
+    const tokens = lerTokens();
+    if (!tokens.length) return;
+    const { data } = await supabase.rpc("public_signup_pay", { p_tokens: tokens });
+    setPays(Object.fromEntries((data || []).map((x) => [x.token, x])));
+  };
 
   const carregar = async () => {
     const id = soGira && soGira.length > 30 ? soGira : null;
     const { data, error } = await supabase.rpc("public_giras", id ? { p_gira: id } : {});
     const tokens = lerTokens();
-    if (tokens.length) { const { data: m } = await supabase.rpc("public_my_signups", { p_tokens: tokens }); setMinhas(m || []); }
+    if (tokens.length) { const { data: m } = await supabase.rpc("public_my_signups", { p_tokens: tokens }); setMinhas(m || []); carregarPays(); }
     if (error) { setErro("Não conseguimos carregar as giras agora. Tente de novo em instantes."); setGiras([]); }
-    else setGiras(data || []);
+    else { setGiras(data || []); carregarFees(data); }
   };
   useEffect(() => { document.title = "Inscrições · Terreiro Pai Benedito do Congo"; carregar(); }, []);
   // veio do botão "Confirmar presença" do site (?comunidade=<id>): já abre a inscrição dessa gira
@@ -84,9 +134,9 @@ export function Comunidade() {
     const r = Array.isArray(data) ? data[0] : data;
     guardarToken(r.token);
     const { data: m } = await supabase.rpc("public_my_signups", { p_tokens: lerTokens() });
-    setMinhas(m || []);
+    setMinhas(m || []); await carregarPays();
     setVer(r.token); setCancelando(false);
-    setToast(r.status === "wait" ? "Você entrou na lista de espera" : "Inscrição confirmada!");
+    setToast(r.status === "wait" ? "Você entrou na lista de espera" : fees[gira.id] ? "Inscrição feita! Agora falta a contribuição." : "Inscrição confirmada!");
     ir("ticket");
     supabase.rpc("public_giras", {}).then(({ data: g }) => g && setGiras(g));
   };
@@ -105,16 +155,18 @@ export function Comunidade() {
   };
 
   const ativas = minhas.filter((m) => m.status !== "cancel" && new Date(m.starts_at) > new Date(Date.now() - 6 * 3600e3));
-  const statusTxt = (m) => m.status === "ok" ? "✅ Inscrição confirmada" : m.status === "pend" ? "⏳ Aguardando confirmação" : m.status === "wait" ? "🕒 Lista de espera nº " + (m.wait_pos || "") : m.status === "cancel" ? "↩️ Cancelada" : "Recusada";
+  const statusTxt = (m) => m.status !== "cancel" && m.status !== "wait" && pays[m.token]?.pay === "aguardando" ? "💳 Falta a contribuição" : m.status !== "cancel" && m.status !== "wait" && pays[m.token]?.pay === "enviado" ? "⏳ Comprovante em análise" : m.status === "ok" ? "✅ Inscrição confirmada" : m.status === "pend" ? "⏳ Aguardando confirmação" : m.status === "wait" ? "🕒 Lista de espera nº " + (m.wait_pos || "") : m.status === "cancel" ? "↩️ Cancelada" : "Recusada";
 
   let corpo;
   if (tela === "dados" && gira) {
     corpo = <>
       <Topo titulo="Inscrição" voltar={() => ir("inicio")} />
       <div className="cm-gira">
-        <div className="cm-gira-top"><Data q={gira.starts_at} cor={gira.cover_color} /><div className="cm-gira-txt"><div className="cm-chips"><span className="cm-chip">{TIPOS[gira.activity_type] || "Gira"}</span>{gira.access === "assist" && <span className="cm-chip wait">Poucas vagas de assistência</span>}<span className="cm-chip ok">Gratuita</span></div><h3>{gira.name}</h3><small>{dataLonga(gira.starts_at)}</small></div></div>
+        <div className="cm-gira-top"><Data q={gira.starts_at} cor={gira.cover_color} /><div className="cm-gira-txt"><div className="cm-chips"><span className="cm-chip">{TIPOS[gira.activity_type] || "Gira"}</span>{gira.access === "assist" && <span className="cm-chip wait">Poucas vagas de assistência</span>}<Preco fee={fees[gira.id]} /></div><h3>{gira.name}</h3><small>{dataLonga(gira.starts_at)}</small></div></div>
         {gira.access === "assist" && <div className="cm-status wait"><span className="em">🤝</span><span>Gira interna da casa<small>São poucas vagas de assistência. Chegue no horário e aguarde ser chamado(a) para o passe.</small></span></div>}
+        {gira.description && <p className="cm-resumo">{gira.description}</p>}
         <Fase g={gira} />
+        {fees[gira.id] && <div className="cm-status pay"><span className="em">💳</span><span>Contribuição de {reais(fees[gira.id].fee)} por pessoa<small>Pago por Pix até {diaPrazo(fees[gira.id].until)}. Depois da inscrição você vê a chave e anexa o comprovante. A vaga fica garantida quando a casa confirmar o pagamento.</small></span></div>}
       </div>
       <div className="cm-steps"><span>1 Seus dados</span><i className="on" /><i /></div>
       <form className="cm-card" onSubmit={continuar} noValidate>
@@ -135,6 +187,7 @@ export function Comunidade() {
         <div className="cm-rule"><span className="em">🙋🏾</span><div><b>A inscrição é individual</b><p>Cada pessoa faz a sua. Não traga convidados que não se inscreveram.</p></div></div>
         <div className="cm-rule"><span className="em">🚪</span><div><b>Sem inscrição, não entra</b><p>Nos preparamos para receber um número certo de pessoas. Por isso, só entra quem fez a inscrição. Pedimos compreensão na porta.</p></div></div>
         <div className="cm-rule"><span className="em">⏰</span><div><b>Chegue no horário</b><p>A gira começa às {hora(gira.starts_at)}. Chegar atrasado pode fazer você perder o atendimento: se as entidades já tiverem encerrado os passes, não vamos conseguir te atender.</p></div></div>
+        {fees[gira.id] && <div className="cm-rule"><span className="em">💳</span><div><b>Contribuição de {reais(fees[gira.id].fee)}</b><p>Pague por Pix e anexe o comprovante até {diaPrazo(fees[gira.id].until)}. Sem o comprovante até lá, a vaga passa para a próxima pessoa.</p></div></div>}
         <div className="cm-rule"><span className="em">📅</span><div><b>Não vai poder vir?</b><p>Cancele até 48 horas antes (até {prazoTxt(gira.starts_at)}) para liberar a vaga para outra pessoa.</p></div></div>
         <label className={"cm-check" + (aceitou ? " on" : "")} htmlFor="cm-aceito"><input type="checkbox" id="cm-aceito" checked={aceitou} onChange={(e) => setAceitou(e.target.checked)} /><span><b>Li e vou seguir as orientações</b><br /><small>Obrigado por cuidar da casa com a gente.</small></span></label>
         {ferr.geral && <div className="cm-status cancel"><span className="em">⚠️</span><span>{ferr.geral}</span></div>}
@@ -151,7 +204,9 @@ export function Comunidade() {
         <div className="cm-ticket-body">
           <div><small className="cm-eyebrow muted">Inscrito(a)</small><div className="cm-ticket-name">{m.name}</div></div>
           <div className="cm-kv"><div><small>Nº</small><b>#{String(m.number).padStart(3, "0")}</b></div><div><small>Idade</small><b>{m.age || "—"}</b></div><div><small>Pessoas</small><b>1</b></div></div>
-          {m.status === "ok" && <div className="cm-status ok"><span className="em">✅</span><span>Inscrição confirmada<small>Sua vaga está garantida.</small></span></div>}
+          {m.status === "ok" && (!pays[m.token] || pays[m.token].pay === "pago") && <div className="cm-status ok"><span className="em">✅</span><span>Inscrição confirmada<small>Sua vaga está garantida.</small></span></div>}
+          {m.status === "ok" && pays[m.token] && pays[m.token].pay !== "pago" && <div className="cm-status wait"><span className="em">🎟️</span><span>Vaga reservada<small>Fica garantida quando a casa confirmar a contribuição.</small></span></div>}
+          {m.status !== "wait" && pays[m.token] && <Pagamento m={m} pay={pays[m.token]} onSent={() => { carregarPays(); setToast("Comprovante enviado! A casa vai conferir."); }} />}
           {m.status === "pend" && <div className="cm-status pend"><span className="em">⏳</span><span>Aguardando confirmação<small>Avisamos no WhatsApp assim que conferirmos.</small></span></div>}
           {m.status === "wait" && <div className="cm-status wait"><span className="em">🕒</span><span>Lista de espera · nº {m.wait_pos}<small>Se abrir uma vaga, a casa avisa você pelo WhatsApp.</small></span></div>}
           {m.status === "cancel" && <div className="cm-status cancel"><span className="em">↩️</span><span>Inscrição cancelada<small>Obrigado por liberar a vaga.</small></span></div>}
@@ -195,7 +250,8 @@ export function Comunidade() {
       <section className="cm-sec"><h2 className="cm-sec-h">Próximas giras</h2>
         {giras === null ? <div className="cm-skel" /> : erro ? <p className="cm-nota">{erro}</p> : !giras.length ? <div className="cm-card"><p>No momento não há giras com inscrição aberta. Acompanhe o nosso Instagram para saber das próximas. 🌿</p></div>
           : giras.map((g) => <div className="cm-gira" key={g.id}>
-            <div className="cm-gira-top"><Data q={g.starts_at} cor={g.cover_color} /><div className="cm-gira-txt"><div className="cm-chips"><span className="cm-chip">{TIPOS[g.activity_type] || "Gira"}</span>{g.access === "assist" && <span className="cm-chip wait">Poucas vagas de assistência</span>}<span className="cm-chip ok">Gratuita</span></div><h3>{g.name}</h3><small>{dataLonga(g.starts_at)}</small></div></div>
+            <div className="cm-gira-top"><Data q={g.starts_at} cor={g.cover_color} /><div className="cm-gira-txt"><div className="cm-chips"><span className="cm-chip">{TIPOS[g.activity_type] || "Gira"}</span>{g.access === "assist" && <span className="cm-chip wait">Poucas vagas de assistência</span>}<Preco fee={fees[g.id]} /></div><h3>{g.name}</h3><small>{dataLonga(g.starts_at)}</small></div></div>
+            {g.description && <p className="cm-resumo">{g.description}</p>}
             <Fase g={g} />
             {g.opens_at && new Date(g.opens_at) > new Date() ? <p className="cm-nota">Inscrições abrem em {new Date(g.opens_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} às {hora(g.opens_at)}.</p>
               : g.is_full && !g.waitlist ? <button type="button" className="cm-btn" disabled>Lotado</button>

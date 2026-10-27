@@ -936,3 +936,25 @@ h1,h2,h3{color:var(--ink)}
 .me-site-link{justify-self:start;background:none;border:0;padding:4px 0 0;font:700 13px var(--sans);color:var(--brand-ink);cursor:pointer}
 .me-site-bt{grid-column:1/-1;display:flex;gap:8px}
 .me-site-bt .btn{flex:1;justify-content:center;text-decoration:none}
+
+/* ---------- Contribuição de quem é de fora ---------- */
+.cm-chip.pay{background:#f9eed9;border-color:transparent;color:#7a531a}
+.cm-status.pay{background:#f9eed9;color:#6b4712;margin-top:10px;align-items:flex-start}
+.cm-pay{border:2px solid #e3c48a;background:#fffaf0;border-radius:18px;padding:16px;display:grid;gap:12px}
+.cm-pay-top{display:grid;gap:2px}
+.cm-pay-top b{font-family:Lora,serif;font-size:30px;color:#7a531a;line-height:1.1}
+.cm-pay-top span{font-size:14px;color:var(--muted);font-weight:600}
+.cm-pay-passos{margin:0;padding-left:20px;display:grid;gap:10px;font-size:15px;line-height:1.4}
+.cm-pix{display:flex;gap:8px;align-items:center;margin-top:6px;background:var(--surface);border:1.5px dashed #d8b878;border-radius:12px;padding:6px 6px 6px 12px}
+.cm-pix code{flex:1;font-size:15px;font-weight:700;overflow-wrap:anywhere;font-family:inherit}
+.cm-btn.sm{width:auto;min-height:38px;padding:6px 14px;font-size:14px;border-radius:10px}
+.cm-btn.is-busy{opacity:.6;pointer-events:none}
+label.cm-btn{cursor:pointer}
+.cm-link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;font-size:14px;justify-self:start;padding:4px 0;cursor:pointer}
+.gc-chip.pay{background:#f9eed9;color:#7a531a}
+.gc-chip.pay-env{background:var(--warn-soft);color:var(--warn-ink)}
+.gc-chip.pay-ok{background:var(--brand-soft);color:var(--brand-ink)}
+.gc-comp img{display:block;max-width:100%;border-radius:12px;margin:10px 0}
+.gc-comp iframe{width:100%;height:60vh;border:0;border-radius:12px;margin:10px 0}
+.cm-resumo{margin:10px 0 2px;font-size:15px;line-height:1.45;color:var(--ink-2);white-space:pre-line}
+.gd-resumo .gira-public-preserve{margin:6px 0 0}

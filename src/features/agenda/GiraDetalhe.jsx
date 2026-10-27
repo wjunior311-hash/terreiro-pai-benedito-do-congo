@@ -381,6 +381,10 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     return x ? <span key={id}>{x[1]} {x[2]}</span> : null;
   })}</div></div></div>}
   </div>
+  {gira.description && <div className="card gd-resumo">
+    <span className="eyebrow">SOBRE A GIRA</span>
+    <p className="gira-public-preserve">{gira.description}</p>
+  </div>}
   {gira.address && <div className="card gd-local">
     <span className="eyebrow">LOCAL</span>
     <b className="gd-local-end">📍 {gira.address}</b>

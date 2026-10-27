@@ -160,7 +160,7 @@ export const wizardProgress = { read: (id) => {
 } };
 
 const SELO_EMOJIS = ["🌟", "🌳", "🥁", "🎭", "🔥", "🌊", "🍃", "🌺", "🌙", "☀️", "🐚", "🪶", "🎶", "🍲", "🌻", "🏹"];
-export const emptyGiraInfo = () => ({ name: "", date: "", time: "", activity_type: "gira", entity_lines: [], hasContribution: false, contribution_amount: "", contribution_due_date: "", what_to_bring: "", notes: "", coverMode: "color", cover_color: "#65745A", art_path: "", coverFile: null, exclusive_badge: false, exclusive_badge_icon: "" });
+export const emptyGiraInfo = () => ({ name: "", date: "", time: "", activity_type: "gira", entity_lines: [], hasContribution: false, contribution_amount: "", contribution_due_date: "", what_to_bring: "", description: "", notes: "", coverMode: "color", cover_color: "#65745A", art_path: "", coverFile: null, exclusive_badge: false, exclusive_badge_icon: "" });
 
 export const validateGiraInfo = (g) => {
   const e = {};
@@ -206,7 +206,7 @@ export const validateGiraTasks = (tasks, shifts) => {
   return e;
 };
 
-export const giraInfoPayload = (g) => ({ name: g.name.trim(), starts_at: (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, has_contribution: g.hasContribution, contribution_amount: g.hasContribution ? Number(g.contribution_amount) : 0, contribution_due_date: g.hasContribution && g.contribution_due_date ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, notes: g.notes, art_path: g.coverMode === "image" ? g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : "" });
+export const giraInfoPayload = (g) => ({ name: g.name.trim(), starts_at: (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, has_contribution: g.hasContribution, contribution_amount: g.hasContribution ? Number(g.contribution_amount) : 0, contribution_due_date: g.hasContribution && g.contribution_due_date ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, description: (g.description || "").trim(), notes: g.notes, art_path: g.coverMode === "image" ? g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : "" });
 
 export async function loadGiraStructure(giraId) {
   const [{ data: turns, error: te }, { data: tasks, error: ke }] = await Promise.all([
@@ -431,7 +431,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
         const structure = await loadGiraStructure(initialId);
         const progress = wizardProgress.read(initialId);
         setStatus(row.status || "published");
-        setG({ name: row.name || "", date: localDateOf(row.starts_at), time: localTimeOf(row.starts_at), activity_type: row.activity_type || "gira", entity_lines: Array.isArray(row.entity_lines) ? row.entity_lines : [], hasContribution: Number(row.contribution_amount || 0) > 0, contribution_amount: Number(row.contribution_amount || 0) > 0 ? String(row.contribution_amount) : "", contribution_due_date: row.contribution_due_date || "", what_to_bring: row.what_to_bring || "", notes: row.notes || "", coverMode: row.art_path ? "image" : "color", cover_color: row.cover_color || "#65745A", art_path: row.art_path || "", coverFile: null, exclusive_badge: !!row.exclusive_badge, exclusive_badge_icon: row.exclusive_badge_icon || "" });
+        setG({ name: row.name || "", date: localDateOf(row.starts_at), time: localTimeOf(row.starts_at), activity_type: row.activity_type || "gira", entity_lines: Array.isArray(row.entity_lines) ? row.entity_lines : [], hasContribution: Number(row.contribution_amount || 0) > 0, contribution_amount: Number(row.contribution_amount || 0) > 0 ? String(row.contribution_amount) : "", contribution_due_date: row.contribution_due_date || "", what_to_bring: row.what_to_bring || "", description: row.description || "", notes: row.notes || "", coverMode: row.art_path ? "image" : "color", cover_color: row.cover_color || "#65745A", art_path: row.art_path || "", coverFile: null, exclusive_badge: !!row.exclusive_badge, exclusive_badge_icon: row.exclusive_badge_icon || "" });
         setShifts(structure.shifts);
         setTasks(structure.tasks);
         setHasShifts(row.has_activity_shifts ? true : row.status === "draft" && !progress.shiftsAnswered && !structure.shifts.length ? null : false);
@@ -737,6 +737,11 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
      <select id="gw-type" className="select" value={g.activity_type} onChange={(e) => setInfo({ activity_type: e.target.value })}>{Object.entries(types).map(([k, v]) => <option value={k} key={k}>{typeIcons[k]} {v}</option>)}</select>
      <FieldError msg={errors.activity_type} />
      </div>
+   <div className="field">
+     <label htmlFor="gw-resumo">Resumo da gira <small className="muted">· todos veem</small></label>
+     <textarea id="gw-resumo" className="textarea" rows="3" maxLength={400} value={g.description || ""} onChange={(e) => setInfo({ description: e.target.value })} placeholder="Uma breve explicação do que é esta gira, para os filhos e para os convidados." />
+     <small className="muted">Aparece para os filhos no app e também para quem é de fora: no site e no link de inscrição. As demais informações (o que levar, observações) continuam só para os filhos da casa. {(g.description || "").length}/400</small>
+   </div>
    <div className="field">
      <label>Entidades</label>
      <div className="gira-entity-picker">{entityLines.map((x) => <label className={"gira-entity-option " + (g.entity_lines.includes(x[0]) ? "selected" : "")} key={x[0]}>

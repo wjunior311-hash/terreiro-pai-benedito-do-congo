@@ -81,7 +81,7 @@ export function Publico({ onEntrar, logado = false }) {
         const d = diaMes(g.starts_at);
         return <div className="pb-card pb-gira" key={g.id}>
           <div className="pb-data"><small>{d.sem}</small><b>{d.dia}</b><small>{d.mes}</small></div>
-          <div className="pb-gira-tx"><h3>{g.name}</h3><p>{hora(g.starts_at)} · {g.access === "assist" ? "poucas vagas de assistência" : (TIPOS[g.activity_type] || "Gira") + " aberta à comunidade"}</p></div>
+          <div className="pb-gira-tx"><h3>{g.name}</h3><p>{hora(g.starts_at)} · {g.access === "assist" ? "poucas vagas de assistência" : (TIPOS[g.activity_type] || "Gira") + " aberta à comunidade"}</p>{g.description && <p className="pb-gira-resumo">{g.description}</p>}</div>
           <div className="pb-gira-rodape"><Vagas g={g} /><a className="pb-btn terra" href={BASE + "?comunidade=" + g.id}>{g.is_full ? (g.waitlist ? "Lista de espera" : "Ver") : "Confirmar presença"}</a></div>
         </div>;
       }) : <div className="pb-card pb-vazio"><span>🕯️</span><div><b>Nenhuma gira aberta agora</b><p>As próximas são divulgadas cerca de uma semana antes. Deixe seu contato mais abaixo que a gente avisa.</p></div></div>}
