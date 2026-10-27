@@ -99,7 +99,8 @@ declare r record; v_next uuid; v_n int := 0;
 begin
   for r in select s.id, s.gira_id from public.community_signups s join public.giras g on g.id = s.gira_id
             where s.pay_status = 'aguardando' and s.status in ('ok', 'pend')
-              and g.community_fee_until is not null and now() > g.community_fee_until and g.starts_at > now() loop
+              and g.community_fee_until is not null and now() > g.community_fee_until and g.starts_at > now()
+              and coalesce(s.promoted_at, s.created_at) < g.community_fee_until loop
     update public.community_signups set status = 'cancel', canceled_at = now() where id = r.id;
     select id into v_next from public.community_signups where gira_id = r.gira_id and status = 'wait' order by created_at limit 1;
     if v_next is not null then update public.community_signups set status = 'ok', promoted_at = now() where id = v_next; end if;
@@ -196,3 +197,5 @@ begin
 end;
 $function$;
 notify pgrst, 'reload schema';
+
+-- aplicado em 27/10/2026: Festival dos Orixás com R$ 25 até 04/11; inscrição de teste marcada como recusada.
