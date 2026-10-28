@@ -146,8 +146,8 @@ function Personalizar({ p, estado, voltar, abrirAvatar, salvo }) {
       <button type="button" className="btn pz-largo" onClick={abrirAvatar}>{p.avatar ? "Editar meu avatar" : "Criar meu avatar"}</button>
     </section>
 
-    <section className="pz-sec"><h4>Capa <small>libera uma nova a cada 5 insígnias</small></h4>
-      <div className="pz-capas">{CAPAS.map(([v, l, n]) => { const trava = estado.selos < n; return <button type="button" key={v} className={"capa-" + v} aria-pressed={f.capa === v} disabled={trava} onClick={() => set({ capa: v })}><span>{l}</span>{trava && <i>🔒 {n} insígnias</i>}</button>; })}</div>
+    <section className="pz-sec"><h4>Capa <small className="pz-conta">você tem {estado.selos} insígnias</small></h4><p>Uma capa nova a cada 5 insígnias diferentes.</p>
+      <div className="pz-capas">{CAPAS.map(([v, l, n]) => { const trava = estado.selos < n; return <button type="button" key={v} className={"capa-" + v} aria-pressed={f.capa === v} disabled={trava} onClick={() => set({ capa: v })}><span>{l}</span>{trava && <i><b>🔒 Falta{n - estado.selos === 1 ? "" : "m"} {n - estado.selos}</b><small>{l} · {estado.selos}/{n}</small></i>}</button>; })}</div>
     </section>
 
     <section className="pz-sec"><h4>Minha cor</h4><p>Muda os destaques do seu Meu espaço.</p>
@@ -176,7 +176,7 @@ function MeuAvatar({ p, estado, voltar, salvo }) {
   const [s, setS] = useState({ ...PADRAO, ...(p.avatar || {}) });
   const [busy, setBusy] = useState(false), [msg, setMsg] = useState(""), [aviso, setAviso] = useState("");
   const travado = (k, v) => k === "rosto" && estado.selos < (SELO_ROSTO[v] || 0) ? (SELO_ROSTO[v] + " insígnias") : k === "oculos" && v === "sol" && !estado.festa ? "festa" : "";
-  const escolher = (k, v) => { const t = travado(k, v); if (t) { setAviso(t === "festa" ? "🎉 Libera para quem confirmar presença na Festa da Abundância." : "🔒 Libera quando você tiver " + t + ". Você tem " + estado.selos + "."); setTimeout(() => setAviso(""), 2800); return; } setS((x) => ({ ...x, [k]: v })); };
+  const escolher = (k, v) => { const t = travado(k, v); if (t) { setAviso(t === "festa" ? "🎉 Libera para quem confirmar presença na Festa da Abundância." : "🔒 Libera com " + t + ". Você tem " + estado.selos + ": falta" + (SELO_ROSTO[v] - estado.selos === 1 ? " só 1" : "m " + (SELO_ROSTO[v] - estado.selos)) + "! Cada insígnia nova conta."); setTimeout(() => setAviso(""), 2800); return; } setS((x) => ({ ...x, [k]: v })); };
   const salvar = async () => {
     setBusy(true); setMsg("");
     const cfg = { ...s }; delete cfg.orixa; delete cfg.capa;
@@ -186,7 +186,7 @@ function MeuAvatar({ p, estado, voltar, salvo }) {
     salvo();
   };
   const Th = ({ k, v, label, mudo, cfg }) => { const t = travado(k, v); return <button type="button" className={"av-th" + (t ? " is-lock" : "") + (t === "festa" ? " is-festa" : "")} aria-pressed={String(s[k]) === String(v)} aria-label={label} title={label} onClick={() => escolher(k, v)}>
-    <AvatarDesenho cfg={{ ...s, ...cfg, [k]: v }} />{!mudo && <span className="nm">{label}</span>}{t && <span className="tranca">{t === "festa" ? "Confirme presença na Festa da Abundância" : "🔒 " + t}</span>}</button>; };
+    <AvatarDesenho cfg={{ ...s, ...cfg, [k]: v }} />{!mudo && <span className="nm">{label}</span>}{t && <span className="tranca">{t === "festa" ? "Confirme presença na Festa da Abundância" : <><b>🔒 {estado.selos}/{SELO_ROSTO[v]}</b><small>falta{SELO_ROSTO[v] - estado.selos === 1 ? "" : "m"} {SELO_ROSTO[v] - estado.selos}</small></>}</span>}</button>; };
   const Sw = ({ k, v, cor, label }) => <button type="button" className="av-sw" aria-label={label} title={label} aria-pressed={String(s[k]) === String(v)} style={{ background: cor }} onClick={() => escolher(k, v)} />;
   const Tg = ({ on, label, onClick }) => <button type="button" className="av-tg" aria-pressed={on} onClick={onClick}>{label}</button>;
   const liga = (k, on) => setS((x) => ({ ...x, [k]: on ? (x[k] || LIGA[k]) : "" }));
@@ -196,7 +196,7 @@ function MeuAvatar({ p, estado, voltar, salvo }) {
       <button type="button" className="btn primary" disabled={busy} onClick={salvar}>{busy ? "Salvando…" : "Usar este avatar"}</button>
       {msg && <div className="gw-warning">{msg}</div>}</div>
     {aviso && <div className="at-aviso" role="status">{aviso}</div>}
-    <section className="pz-sec"><h4>Expressão <small>a Sorridente já vem liberada</small></h4><div className="av-ths">{ROSTOS.map(([v, l]) => <Th key={v} k="rosto" v={v} label={l} />)}</div></section>
+    <section className="pz-sec"><h4>Expressão <small className="pz-conta">você tem {estado.selos} insígnias</small></h4><p>Novas expressões liberam com 10, 15, 20 e 25 insígnias diferentes.</p><div className="av-ths">{ROSTOS.map(([v, l]) => <Th key={v} k="rosto" v={v} label={l} />)}</div></section>
     <section className="pz-sec"><h4>Tom de pele</h4><div className="av-lin">{PELES.map((c, i) => <Sw key={c} k="pele" v={i} cor={c} label={"Tom " + (i + 1)} />)}</div></section>
     <section className="pz-sec"><h4>Cabelo</h4><p>Aparece quando não tem pano de cabeça.</p><div className="av-ths">{CABELOS.map(([v, l]) => <Th key={v} k="cabelo" v={v} label={l} mudo cfg={{ pano: "" }} />)}</div>
       <div className="av-sub">Cor do cabelo e da barba</div><div className="av-lin">{CAB_COR.map(([c, l]) => <Sw key={c} k="cabeloCor" v={c} cor={c} label={l} />)}</div></section>

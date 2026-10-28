@@ -106,3 +106,11 @@
 .me2>.btn:first-child{justify-self:start}
 .me2.at{padding-bottom:40px}
 @media (max-height:760px){.at-big{width:110px;height:110px}.at-palco{padding:14px;gap:10px}}
+.av-th .tranca{display:grid;align-content:center;gap:2px}
+.av-th .tranca b{font-size:12.5px}.av-th .tranca small{font-size:11px;font-weight:700;opacity:.9}
+.pz-capas button i{display:grid;align-content:center;gap:2px}
+.pz-capas button i b{font-size:12.5px}.pz-capas button i small{font-size:10.5px;font-weight:700;opacity:.9}
+.pz-sec h4 small.pz-conta{color:var(--acc)}
+.pz-capas button:disabled>span{display:none}
+.av-th:has(.nm) .tranca{bottom:26px;border-radius:16px 16px 10px 10px}
+.av-th .tranca b{font-size:13px;line-height:1.15;white-space:nowrap}
