@@ -24,11 +24,21 @@ export const INSIGNIAS = {
   mao: { nome: "Mão na massa", ic: "🧺", desc: "Escolha seu turno de atividades nas giras e marque suas tarefas como feitas.", como: "Na Agenda, abra a gira e escolha seu turno.", go: "giras", ir: "Abrir a Agenda", un: ["contribuição", "contribuições"] },
   axe: { nome: "Axé que circula", ic: "🙏🏾", desc: "Mande axé nas publicações dos seus irmãos no mural.", como: "No Mural, toque em 🙏🏾 Axé nas publicações.", go: "community", ir: "Abrir o Mural", un: ["axé enviado", "axés enviados"] },
   avatar: { nome: "Autorretrato", ic: "🎨", desc: "Crie o seu avatar no ateliê do Meu espaço e salve. O símbolo do seu Orixá vai sempre junto.", como: "Em Meu espaço, toque em “✎ Personalizar” e depois em “Criar meu avatar”.", go: "me", ir: "Criar meu avatar" },
+  curioso: { nome: "Curioso(a)", ic: "🤔", desc: "Mande uma dúvida para os Pais em “Falar com os Pais”. As perguntas anônimas não contam, para continuarem anônimas.", como: "Em Meu espaço ou no Início, toque em “Falar com os Pais”.", go: "contact", ir: "Falar com os Pais" },
+  parabens: { nome: "Parabéns com axé", ic: "🎂", desc: "Mande axé de aniversário no Mural para 5 irmãos diferentes.", como: "No Início, em Aniversariantes, toque em “Mandar axé” no dia do aniversário.", go: "home", ir: "Ver aniversariantes", un: ["irmão", "irmãos"] },
+  roda: { nome: "Minha voz na roda", ic: "🪶", desc: "Faça sua primeira publicação no Mural: o que sentiu, o que aprendeu, um recado para a casa.", como: "No Mural, toque em “Publicar”.", go: "community", ir: "Abrir o Mural" },
+  sequencia: { nome: "Sequência de axé", ic: "🔥", desc: "Vá a todas as giras de um mês. Cada mês completo conta.", como: "Confirme presença em todas as giras do mês na Agenda.", go: "giras", ir: "Abrir a Agenda", un: ["mês completo", "meses completos"] },
+  abertura: { nome: "Primeira gira do ano", ic: "🌅", desc: "Esteja na gira que abre o ano da casa. Cada ano conta.", como: "Confirme presença na primeira gira do ano na Agenda.", go: "giras", ir: "Abrir a Agenda", un: ["ano", "anos"] },
+  cedo: { nome: "Chegou cedo", ic: "⏰", desc: "Confirme presença nas primeiras 24 horas depois que a gira é publicada.", como: "Quando chegar o aviso de gira nova, responda logo na Agenda.", go: "giras", ir: "Abrir a Agenda", un: ["confirmação cedo", "confirmações cedo"] },
+  leitor: { nome: "Leitor(a) da Ẹ̀mí Ìlú", ic: "📚", desc: "Leia as edições da revista Ẹ̀mí Ìlú até o fim. Soma com o selo de cada mês.", como: "No Início, toque na capa da revista.", go: "revista", ir: "Ler a revista", un: ["edição lida", "edições lidas"] },
+  raiz: { nome: "Raiz", ic: "🪵", desc: "O seu tempo de casa, a partir do “Na casa desde” do seu perfil.", como: "Em Meu espaço, toque em “✎ Personalizar” e preencha “Na casa desde”.", go: "me", ir: "Abrir Meu espaço", un: ["ano de casa", "anos de casa"] },
+  abundancia: { nome: "Festa da Abundância", ic: "🌾", desc: "Para quem esteve na Festa da Abundância.", como: "Confirme presença na Festa da Abundância.", go: "giras", ir: "Abrir a Agenda" },
+  mutirao: { nome: "Mutirão da reforma", ic: "🧱", desc: "Para quem ajudou na reforma do espaço da casa.", como: "Selo concedido pela casa.", go: "home", ir: "Voltar ao Início" },
   democracia: { nome: "Democracia", ic: "⭐", desc: "Selo comemorativo das eleições de 2026, para toda a casa.", como: "Presente da casa para todos os filhos.", go: "home", ir: "Voltar ao Início" },
   voz: { nome: "Voz da comunidade", ic: "💬", desc: "Compartilhe no mural: publique o que sentiu, o que aprendeu, ou comente as publicações dos irmãos.", como: "No Mural, escreva ou comente.", go: "community", ir: "Abrir o Mural", un: ["participação", "participações"] }
 };
-const ORDEM_UNICAS_TODAS = ["antena", "regras", "cadastro", "avatar"];
-const ORDEM_NIVEIS = ["palavra", "responde", "sabedoria", "mao", "axe", "voz"];
+const ORDEM_UNICAS_TODAS = ["antena", "regras", "cadastro", "avatar", "curioso", "parabens", "roda"];
+const ORDEM_NIVEIS = ["palavra", "responde", "sabedoria", "mao", "axe", "voz", "sequencia", "abertura", "cedo", "leitor", "raiz"];
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 // leituras: quando o próximo nível pede mais do que a casa já publicou
 const emDia = (s, prox) => s?.goal != null && prox > s.goal && (s.value || 0) >= s.goal;
