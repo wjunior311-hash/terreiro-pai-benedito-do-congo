@@ -274,7 +274,8 @@ const PAGINA_COMUNIDADE = new URLSearchParams(window.location.search).has("comun
 createRoot(document.getElementById("root")).render(PAGINA_COMUNIDADE ? <Comunidade /> : <App />);
 
 // Desligado até o remetente de e-mail (SMTP) ser configurado no Supabase. Para ligar: true.
-const ESQUECI_SENHA_ATIVO = false;
+// em teste: só aparece abrindo o site com ?teste-senha (fica guardado no aparelho)
+const ESQUECI_SENHA_ATIVO = (() => { try { const q = new URLSearchParams(window.location.search); if (q.has("teste-senha")) localStorage.setItem("tpbc-teste-senha", "1"); return localStorage.getItem("tpbc-teste-senha") === "1"; } catch (e) { return false; } })();
 
 // "Esqueci minha senha": manda um link por e-mail para criar uma senha nova
 function EsqueciSenha({ emailInicial = "", voltar }) {
