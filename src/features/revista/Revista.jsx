@@ -1,4 +1,5 @@
 // Revista Ẹ̀mí Ìlú: leitura no app (capa, sumário, matérias) e registro de quem leu.
+import { MaosRevista } from "../maos/Maos.jsx";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Share2 } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
@@ -211,6 +212,7 @@ function Bloco({ b, m, ed, p, go, manager, chipSel, setChip }) {
     case "banho": return <Banho banho={ed.banho} />;
     case "pagar": return <Pagar p={p} />;
     case "niver": return <Niver ed={ed} />;
+    case "maos": return <MaosRevista />;
     case "livros": return <div className="rv-livros">{ed.livros.map((l) => <div key={l.titulo} className="rv-livro">
       <span className="rv-livro-capa" style={{ background: l.cor }}>{l.titulo.split(":")[0]}{l.capa && <img src={l.capa} alt={"Capa de " + l.titulo} loading="lazy" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.style.display = "none"; }} />}</span>
       <span><b>{l.titulo}</b><small>{l.autor}</small><p>{l.texto}</p></span>

@@ -1,5 +1,6 @@
 // Página aberta do site (sem login): giras abertas, primeira vez, conteúdos abertos, sobre, onde estamos,
 // "quero ser avisado" e o botão "Sou filho da casa" (login). Em 2027 entra o "Seja Membro".
+import { MaosPublico } from "../maos/Maos.jsx";
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase.js";
 import { contentSummary, coverStyle, readingMinutes, sanitizeContentHtml } from "../conteudos/conteudo.js";
@@ -119,6 +120,7 @@ export function Publico({ onEntrar, logado = false }) {
       <div className="pb-sobre"><span className="pb-eyebrow ouro">Sobre a casa</span><h2>Terreiro Pai Benedito do Congo</h2><p>Uma casa de Umbanda de raízes africanas e indígenas, que acolhe quem chega com o coração aberto.</p><a href={INSTAGRAM} target="_blank" rel="noreferrer">Acompanhe no Instagram →</a></div>
     </section>
 
+    <MaosPublico />
     <section className="pb-sec pb-sec-cheia" id="pb-onde">
       <div className="pb-sec-t pb-pad"><h2>Onde estamos</h2></div>
       <div className="pb-mapa">
