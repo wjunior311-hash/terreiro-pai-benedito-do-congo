@@ -64,3 +64,11 @@ notify pgrst, 'reload schema';
 -- Festa de Baianos (14/11): tarefas novas (lavanderia; almoço e preparos gerais na cozinha; Firmeza da casa),
 -- "Colocar café e água" virou "Preparo de café, chá e encher galão de água", categoria Cozinha nos preparos,
 -- e subtarefas em todas as tarefas (feito direto no banco).
+
+-- Ajustes (10/11 15h):
+-- gira_turns.tarefas_gerais: turno sem responsável nominal (tarefas para todos do turno); a distribuição pula esses turnos.
+alter table public.gira_turns add column if not exists tarefas_gerais boolean not null default false;
+-- distribuir_tarefas_turnos: padês/quartinhas sem ninguém com 2+ anos no turno vão para os Pais de santo.
+-- Festa de Baianos: sexta 18h com tarefas gerais; novas tarefas (13h: Apoio na chegada e porta, Conferir descartáveis,
+-- papel higiênico e lixeiras, Apoio durante a gira; 20h30: Retirar decoração, Lavar alguidares) com subtarefas;
+-- cron único 'baianos-distribuir-1211' em 12/11 22h05 (01h05 UTC de 13/11): distribui e avisa por push, depois se desliga.
