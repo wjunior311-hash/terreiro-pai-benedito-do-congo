@@ -76,7 +76,8 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     const merged = turnRows.map((x2) => ({ ...x2, ...details.find((d) => d.id === x2.turn_id) || {} }));
     setResp(r);
     setTurns(merged);
-    setAvailability(hasTaskAgenda ? (a || []).map((v) => v.gira_turn_id) : []);
+    // só os turnos DESTA gira (antes contava turnos de giras passadas e travava a escolha)
+    setAvailability(hasTaskAgenda ? (a || []).map((v) => v.gira_turn_id).filter((v) => ids.includes(v)) : []);
     setExchanges(x || []);
     setNotifications(n || []);
     setTurnChangeNotifications(turnChanges || []);
