@@ -90,6 +90,8 @@ export function Home({ p, go, memberPreview = false }) {
   const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null), [pendGira, setPendGira] = useState([]);
   useEffect(() => { supabase.rpc("my_gira_pending").then(({ data }) => setPendGira(Array.isArray(data) ? data : [])); }, [p.id]);
   const abrirGira = (id, rolar) => { try { sessionStorage.setItem("tpbc-abrir-gira", id); if (rolar) sessionStorage.setItem("tpbc-rolar", rolar); } catch (e) { /* ok */ } go("giras"); };
+  // aviso visto some na hora (e fica marcado como lido no servidor)
+  const lido = (rpc, id, set) => { set((v) => v.filter((x) => x.id !== id)); supabase.rpc(rpc, { p_notification_id: id }); };
   const now = /* @__PURE__ */ new Date();
   const attention = [];
   if (gira) {
@@ -107,8 +109,8 @@ export function Home({ p, go, memberPreview = false }) {
       else if (released) attention.push({ key: "tasks", tone: "info", icon: <ClipboardList size={20} />, title: "As tarefas da gira foram organizadas", text: "Acompanhe o seu turno no dia da gira", cta: "Ver", onClick: () => go("giras") });
     }
   }
-  turnChangeNotifications.slice(0, 1).forEach((n) => attention.push({ key: "turnchange-" + n.id, tone: "warning", icon: <RefreshCw size={19} />, title: "Seu turno foi alterado", text: n.message, cta: "Ver", onClick: () => go("giras") }));
-  giraNotifications.slice(0, 1).forEach((n) => attention.push({ key: "gira-" + n.id, tone: "info", icon: <CalendarDays size={20} />, title: "Novidade na agenda", text: n.message, cta: "Abrir", onClick: () => go("giras") }));
+  turnChangeNotifications.slice(0, 1).forEach((n) => attention.push({ key: "turnchange-" + n.id, tone: "warning", icon: <RefreshCw size={19} />, title: "Seu turno foi alterado", text: n.message, cta: "Ver", onClick: () => { lido("mark_gira_turn_change_notification_read", n.id, setTurnChangeNotifications); abrirGira(n.gira_id); } }));
+  giraNotifications.slice(0, 1).forEach((n) => attention.push({ key: "gira-" + n.id, tone: "info", icon: <CalendarDays size={20} />, title: "Novidade na agenda", text: n.message, cta: "Abrir", onClick: () => { lido("mark_gira_turn_availability_notification_read", n.id, setGiraNotifications); abrirGira(n.gira_id); } }));
   pendGira.forEach((g) => {
     if (g.needs_read) attention.push({ key: "ler-" + g.gira_id, tone: "warning", icon: <BookOpen size={19} />, title: "Leia as novidades da " + g.name, text: "Horários, roupa e o que levar na mochila", cta: "Ler", onClick: () => abrirGira(g.gira_id) });
     if (g.has_items && (g.max || 1) > g.mine) attention.push({ key: "levar-" + g.gira_id, tone: "warning", icon: <ClipboardList size={19} />, title: "Escolha " + ((g.max || 1) - g.mine) + (((g.max || 1) - g.mine) === 1 ? " item" : " itens") + " para levar", text: g.name + " · café coletivo", cta: "Escolher", onClick: () => abrirGira(g.gira_id, "o-que-levar") });
