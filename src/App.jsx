@@ -17,6 +17,7 @@ import { Comunidade } from "./features/comunidade/Comunidade.jsx";
 import { HouseContent } from "./features/conteudos/Conteudos.jsx";
 import { ContactParents, Me } from "./features/eu/Eu.jsx";
 import { MeuEspaco } from "./features/perfil/MeuEspaco.jsx";
+import { MaosTela } from "./features/maos/Maos.jsx";
 import { PessoaAvatar } from "./features/perfil/PessoaAvatar.jsx";
 import { novoMeuEspaco } from "./features/perfil/perfil.js";
 import { Admin } from "./features/gestao/Gestao.jsx";
@@ -27,8 +28,8 @@ import "./app.css";
 import "./tema.css";
 import { Publico } from "./features/publico/Publico.jsx";
 
-const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias", caminho: "Caminho" };
-const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me", caminho: "content" };
+const SCREEN_TITLES = { home: "Início", giras: "Agenda", community: "Mural", content: "Conteúdos", me: "Meu espaço", contact: "Falar com os Pais", admin: "Gestão da Casa", revista: "Ẹ̀mí Ìlú", insignias: "Insígnias", maos: "Mãos da Egbé", caminho: "Caminho" };
+const SCREEN_PARENT = { contact: "me", admin: "me", revista: "home", insignias: "me", maos: "me", caminho: "content" };
 
 export function App() {
   const [session, setSession] = useState(null),
@@ -144,6 +145,7 @@ export function App() {
   {screen === "giras" && <Giras p={profile} />}
   {screen === "revista" && <RevistaTela p={profile} go={go} />}
   {screen === "insignias" && <MinhasInsignias go={go} />}
+  {screen === "maos" && <MaosTela go={go} />}
   {screen === "caminho" && <CaminhoTela />}
   {screen === "community" && <Community p={profile} draft={muralDraft} focus={muralFocus} />}
   {screen === "content" && <HouseContent p={profile} go={go} back={() => setScreen("home")} />} 

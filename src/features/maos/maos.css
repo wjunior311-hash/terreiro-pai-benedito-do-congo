@@ -1,0 +1,67 @@
+/* Mãos da Egbé */
+.mx-tela{display:grid;gap:12px;padding-bottom:24px}
+.mx-hero{background:#344b36;color:#f5ecd9;padding:24px 20px 26px;border-radius:24px;position:relative;overflow:hidden}
+.mx-hero:after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(242,199,102,.35),transparent 70%)}
+.mx-eb{font-size:11px;letter-spacing:.2em;font-weight:800;color:#f2c766}
+.mx-hero h2{font-family:Lora,serif;font-size:34px;margin:6px 0 0;line-height:1.05;color:#f5ecd9}
+.mx-hero h2 em{color:#f2c766}
+.mx-hero p{margin:10px 0 0;font-size:14.5px;line-height:1.45;color:#e8dcc2;max-width:340px;position:relative;z-index:1}
+.mx-vitrine{display:grid;gap:14px}
+.mx-chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.mx-chips::-webkit-scrollbar{display:none}
+.mx-chips button{border:1.5px solid var(--line-strong,#d8cdb9);background:var(--surface,#fffdf8);color:var(--ink,#2b241d);border-radius:99px;padding:8px 14px;font-size:13.5px;font-weight:700;white-space:nowrap;min-height:0}
+.mx-chips button[aria-pressed=true]{background:#344b36;color:#fff;border-color:#344b36}
+.mx-card{background:var(--surface,#fffdf8);border:1px solid var(--line-strong,#e3dccf);border-radius:22px;overflow:hidden;box-shadow:0 6px 16px rgba(81,63,40,.05);color:var(--ink,#2b241d)}
+.mx-foto{height:150px;position:relative;display:grid;place-items:center;background-size:cover;background-position:center}
+.mx-foto.tem{height:190px}
+.mx-ic{font-size:58px}
+.mx-tag{position:absolute;left:12px;top:12px;background:rgba(255,253,248,.95);color:#2b241d;border-radius:99px;padding:5px 11px;font-size:11px;font-weight:800;letter-spacing:.04em;max-width:calc(100% - 90px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mx-novo{position:absolute;right:12px;top:12px;background:#c4573a;color:#fff;border-radius:99px;padding:5px 11px;font-size:11px;font-weight:800}
+.mx-tx{padding:14px 16px 16px}
+.mx-tx h3{font-family:Lora,serif;font-size:21px;line-height:1.15;margin:0}
+.mx-quem{margin-top:4px;font-size:13px;color:var(--muted,#6b5d4d)}
+.mx-tx p{font-size:14.5px;line-height:1.45;margin:8px 0 0}
+.mx-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mx-meta span{font-size:12px;font-weight:700;background:var(--surface-2,#f2ebdf);border-radius:99px;padding:4px 10px;color:var(--ink-2,#5b4d3e)}
+.mx-mimo{margin-top:10px;background:#f9eed9;color:#7a531a;border-radius:12px;padding:8px 12px;font-size:13px;font-weight:700}
+.mx-bts{display:flex;gap:8px;margin-top:12px}
+.mx-bt{flex:1;text-align:center;border-radius:12px;padding:11px 8px;font-size:14px;font-weight:800;text-decoration:none}
+.mx-bt.wa{background:#344b36;color:#fff}.mx-bt.ing{background:#c4573a;color:#fff}
+.mx-bt.ig{border:1.5px solid var(--line-strong,#d8cdb9);color:var(--ink,#2b241d);background:var(--surface,#fffdf8)}
+.mx-conv{border:2px dashed #cbbd9f;border-radius:20px;padding:16px;text-align:center;font-size:14px;color:var(--muted,#6b5d4d);line-height:1.4;background:none;font:inherit}
+.mx-conv b{color:#344b36;display:block;font-size:15.5px;margin-bottom:2px}
+.mx-vazio{text-align:center;color:var(--muted);padding:20px}
+.mx-h{font-family:Lora,serif;font-size:26px;margin:4px 4px 0}
+.mx-form>.btn:first-child{justify-self:start}
+.mx-campos{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line-strong);border-radius:22px;padding:16px}
+.mx-campos label{display:grid;gap:6px;font-size:14px;font-weight:700}
+.mx-campos label small{font-weight:600;color:var(--muted)}
+.mx-campos fieldset{border:0;padding:0;margin:0}
+.mx-campos legend{font-size:14px;font-weight:700;margin-bottom:6px}
+.mx-tipos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mx-tipos button{display:grid;justify-items:center;gap:4px;padding:12px 6px;border:2px solid var(--line);border-radius:16px;background:var(--surface-2);font-weight:700;font-size:13.5px;color:var(--ink)}
+.mx-tipos button span{font-size:26px}
+.mx-tipos button[aria-pressed=true]{border-color:#344b36;box-shadow:0 0 0 2px #e7efe1}
+.mx-datas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mx-datas .mx-nota{grid-column:1/-1}
+.mx-nota{font-size:12.5px;color:var(--muted);margin:0}
+.mx-foto-campo{display:grid;gap:8px;font-size:14px;font-weight:700}
+.mx-foto-campo img{width:100%;max-height:200px;object-fit:cover;border-radius:14px}
+.mx-foto-campo .btn{justify-self:start;cursor:pointer}
+.mx-check{display:flex!important;grid-template-columns:none;align-items:center;gap:10px!important;font-weight:600!important}
+.mx-check input{width:20px;height:20px}
+.mx-largo{width:100%;min-height:48px}
+.mx-meu{display:grid;gap:8px;margin-bottom:14px}
+.mx-meu-sit{display:grid;gap:6px;padding:0 4px}
+.mx-meu-sit small{color:var(--muted);font-size:12.5px}
+.mx-sit{justify-self:start;font-size:12.5px;font-weight:800;border-radius:99px;padding:4px 10px}
+.mx-sit.pend{background:#f9eed9;color:#7a531a}.mx-sit.ok{background:#e7efe1;color:#2f5a2b}.mx-sit.ajuste{background:#f8e1dc;color:#a13d32}
+.mx-meu-bts{display:flex;gap:8px;flex-wrap:wrap}
+.mx-adm h2{font-family:Lora,serif;margin:2px 0 6px}
+.mx-adm-t{font-size:15px;margin:18px 0 10px}
+.mx-adm .mx-meu{max-width:430px}
+.me2 .i5{background:#f9eed9}
+.mx-campos,.mx-campos>*{min-width:0}
+.mx-campos .input{width:100%;box-sizing:border-box;min-width:0;max-width:100%}
+.mx-datas>label{min-width:0}
+.mx-novo{box-shadow:0 0 0 2px rgba(255,253,248,.9)}
