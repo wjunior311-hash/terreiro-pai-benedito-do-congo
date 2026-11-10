@@ -302,7 +302,7 @@ body{min-height:100dvh}
 .gw-shift{padding:12px 14px;border:1px solid var(--line-strong);border-radius:14px;background:var(--surface);margin-bottom:10px}
 .gw-shift.has-error{border-color:var(--danger-line)}
 .gw-shift-tag{display:inline-block;font-size:12px;font-weight:800;color:var(--brand-ink);background:var(--surface-2);border-radius:99px;padding:3px 10px;margin-bottom:6px}
-.gw-shift-fields{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.gw-shift-fields{display:grid;grid-template-columns:1fr 1fr 74px auto;gap:10px;align-items:end}
 .gw-shift-fields .field{margin:0}
 .gw-icon-btn{display:inline-grid;place-items:center;padding:9px;min-width:40px;min-height:40px}
 .gw-add{display:inline-flex;align-items:center;gap:6px;margin-top:4px}
@@ -349,7 +349,7 @@ body{min-height:100dvh}
  .gw-panel{padding:16px}
  .gw-step{min-width:auto;padding:8px 10px}
  .gw-step:not(.is-current) .gw-step-label{display:none}
- .gw-shift-fields{grid-template-columns:1fr 1fr auto}
+ .gw-shift-fields{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 64px auto}
  .gw-task-row{grid-template-columns:minmax(0,1fr) auto}
  .gw-task-num{display:none}
  .gw-task-row .gw-task-shift{grid-column:1/2}
@@ -651,3 +651,5 @@ body{min-height:100dvh}
 .sn-row{cursor:pointer}
 .sn-row input{width:18px;height:18px;accent-color:var(--brand);flex:none}
 .sn-from{text-decoration:line-through;color:var(--faint)!important}
+
+.gw-shift-fields>*{min-width:0}.gw-shift-fields .input{width:100%;min-width:0;box-sizing:border-box}

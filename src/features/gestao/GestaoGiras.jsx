@@ -186,6 +186,10 @@ export const validateGiraShifts = (hasShifts, shifts) => {
       e[s.id] = "Preencha o dia e o horário.";
       return;
     }
+    if (s.capacity !== "" && s.capacity != null && !(Number(s.capacity) >= 1)) {
+      e[s.id] = "As vagas devem ser de pelo menos 1 pessoa.";
+      return;
+    }
     const k = s.date + " " + s.time;
     if (seen[k]) e[s.id] = "Já existe um turno neste dia e horário.";
     seen[k] = true;
@@ -499,7 +503,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
     const e = { ...validateGiraShifts(hasShifts, shifts), ...hasShifts ? validateGiraTasks(tasks, shifts) : {} };
     setErrors(e);
     if (Object.keys(e).length) return false;
-    const payloadShifts = hasShifts ? shifts.map((s) => ({ id: s.id, date: s.date, time: s.time })) : [];
+    const payloadShifts = hasShifts ? shifts.map((s) => ({ id: s.id, date: s.date, time: s.time, capacity: Number(s.capacity) >= 1 ? Number(s.capacity) : null })) : [];
     const payloadTasks = hasShifts ? tasks.map((t) => ({ id: t.id, name: t.name.trim(), shiftId: t.shiftId, subtasks: t.subtasks.filter((s) => s.name.trim()).map((s) => ({ id: s.id, name: s.name.trim() })) })) : [];
     const { error } = await supabase.rpc("editor_save_gira_structure", { p_gira_id: id, p_has_shifts: !!hasShifts, p_turns: payloadShifts, p_tasks: payloadTasks });
     if (error) throw error;
@@ -585,11 +589,11 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
     if (v === hasShifts) return;
     if (v === false && (shifts.length || tasks.length) && !confirm("Ao salvar, os " + shifts.length + " turno(s) e " + tasks.length + " tarefa(s) desta gira serão removidos. Deseja continuar?")) return;
     setHasShifts(v);
-    if (v && !shifts.length) setShifts([{ id: newId(), date: g.date || "", time: "" }]);
+    if (v && !shifts.length) setShifts([{ id: newId(), date: g.date || "", time: "", capacity: 7 }]);
     touch();
   };
   const addShift = () => {
-    setShifts((v) => [...v, { id: newId(), date: v[v.length - 1]?.date || g.date || "", time: "" }]);
+    setShifts((v) => [...v, { id: newId(), date: v[v.length - 1]?.date || g.date || "", time: "", capacity: v[v.length - 1]?.capacity || 7 }]);
     touch();
   };
   const updateShift = (sid, patch) => {
@@ -860,7 +864,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
    {hasShifts === true && <div className="gw-shifts">
     <div className="gw-subhead">
       <b>Turnos</b>
-      <span className="muted small">Cada turno tem apenas dia e horário.</span>
+      <span className="muted small">Cada turno tem dia, horário e quantas pessoas cabem nele.</span>
       </div>
     {shifts.map((s, i) => <div className={"gw-shift " + (errors[s.id] ? "has-error" : "")} key={s.id}>
       <span className="gw-shift-tag">{s.date && s.time ? shiftLabel(s) : "Turno " + (i + 1)}</span>
@@ -872,6 +876,10 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
       <div className="field">
       <label htmlFor={"t" + s.id}>Horário</label>
       <input id={"t" + s.id} className="input" type="time" value={s.time} onChange={(e) => updateShift(s.id, { time: e.target.value })} />
+      </div>
+      <div className="field gw-shift-vagas">
+      <label htmlFor={"v" + s.id}>Vagas</label>
+      <input id={"v" + s.id} className="input" inputMode="numeric" value={s.capacity ?? ""} onChange={(e) => updateShift(s.id, { capacity: e.target.value.replace(/\D/g, "").slice(0, 3) })} />
       </div>
       <button type="button" className="btn gw-icon-btn" aria-label={"Excluir turno " + (i + 1)} onClick={() => removeShift(s)}>
       <Trash2 size={15} />

@@ -191,7 +191,8 @@ function ConfigGira({ giraAtual, onClose, onSaved }) {
   useEffect(() => {
     supabase.from("giras").select("id,name,starts_at,status,community_access,community_slots,community_public,community_waitlist,community_opens_at,community_fee,community_fee_until,contribution_amount,contribution_due_date").gte("starts_at", new Date(Date.now() - 12 * 3600e3).toISOString()).order("starts_at").then(({ data }) => {
       setGiras(data || []);
-      if (!id && data?.length) setId(data[0].id);
+      // a gira aberta na tela pode já ter passado: aí começa pela primeira da lista
+      setId((cur) => (data || []).some((g) => g.id === cur) ? cur : data?.[0]?.id || "");
     });
   }, []);
   useEffect(() => {

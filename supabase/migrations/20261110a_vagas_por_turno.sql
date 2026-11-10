@@ -1,0 +1,10 @@
+-- Vagas por turno direto no cadastro da gira (passo Turnos).
+-- editor_save_gira_structure passa a aceitar "capacity" em cada turno (opcional; padrão 7 para turno novo,
+-- e não deixa colocar menos vagas do que pessoas já inscritas). Aplicado com um bloco DO que ajusta a
+-- definição atual da função:
+--   declare: + v_cap integer; v_n integer;
+--   depois de v_time: v_cap := nullif(t->>'capacity','')::int; valida >= 1 e >= inscritos no turno
+--   update: capacity = coalesce(v_cap, capacity)
+--   insert: coalesce(v_cap, 7)
+-- Festa de Baianos (14/11): vagas 5 / 15 / 40 / 15 e escolha de turnos aberta até 12/11 22h
+-- (giras.turn_availability_reopened_until = '2026-11-12 22:00-03').
