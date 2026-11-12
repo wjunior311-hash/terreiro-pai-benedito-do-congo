@@ -8,12 +8,13 @@ import { money } from "../../lib/helpers.js";
 import { can } from "../acesso.js";
 import { useMemberFinance } from "../financeiro/regras.js";
 import { PayModal } from "../financeiro/ComoPagar.jsx";
+import * as ed202611 from "./edicoes/2026-11.js";
 import * as ed202610 from "./edicoes/2026-10.js";
 import * as ed202608 from "./edicoes/2026-08.js";
 import * as ed202606 from "./edicoes/2026-06.js";
 
 // todas as edições que existem no app (a mais nova primeiro)
-export const EDICOES = [ed202610, ed202608, ed202606];
+export const EDICOES = [ed202611, ed202610, ed202608, ed202606];
 export const edicaoPorSlug = (slug) => EDICOES.find((e) => e.slug === slug);
 
 const firstName = (n) => {
