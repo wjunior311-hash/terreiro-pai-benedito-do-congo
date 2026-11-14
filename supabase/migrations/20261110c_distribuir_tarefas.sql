@@ -72,3 +72,6 @@ alter table public.gira_turns add column if not exists tarefas_gerais boolean no
 -- Festa de Baianos: sexta 18h com tarefas gerais; novas tarefas (13h: Apoio na chegada e porta, Conferir descartáveis,
 -- papel higiênico e lixeiras, Apoio durante a gira; 20h30: Retirar decoração, Lavar alguidares) com subtarefas;
 -- cron único 'baianos-distribuir-1211' em 12/11 22h05 (01h05 UTC de 13/11): distribui e avisa por push, depois se desliga.
+
+-- 13/11: gira_turn_task_status passa a comparar o dia pelo horário de Brasília (antes usava current_date em UTC,
+-- e depois das 21h travava as tarefas do dia) e libera também o dia seguinte. Ajuste aplicado sobre a definição atual.
