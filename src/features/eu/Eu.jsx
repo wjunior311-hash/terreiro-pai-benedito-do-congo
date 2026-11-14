@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { CalendarDays, UserRound, WalletCards, BookOpen, ShieldCheck, LogOut, RefreshCw, ChevronRight, Save, ArrowLeft, Download } from "lucide-react";
 import { supabase, APP_URL } from "../../lib/supabase.js";
 import { OrixaIcon, ORIXAS } from "../../orixaSymbols.jsx";
-import { err, groups, money, formatPhone, phoneDigits } from "../../lib/helpers.js";
+import { err, groups, money, formatPhone, phoneDigits, mesBR } from "../../lib/helpers.js";
 import { AvisosOption } from "../avisos/AtivarAvisos.jsx";
 import { Field } from "../../components/ui.jsx";
 import { hasAnyAdmin } from "../acesso.js";
@@ -302,10 +302,10 @@ export function Finance({ p, back }) {
   const ymOffset = (base, n) => {
     const d = /* @__PURE__ */ new Date(base + "-01T12:00:00");
     d.setMonth(d.getMonth() + n);
-    return d.toISOString().slice(0, 7);
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
   };
   const today = /* @__PURE__ */ new Date();
-  const current = today.toISOString().slice(0, 7);
+  const current = mesBR(today);
   const baseMonths = [ymOffset(current, -1), current, ymOffset(current, 1), ymOffset(current, 2)];
   const overdue = dues.filter((x) => x.status !== "paid" && x.status !== "not_applicable" && key(x.reference_month) < ymOffset(current, -1)).map((x) => key(x.reference_month));
   const visible = [.../* @__PURE__ */ new Set([...overdue, ...baseMonths])].sort((a, b) => a.localeCompare(b));

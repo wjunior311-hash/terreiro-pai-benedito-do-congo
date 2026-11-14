@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Check, X, Plus, ChevronRight, ClipboardList, Save, Trash2, ArrowLeft, Pencil } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
-import { entityLines, err, lineInfo, money, newId, pad2, typeIcons, typeLabel, types } from "../../lib/helpers.js";
+import { dataHoraBR, entityLines, err, isoDeBR, lineInfo, money, newId, pad2, typeIcons, typeLabel, types } from "../../lib/helpers.js";
 import { FieldError } from "../../components/ui.jsx";
 import { UnifiedGiraCard } from "../../components/GiraCard.jsx";
 import { Giras } from "../agenda/Agenda.jsx";
@@ -122,17 +122,10 @@ export function AdminGiraTurnControl({ gira, editor = false }) {
 
 export const GIRA_STATUS = { draft: "Rascunho", published: "Publicada" };
 
-export const localDateOf = (iso) => {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
-};
+// data e hora sempre em Brasília
+export const localDateOf = (iso) => iso ? dataHoraBR(iso).slice(0, 10) : "";
 
-export const localTimeOf = (iso) => {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return pad2(d.getHours()) + ":" + pad2(d.getMinutes());
-};
+export const localTimeOf = (iso) => iso ? dataHoraBR(iso).slice(11, 16) : "";
 
 export const shiftLabel = (s) => {
   if (!s?.date || !s?.time) return "Turno sem dia/horário";
@@ -210,7 +203,7 @@ export const validateGiraTasks = (tasks, shifts) => {
   return e;
 };
 
-export const giraInfoPayload = (g) => ({ name: g.name.trim(), starts_at: (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, has_contribution: g.hasContribution, contribution_amount: g.hasContribution ? Number(g.contribution_amount) : 0, contribution_due_date: g.hasContribution && g.contribution_due_date ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, description: (g.description || "").trim(), notes: g.notes, art_path: g.coverMode === "image" ? g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : "" });
+export const giraInfoPayload = (g) => ({ name: g.name.trim(), starts_at: isoDeBR(g.date + "T" + g.time), activity_type: g.activity_type, entity_lines: g.entity_lines, has_contribution: g.hasContribution, contribution_amount: g.hasContribution ? Number(g.contribution_amount) : 0, contribution_due_date: g.hasContribution && g.contribution_due_date ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, description: (g.description || "").trim(), notes: g.notes, art_path: g.coverMode === "image" ? g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : "" });
 
 export async function loadGiraStructure(giraId) {
   const [{ data: turns, error: te }, { data: tasks, error: ke }] = await Promise.all([
@@ -676,7 +669,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
   };
   if (!loaded) return <div className="card muted">Carregando gira…</div>;
   const selectedEntities = entityLines.filter((x) => g.entity_lines.includes(x[0]));
-  const previewGira = { id: id || "preview", name: g.name || "Nome da gira", starts_at: g.date && g.time ? (/* @__PURE__ */ new Date(g.date + "T" + g.time + ":00")).toISOString() : (/* @__PURE__ */ new Date()).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, art_path: g.coverMode === "image" ? g.coverFile ? URL.createObjectURL(g.coverFile) : g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : null, contribution_amount: g.hasContribution ? Number(g.contribution_amount) || 0 : 0, contribution_due_date: g.hasContribution ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, notes: g.notes, exclusive_badge: !!g.exclusive_badge, exclusive_badge_icon: g.exclusive_badge_icon, use_task_list: !!hasShifts, has_activity_shifts: !!hasShifts, status };
+  const previewGira = { id: id || "preview", name: g.name || "Nome da gira", starts_at: g.date && g.time ? isoDeBR(g.date + "T" + g.time) : (/* @__PURE__ */ new Date()).toISOString(), activity_type: g.activity_type, entity_lines: g.entity_lines, art_path: g.coverMode === "image" ? g.coverFile ? URL.createObjectURL(g.coverFile) : g.art_path : "", cover_color: g.coverMode === "color" ? g.cover_color : null, contribution_amount: g.hasContribution ? Number(g.contribution_amount) || 0 : 0, contribution_due_date: g.hasContribution ? g.contribution_due_date : null, what_to_bring: g.what_to_bring, notes: g.notes, exclusive_badge: !!g.exclusive_badge, exclusive_badge_icon: g.exclusive_badge_icon, use_task_list: !!hasShifts, has_activity_shifts: !!hasShifts, status };
   const previewData = { phase: previewPhase, turns: (hasShifts ? shifts : []).map((s) => ({ turn_id: s.id, label: shiftLabel(s), shift_date: s.date, capacity: s.capacity || 7 })), tasks: (hasShifts ? tasks : []).map((t) => ({ id: t.id, name: t.name, gira_turn_id: t.shiftId, subtasks: t.subtasks.filter((x) => x.name.trim()) })) };
   if (publishState.done) return <div className="gw-success card">
   <div className="gw-success-mark"><Check size={30} /></div>

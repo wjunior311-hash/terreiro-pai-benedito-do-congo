@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { CalendarDays, Check, X, Users, ArrowLeft, Clock, Info, Repeat, ListChecks, ShoppingBag, MessageSquare, Wallet, Sparkles } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
-import { err, lineInfo, money, typeLabel } from "../../lib/helpers.js";
+import { err, lineInfo, money, typeLabel, diaBR } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
 import { useReadableCover } from "../../components/GiraCard.jsx";
 import { OQueLevar } from "./OQueLevar.jsx";
@@ -553,7 +553,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
 // dia do turno pelo horário de Brasília; vale também o dia seguinte (turno que passa da meia-noite ou marcação feita depois)
 function diaDoTurno(d) {
   if (!d) return false;
-  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const hoje = diaBR();
   const amanha = new Date(new Date(d + "T12:00:00Z").getTime() + 864e5).toISOString().slice(0, 10);
   return hoje === d || hoje === amanha;
 }

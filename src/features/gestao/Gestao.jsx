@@ -3,7 +3,7 @@ import { GestaoMaos } from "../maos/Maos.jsx";
 import { useEffect, useState } from "react";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
-import { dateTime, err, financialEligible } from "../../lib/helpers.js";
+import { dateTime, err, financialEligible, mesBR } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
 import { can } from "../acesso.js";
 import { Content } from "../conteudos/GestaoConteudos.jsx";
@@ -73,7 +73,7 @@ export function AdminOverview({ onNavigate }) {
     setLoading(true);
     setMessage("");
     try {
-      const now = /* @__PURE__ */ new Date(), month = now.toISOString().slice(0, 7), cutoff = new Date(now.getTime() - 3 * 864e5);
+      const now = /* @__PURE__ */ new Date(), month = mesBR(now), cutoff = new Date(now.getTime() - 3 * 864e5);
       const [{ data: people }, { data: dues }, { data: giras }, { data: questions }] = await Promise.all([
         supabase.from("profiles").select("id,name,email,date_of_birth,orixa_symbol,group_id,is_active,role,leadership_seal,last_seen_at").eq("is_active", true).order("name"),
         supabase.from("monthly_dues").select("profile_id,status,reference_month").eq("reference_month", month + "-01"),
