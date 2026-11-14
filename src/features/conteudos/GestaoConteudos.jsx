@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Plus, FileText, Trash2, ArrowLeft, Pencil, Bell } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
-import { err } from "../../lib/helpers.js";
+import { err, dataHoraBR, isoDeBR } from "../../lib/helpers.js";
 import { Field } from "../../components/ui.jsx";
 import { CONTENT_COLORS, CONTENT_EMOJIS, CONTENT_TAGS, contentPlain, coverStyle, isDraft, sanitizeContentHtml } from "./conteudo.js";
 import { ContentArticle } from "./Conteudos.jsx";
@@ -125,7 +125,7 @@ export function Content() {
     [preview, setPreview] = useState(false);
   const editorRef = useRef(null);
   const labels = { content: "Conteúdo", rule: "Regra da casa", notice: "Aviso da casa" };
-  const toInputDate = (s) => s ? new Date(s).toISOString().slice(0, 16) : "";
+  const toInputDate = (s) => s ? dataHoraBR(s) : "";
   const load = async () => {
     const [{ data: hc, error: he }, { data: no, error: ne }, { data: st }] = await Promise.all([supabase.from("house_contents").select("*").order("sort_order").order("created_at", { ascending: false }), supabase.rpc("editor_list_notices"), supabase.rpc("admin_house_content_read_summary")]);
     if (he || ne) setMessage(err(he || ne));
@@ -172,7 +172,7 @@ export function Content() {
     setMessage("");
     try {
       if (form.kind === "notice") {
-        const args = { p_title: (form.title || "").trim(), p_body: html, p_starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : null, p_ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null, p_published: form.published };
+        const args = { p_title: (form.title || "").trim(), p_body: html, p_starts_at: form.starts_at ? isoDeBR(form.starts_at) : null, p_ends_at: form.ends_at ? isoDeBR(form.ends_at) : null, p_published: form.published };
         const { error } = await (form.id ? supabase.rpc("editor_update_notice", { p_id: form.id, ...args }) : supabase.rpc("editor_create_notice", args));
         if (error) throw error;
       } else {

@@ -58,3 +58,17 @@ export const whatsappLink = (phone, text = "") => {
   const d = phoneDigits(phone);
   return d ? "https://wa.me/" + d + (text ? "?text=" + encodeURIComponent(text) : "") : null;
 };
+
+// Datas sempre no horário de Brasília, seja qual for o fuso do aparelho.
+export const FUSO = "America/Sao_Paulo";
+// "AAAA-MM-DD" do dia em Brasília (hoje, ou do instante dado)
+export const diaBR = (d = new Date()) => new Date(d).toLocaleDateString("en-CA", { timeZone: FUSO });
+// "AAAA-MM" do mês em Brasília
+export const mesBR = (d = new Date()) => diaBR(d).slice(0, 7);
+// "AAAA-MM-DDTHH:MM" em Brasília, para campos datetime-local
+export const dataHoraBR = (d) => {
+  const x = new Date(d), p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: FUSO, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(x).map((o) => [o.type, o.value]));
+  return p.year + "-" + p.month + "-" + p.day + "T" + p.hour + ":" + p.minute;
+};
+// instante (ISO) de um "AAAA-MM-DDTHH:MM" digitado em horário de Brasília
+export const isoDeBR = (s) => new Date(s + (s.length === 16 ? ":00" : "") + "-03:00").toISOString();
