@@ -1,0 +1,3 @@
+-- Insígnia "Mão na massa": tarefa marcada como feita conta para todos os inscritos no turno da tarefa
+-- (antes contava só para quem tocou em "feita"). Ajuste aplicado sobre app.badge_state:
+--   + count(distinct task_id) de task_status feitas onde completed_by = p ou p está no turno da tarefa.
