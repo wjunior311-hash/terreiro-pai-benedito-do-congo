@@ -266,7 +266,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   tasks.forEach((t) => (taskGroups[t.gira_turn_id] ??= []).push(t));
   const myTurns = turns.filter((t) => availability.includes(t.turn_id));
   const fullAlternatives = turns.filter((t) => t.is_full && !availability.includes(t.turn_id));
-  const isAnyShiftToday = myTurns.some((t) => t.shift_date === (/* @__PURE__ */ new Date()).toISOString().slice(0, 10));
+  const isAnyShiftToday = myTurns.some((t) => diaDoTurno(t.shift_date));
   const cover = useReadableCover(gira.art_path, gira.cover_color || "#65745a");
   const coverStyle2 = { "--gira-cover-image": gira.art_path ? `url("${gira.art_path}")` : "none", "--gira-cover-color": gira.cover_color || "#65745a", "--gira-text-color": cover.color, "--gira-cover-overlay": cover.overlay };
   const going = resp?.status === "going";
@@ -512,7 +512,7 @@ export function GiraDetail({ p, gira, back, preview = null }) {
   </div> : <>
     <p className="muted small gd-hint">As tarefas são coletivas: todas as pessoas do mesmo turno veem e marcam o mesmo progresso.</p>
     {myTurns.map((turn) => {
-    const list = taskGroups[turn.turn_id] || [], done = list.filter((t) => statuses[t.id]?.done).length, isTurnToday = isPreview || turn.shift_date === (/* @__PURE__ */ new Date()).toISOString().slice(0, 10), pct = list.length ? Math.round(done / list.length * 100) : 0;
+    const list = taskGroups[turn.turn_id] || [], done = list.filter((t) => statuses[t.id]?.done).length, isTurnToday = isPreview || diaDoTurno(turn.shift_date), pct = list.length ? Math.round(done / list.length * 100) : 0;
     return <div className="card gd-taskturn" key={turn.turn_id}>
       <div className="row between">
       <div>
@@ -548,4 +548,12 @@ export function GiraDetail({ p, gira, back, preview = null }) {
     </div>}</div>
     </div>}
  </div>;
+}
+
+// dia do turno pelo horário de Brasília; vale também o dia seguinte (turno que passa da meia-noite ou marcação feita depois)
+function diaDoTurno(d) {
+  if (!d) return false;
+  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
+  const amanha = new Date(new Date(d + "T12:00:00Z").getTime() + 864e5).toISOString().slice(0, 10);
+  return hoje === d || hoje === amanha;
 }
