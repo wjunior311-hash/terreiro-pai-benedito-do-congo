@@ -11,15 +11,18 @@ const foto = (arquivo, rotulo, cor) => FOTOS[arquivo] ? FOTOS[arquivo] : "data:i
 const PX = (u) => u + "?auto=compress&cs=tinysrgb&w=1200";
 const ANT = import.meta.env.BASE_URL + "emi-ilu/";
 const FOTOS = {
-  "capa.jpg": PX("https://images.pexels.com/photos/9150455/pexels-photo-9150455.jpeg"),
+  "capa.jpg": IMG + "capa.jpg",
   "quilombo.jpg": PX("https://images.pexels.com/photos/3701813/pexels-photo-3701813.jpeg"),
-  "banto.jpg": PX("https://images.pexels.com/photos/19277187/pexels-photo-19277187/free-photo-of-man-in-traditional-clothing-holding-a-basket-with-food-and-smiling.jpeg"),
+  "banto.jpg": PX("https://images.pexels.com/photos/30504914/pexels-photo-30504914/free-photo-of-traditional-smoking-pipes-with-aromatic-smoke.jpeg"),
   "canjica.jpg": PX("https://images.pexels.com/photos/27959285/pexels-photo-27959285/free-photo-of-corn-coated.jpeg"),
-  "ancestrais.jpg": PX("https://images.pexels.com/photos/9150426/pexels-photo-9150426.jpeg"),
+  "ancestrais.jpg": PX("https://images.pexels.com/photos/9485593/pexels-photo-9485593.jpeg"),
   "banho.jpg": PX("https://images.pexels.com/photos/6279940/pexels-photo-6279940.jpeg"),
   "turibulo.jpg": PX("https://images.pexels.com/photos/31097193/pexels-photo-31097193/free-photo-of-priest-performing-ritual-with-smoke-at-night.jpeg"),
   "calendario.jpg": ANT + "2026-08/atabaque.jpg",
-  "avisos.jpg": ANT + "2026-10/vela.jpg"
+  "avisos.jpg": ANT + "2026-10/vela.jpg",
+  "familia.jpg": IMG + "rosangela-1.jpg",
+  "rosangela-rosto.jpg": IMG + "rosangela-rosto.jpg",
+  "isabella-rosto.jpg": IMG + "isabella-rosto.jpg"
 };
 
 export const slug = "2026-11";
@@ -147,11 +150,11 @@ export const materias = [
       H('ANIVERSARIANTES DE NOVEMBRO'),
       { k: 'niver' }
     ] },
-  { n: '09', titulo: 'GENTE DO TERREIRO', sub: 'Duas gerações da mesma família', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', img: foto('familia.jpg', 'FOTO · ROSANGELA E ISABELLA', '#3a3020'), pos: 'center 22%',
+  { n: '09', titulo: 'GENTE DO TERREIRO', sub: 'Duas gerações da mesma família', cor: '#b38600', corTxt: '#8a6800', corSoft: '#fff5d1', secao: 'GENTE DO TERREIRO', foto: '#3a3020', img: foto('familia.jpg', 'FOTO · ROSANGELA E ISABELLA', '#3a3020'), pos: 'center 22%', imgs: [IMG + 'rosangela-1.jpg', IMG + 'isabella-1.jpg'],
     blocos: [
       P('Nosso terreiro é feito de pessoas, histórias e caminhos que se cruzam. Este mês, duas gerações da mesma família: a Rosangela e a neta dela, a Isabella. Toque em cada uma para ler.'),
       { k: 'perfis', perfis: [
-        { nome: 'ROSANGELA', sub: 'Filha de Oxum e Ogum', foto: foto('rosangela-rosto.jpg', 'ROSANGELA', '#7a5a1a'), blocos: [
+        { nome: 'ROSANGELA', sub: 'Filha de Oxum e Ogum', foto: foto('rosangela-rosto.jpg', 'ROSANGELA', '#7a5a1a'), galeria: [IMG + 'rosangela-1.jpg', IMG + 'rosangela-2.jpg'], blocos: [
           P('Olá, tudo bem? Vou escrever meu texto.'),
           P('Meu nome é Rosangela Ramos Pereira, tenho 61 anos e completo 62 no mês de dezembro. Desde pequena, vivi muita coisa. Minha mãe era Testemunha de Jeová quando se casou com meu pai, que era católico. Mas o tempo foi passando, e minha mãe viu que meu pai pegava muita carga. Ele sempre levava as roupas para benzer e levava a gente para benzer também. Quando eu ia junto, via aquilo, mas ainda não entendia.'),
           P('Eu sempre gostei da Umbanda e de tudo o que é sobre guias espirituais. O tempo passou, casei, tive 3 filhos e também sempre os levei para fazer o benzimento. Depois que eles cresceram, continuaram me acompanhando.'),
@@ -163,7 +166,7 @@ export const materias = [
           P('Hoje me orgulho do que sou e faço tudo de coração. Continuo a benzer e, independente da nossa casa, se eu puder ajudar, é o que vou fazer, porque uma casa não se faz sozinha, e nem eu. Tenho coragem. Às vezes balança, mas sigo e levanto a cabeça. Agradeço aos meus ancestrais pelo que sou.'),
           P('Só tenho uma coisa a dizer a todos: não desistam da sua fé, porque é dela que vem a nossa coragem. Axé! Amo vocês, minha família.')
         ] },
-        { nome: 'ISABELLA', sub: 'Filha de Oyá e Xangô', foto: foto('isabella-rosto.jpg', 'ISABELLA', '#5a2e1e'), blocos: [
+        { nome: 'ISABELLA', sub: 'Filha de Oyá e Xangô', foto: foto('isabella-rosto.jpg', 'ISABELLA', '#5a2e1e'), galeria: [IMG + 'isabella-1.jpg', IMG + 'isabella-2.jpg'], blocos: [
           P('Eu nasci e cresci com a Umbanda presente na minha vida. Minha família toda é da religião e, desde pequena, eu frequentava o terreiro com a minha vó. Porém, quando ela saiu de lá, minha mãe me levou para a igreja com ela. Foi uma experiência importante na minha caminhada, mas, por mais que eu tentasse, não conseguia me identificar. Sentia que aquele não era o meu lugar, como se algo dentro de mim ainda precisasse encontrar o caminho de volta.'),
           P('Até que, um dia, minha vó, Rosangela, linda de Oxum, me chamou e perguntou: "O Jefferson e a Luciana abriram um terreiro, quer ir conhecer?". E eu fui. Mal sabia que aquele convite seria o começo de uma nova etapa da minha vida.'),
           P('Foi quando pisei naquele terreiro que senti que estava onde deveria estar. Ali encontrei acolhimento, e foi ali que comecei a cuidar de mim, do meu Ori e dos meus ancestrais. Passei por momentos muito difíceis, e foi naquele lugar que encontrei forças para me reconstruir, me conhecer e compreender tantas coisas que antes pareciam não fazer sentido.'),
