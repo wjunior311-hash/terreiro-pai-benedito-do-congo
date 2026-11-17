@@ -1,7 +1,7 @@
 // Mãos da Egbé: vitrine de negócios, espetáculos e projetos dos filhos da casa.
 // Mesma vitrine no app (filhos), na revista (bloco "maos") e no site aberto (só quem marcou "mostrar no site").
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Pencil, Plus } from "lucide-react";
 import { supabase } from "../../lib/supabase.js";
 import { err } from "../../lib/helpers.js";
 import "./maos.css";
@@ -12,7 +12,7 @@ const FUNDOS = { negocio: "linear-gradient(135deg,#f7ead0,#e9c98f)", espetaculo:
 const dia = (d) => d ? new Date(d + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : "";
 const linkSeguro = (u) => /^https?:\/\//i.test(u || "") ? u : u ? "https://" + u : "";
 
-export function MaosCard({ m }) {
+export function MaosCard({ m, onEditar }) {
   const [ic, tipo] = TIPOS[m.kind] || TIPOS.negocio;
   const quando = m.kind === "espetaculo" || m.ends_on ? (m.starts_on && m.ends_on ? dia(m.starts_on) + " a " + dia(m.ends_on) : m.ends_on ? "Até " + dia(m.ends_on) : "") : "";
   const wa = m.whatsapp ? "https://wa.me/55" + String(m.whatsapp).replace(/^55(?=\d{10,11}$)/, "") : "";
@@ -33,11 +33,12 @@ export function MaosCard({ m }) {
         {principal && <a className={"mx-bt " + principal[2]} href={principal[1]} target="_blank" rel="noopener noreferrer">{principal[0]}</a>}
         {m.instagram && <a className="mx-bt ig" href={"https://instagram.com/" + m.instagram} target="_blank" rel="noopener noreferrer">Instagram</a>}
       </div>
+      {onEditar && <button type="button" className="mx-editar" onClick={onEditar}><Pencil size={14} /> Editar meu cadastro</button>}
     </div>
   </article>;
 }
 
-export function MaosVitrine({ itens, vazio }) {
+export function MaosVitrine({ itens, vazio, meus, onEditar }) {
   const [f, setF] = useState("todos");
   const lista = itens.filter((m) => f === "todos" || m.kind === f);
   if (!itens.length) return vazio || null;
@@ -47,7 +48,7 @@ export function MaosVitrine({ itens, vazio }) {
       <button type="button" aria-pressed={f === "todos"} onClick={() => setF("todos")}>Todos</button>
       {Object.entries(TIPOS).filter(([k]) => tem(k)).map(([k, [ic, t]]) => <button key={k} type="button" aria-pressed={f === k} onClick={() => setF(k)}>{ic} {t === "Negócio" ? "Negócios" : t + "s"}</button>)}
     </div>
-    {lista.map((m) => <MaosCard key={m.id} m={m} />)}
+    {lista.map((m) => <MaosCard key={m.id} m={m} onEditar={meus?.has(m.id) && onEditar ? () => onEditar(m.id) : null} />)}
   </div>;
 }
 
@@ -57,14 +58,20 @@ export function MaosTopo({ sub = "Negócios, espetáculos e projetos dos filhos 
 
 // tela do app (filhos)
 export function MaosTela({ go }) {
-  const [itens, setItens] = useState(null), [form, setForm] = useState(false);
-  const carregar = () => supabase.rpc("maos_list").then(({ data }) => setItens(data || []));
+  const [itens, setItens] = useState(null), [form, setForm] = useState(false), [meus, setMeus] = useState([]);
+  const carregar = () => {
+    supabase.rpc("maos_list").then(({ data }) => setItens(data || []));
+    supabase.rpc("my_maos").then(({ data }) => setMeus(data || []));
+  };
   useEffect(() => { carregar(); }, []);
-  if (form) return <MeusTrabalhos voltar={() => { setForm(false); carregar(); }} />;
+  if (form) return <MeusTrabalhos editarId={typeof form === "string" ? form : null} voltar={() => { setForm(false); carregar(); }} />;
+  const idsMeus = new Set(meus.map((m) => m.id));
   return <div className="mx-tela">
     <MaosTopo />
+    {meus.length > 0 && <button type="button" className="mx-meus" onClick={() => setForm(true)}>
+      <Pencil size={16} /><span><b>Meus cadastros ({meus.length})</b>Editar, atualizar ou tirar da vitrine</span></button>}
     {itens === null ? <div className="hm-skeleton" style={{ height: 220, margin: 16 }} /> :
-      <MaosVitrine itens={itens} vazio={<p className="mx-vazio">Ainda não tem ninguém na vitrine. Seja o primeiro! 🙌🏾</p>} />}
+      <MaosVitrine itens={itens} meus={idsMeus} onEditar={(id) => setForm(id)} vazio={<p className="mx-vazio">Ainda não tem ninguém na vitrine. Seja o primeiro! 🙌🏾</p>} />}
     <button type="button" className="mx-conv" onClick={() => setForm(true)}><b>Tem um negócio, espetáculo ou projeto?</b>Toque aqui para colocar o seu na Mãos da Egbé.</button>
   </div>;
 }
@@ -88,10 +95,15 @@ const reduzir = (file) => new Promise((ok, bad) => {
 const SIT = { pendente: ["⏳ Esperando aprovação", "pend"], aprovado: ["✅ Na vitrine", "ok"], recusado: ["✏️ Precisa de ajuste", "ajuste"] };
 
 // cadastro do próprio filho
-export function MeusTrabalhos({ voltar }) {
+export function MeusTrabalhos({ voltar, editarId }) {
   const [meus, setMeus] = useState(null), [f, setF] = useState(null), [busy, setBusy] = useState(false), [msg, setMsg] = useState("");
-  const carregar = () => supabase.rpc("my_maos").then(({ data }) => { setMeus(data || []); if (!(data || []).length) setF({ ...VAZIO }); });
-  useEffect(() => { carregar(); }, []);
+  const abrir = (m) => { setMsg(""); setF({ ...VAZIO, ...Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v ?? ""])), image: "", _img: m.image }); };
+  const carregar = (alvo) => supabase.rpc("my_maos").then(({ data }) => {
+    setMeus(data || []);
+    const m = alvo && (data || []).find((x) => x.id === alvo);
+    if (m) abrir(m); else if (!(data || []).length) setF({ ...VAZIO });
+  });
+  useEffect(() => { carregar(editarId); }, []);
   const set = (o) => setF((v) => ({ ...v, ...o }));
   const foto = async (e) => { const file = e.target.files?.[0]; e.target.value = ""; if (!file) return; try { set({ image: await reduzir(file) }); } catch (x) { setMsg(x.message); } };
   const salvar = async (e) => {
@@ -112,7 +124,7 @@ export function MeusTrabalhos({ voltar }) {
         <MaosCard m={m} />
         <div className="mx-meu-sit"><span className={"mx-sit " + (SIT[m.status] || SIT.pendente)[1]}>{(SIT[m.status] || SIT.pendente)[0]}</span>
           {m.note && <small>Recado da gestão: {m.note}</small>}
-          <span className="mx-meu-bts"><button type="button" className="btn sm" onClick={() => { setMsg(""); setF({ ...VAZIO, ...Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v ?? ""])), image: "" , _img: m.image }); }}>Editar</button>
+          <span className="mx-meu-bts"><button type="button" className="btn sm" onClick={() => abrir(m)}><Pencil size={14} /> Editar</button>
             <button type="button" className="btn sm" onClick={() => remover(m)}>Tirar da vitrine</button></span></div>
       </div>)}
       <button type="button" className="btn primary mx-largo" onClick={() => { setMsg(""); setF({ ...VAZIO }); }}><Plus size={16} /> Cadastrar outro</button>
@@ -136,8 +148,8 @@ export function MeusTrabalhos({ voltar }) {
         {(f.image || f._img) && <img src={f.image || f._img} alt="" />}
         <label className="btn"><input type="file" accept="image/*" hidden onChange={foto} />{f.image || f._img ? "Trocar imagem" : "Escolher imagem"}</label></div>
       <label className="mx-check"><input type="checkbox" checked={!!f.show_public} onChange={(e) => set({ show_public: e.target.checked })} /> Mostrar também no site aberto da casa</label>
-      <button className="btn primary mx-largo" disabled={busy}>{busy ? "Enviando…" : "Enviar para aprovação"}</button>
-      <p className="mx-nota">A gestão da casa aprova antes de aparecer na vitrine.</p>
+      <button className="btn primary mx-largo" disabled={busy}>{busy ? "Enviando…" : f.id ? "Salvar e enviar para aprovação" : "Enviar para aprovação"}</button>
+      <p className="mx-nota">{f.id && f.status === "aprovado" ? "Ao salvar, o cadastro sai da vitrine e volta para a gestão aprovar de novo." : "A gestão da casa aprova antes de aparecer na vitrine."}</p>
     </form>}
   </div>;
 }
