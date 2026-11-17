@@ -5,10 +5,22 @@ const IMG = import.meta.env.BASE_URL + "emi-ilu/2026-11/";
 const P = (t) => ({ k: "p", texto: t }), F = (t) => ({ k: "forte", texto: t }), H = (t) => ({ k: "h", texto: t }), Q = (t) => ({ k: "quote", texto: t });
 
 // enquanto as fotos não chegam: um quadro na cor da matéria dizendo qual foto entra ali
-const foto = (arquivo, rotulo, cor) => FOTOS[arquivo] ? IMG + arquivo : "data:image/svg+xml;utf8," + encodeURIComponent(
+const foto = (arquivo, rotulo, cor) => FOTOS[arquivo] ? FOTOS[arquivo] : "data:image/svg+xml;utf8," + encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200"><rect width="900" height="1200" fill="${cor}"/><text x="450" y="600" fill="rgba(255,255,255,.55)" font-family="sans-serif" font-size="38" font-weight="700" text-anchor="middle">${rotulo}</text></svg>`);
-// arquivos já colocados em public/emi-ilu/2026-11/ (marque true quando a foto chegar)
-const FOTOS = {};
+// fotos escolhidas no Pexels (licença livre, servidas direto do Pexels) e fotos de edições anteriores
+const PX = (u) => u + "?auto=compress&cs=tinysrgb&w=1200";
+const ANT = import.meta.env.BASE_URL + "emi-ilu/";
+const FOTOS = {
+  "capa.jpg": PX("https://images.pexels.com/photos/9150455/pexels-photo-9150455.jpeg"),
+  "quilombo.jpg": PX("https://images.pexels.com/photos/3701813/pexels-photo-3701813.jpeg"),
+  "banto.jpg": PX("https://images.pexels.com/photos/19277187/pexels-photo-19277187/free-photo-of-man-in-traditional-clothing-holding-a-basket-with-food-and-smiling.jpeg"),
+  "canjica.jpg": PX("https://images.pexels.com/photos/27959285/pexels-photo-27959285/free-photo-of-corn-coated.jpeg"),
+  "ancestrais.jpg": PX("https://images.pexels.com/photos/9150426/pexels-photo-9150426.jpeg"),
+  "banho.jpg": PX("https://images.pexels.com/photos/6279940/pexels-photo-6279940.jpeg"),
+  "turibulo.jpg": PX("https://images.pexels.com/photos/31097193/pexels-photo-31097193/free-photo-of-priest-performing-ritual-with-smoke-at-night.jpeg"),
+  "calendario.jpg": ANT + "2026-08/atabaque.jpg",
+  "avisos.jpg": ANT + "2026-10/vela.jpg"
+};
 
 export const slug = "2026-11";
 export const titulo = "Ẹ̀mí Ìlú · Novembro 2026";
