@@ -22,3 +22,5 @@ create or replace function public.mark_my_answers_seen() returns void language s
 grant execute on function app.my_unseen_answers(), app.mark_my_answers_seen(), public.my_unseen_answers(), public.mark_my_answers_seen() to authenticated;
 -- respostas dos últimos 14 dias (até 18/11) ficaram como "não vistas" para aparecer o aviso no Início.
 notify pgrst, 'reload schema';
+-- Responder também marca como lida (antes ficava "Não lida · Respondida"); respostas antigas sem leitura foram marcadas como lidas.
+-- admin_answer_house_question: read_at = coalesce(read_at, now()) quando há resposta (ajuste sobre a definição atual).

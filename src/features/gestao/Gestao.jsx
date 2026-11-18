@@ -174,7 +174,8 @@ export function AdminQuestions() {
     [status, setStatus] = useState("open"),
     [loading, setLoading] = useState(true),
     [message, setMessage] = useState(""),
-    [answers, setAnswers] = useState({});
+    [answers, setAnswers] = useState({}),
+    [editando, setEditando] = useState(null);
   const load = async () => {
     setLoading(true);
     const { data, error } = await supabase.rpc("admin_house_questions", { p_status: status });
@@ -186,12 +187,14 @@ export function AdminQuestions() {
     load();
   }, [status]);
   const answer = async (id) => {
-    const text = answers[id] || "";
+    // lê o texto direto da caixa: no iPhone, ditado e corretor às vezes ainda não avisaram a última mudança
+    const text = document.getElementById("resp-" + id)?.value ?? answers[id] ?? "";
     if (!text.trim()) return;
     const { error } = await supabase.rpc("admin_answer_house_question", { p_id: id, p_answer: text });
     if (error) setMessage(err(error));
     else {
       setAnswers({ ...answers, [id]: "" });
+      setEditando(null);
       load();
     }
   };
@@ -219,14 +222,16 @@ export function AdminQuestions() {
     <span className="muted small">{new Date(x.created_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</span>
     </div>
     <p style={{ whiteSpace: "pre-wrap", marginTop: 12 }}>{x.question}</p>
-    <div className="muted small">{x.read_at ? "✓ Lida" : "○ Não lida"} · {x.answer ? "✓ Respondida" : "○ Sem resposta"}</div>{!x.read_at && <button className="btn" style={{ marginTop: 10 }} onClick={() => markRead(x.id)}>Marcar como lida</button>}{x.status === "open" && <div style={{ marginTop: 14 }}>
+    <div className="muted small">{x.read_at ? "✓ Lida" : "○ Não lida"} · {x.answer ? "✓ Respondida" : "○ Sem resposta"}</div>{!x.read_at && <button className="btn" style={{ marginTop: 10 }} onClick={() => markRead(x.id)}>Marcar como lida</button>}{(x.status === "open" || editando === x.id) && <div style={{ marginTop: 14 }}>
     <Field label="Resposta">
-    <textarea className="textarea" rows="4" value={answers[x.id] || ""} onChange={(e) => setAnswers({ ...answers, [x.id]: e.target.value })} placeholder="Escreva a resposta dos Pais da Casa…" />
+    <textarea id={"resp-" + x.id} className="textarea" rows="6" value={answers[x.id] ?? ""} onChange={(e) => setAnswers({ ...answers, [x.id]: e.target.value })} placeholder="Escreva a resposta dos Pais da Casa…" />
     </Field>
-    <button className="btn primary" onClick={() => answer(x.id)}>Enviar resposta</button>
+    <button className="btn primary" onClick={() => answer(x.id)}>{editando === x.id ? "Salvar resposta" : "Enviar resposta"}</button>
+    {editando === x.id && <button className="btn" style={{ marginLeft: 8 }} onClick={() => setEditando(null)}>Cancelar</button>}
     </div>}{x.answer && <div className="card" style={{ marginTop: 14, background: "var(--brand-soft)" }}>
     <b>Resposta enviada</b>
     <p style={{ whiteSpace: "pre-wrap" }}>{x.answer}</p>
+    {editando !== x.id && <button className="btn sm" onClick={() => { setAnswers({ ...answers, [x.id]: x.answer }); setEditando(x.id); }}>Editar resposta</button>}
     </div>}</div>)}</div>;
 }
 
