@@ -114,3 +114,7 @@
 .pz-capas button:disabled>span{display:none}
 .av-th:has(.nm) .tranca{bottom:26px;border-radius:16px 16px 10px 10px}
 .av-th .tranca b{font-size:13px;line-height:1.15;white-space:nowrap}
+
+.me2 .i6{background:#e4ecf7}
+.me2-pais{position:relative}
+.me2-novo{position:absolute;top:10px;right:10px;background:#c4573a;color:#fff;border-radius:99px;padding:3px 9px;font-size:11px;font-weight:800}

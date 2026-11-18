@@ -35,7 +35,8 @@ export function MeuEspaco({ p, go, logout, memberPreview = false, recarregar }) 
   const [tab, setTab] = useState("menu");
   const [estado, recarregarEstado] = useEstado(p);
   const fin = useMemberFinance(p);
-  const [giras, setGiras] = useState(null), [prox, setProx] = useState(null);
+  const [giras, setGiras] = useState(null), [prox, setProx] = useState(null), [respostas, setRespostas] = useState(0);
+  useEffect(() => { supabase.rpc("my_unseen_answers").then(({ data }) => setRespostas(Number(data) || 0)); }, [p?.id]);
   useEffect(() => {
     supabase.from("gira_responses").select("status,giras(id,name,starts_at,status,contribution_amount)").eq("profile_id", p.id).eq("status", "going").then(async ({ data }) => {
       const agora = new Date(), ano = agora.getFullYear();
@@ -102,6 +103,7 @@ export function MeuEspaco({ p, go, logout, memberPreview = false, recarregar }) 
       <button type="button" className="me2-card me2-tile" onClick={() => go("insignias")}><span className="ic i1">🏅</span><b>Insígnias</b><small>Missões e selos da caminhada</small></button>
       {!p.is_pai_de_santo && <button type="button" className="me2-card me2-tile" onClick={() => setTab("finance")}><span className="ic i2">💳</span><b>Financeiro</b><small>Mensalidades e contribuições</small></button>}
       <button type="button" className="me2-card me2-tile" onClick={() => go("giras")}><span className="ic i3">🗓️</span><b>Minhas giras</b><small>Presenças, turnos e tarefas</small></button>
+      <button type="button" className="me2-card me2-tile me2-pais" onClick={() => go("contact")}><span className="ic i6">💬</span><b>Falar com os Pais</b><small>Dúvidas, pedidos e respostas</small>{respostas > 0 && <span className="me2-novo">{respostas === 1 ? "1 resposta nova" : respostas + " respostas novas"}</span>}</button>
       <button type="button" className="me2-card me2-tile" onClick={() => go("maos")}><span className="ic i5">🙌🏾</span><b>Mãos da Egbé</b><small>Negócios, espetáculos e projetos da casa</small></button>
       <button type="button" className="me2-card me2-tile" onClick={() => setTab("profile")}><span className="ic i4">🪪</span><b>Meus dados</b><small>Contato, aniversário e senha</small></button>
       {p.is_pai_de_santo && <button type="button" className="me2-card me2-tile" onClick={() => go("content")}><span className="ic i2">📖</span><b>Conteúdos</b><small>Textos, avisos e materiais</small></button>}

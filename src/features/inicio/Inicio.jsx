@@ -89,6 +89,8 @@ export function Home({ p, go, memberPreview = false }) {
   const [caminhos] = useCaminhos(), pendCaminho = pendenciaCaminho(caminhos);
   const [docs, reloadDocs] = useAccessDocs(), [docOpen, setDocOpen] = useState(null), [pendGira, setPendGira] = useState([]);
   useEffect(() => { supabase.rpc("my_gira_pending").then(({ data }) => setPendGira(Array.isArray(data) ? data : [])); }, [p.id]);
+  const [respostas, setRespostas] = useState(0);
+  useEffect(() => { supabase.rpc("my_unseen_answers").then(({ data }) => setRespostas(Number(data) || 0)); }, [p.id]);
   const abrirGira = (id, rolar) => { try { sessionStorage.setItem("tpbc-abrir-gira", id); if (rolar) sessionStorage.setItem("tpbc-rolar", rolar); } catch (e) { /* ok */ } go("giras"); };
   // aviso visto some na hora (e fica marcado como lido no servidor)
   const lido = (rpc, id, set) => { set((v) => v.filter((x) => x.id !== id)); supabase.rpc(rpc, { p_notification_id: id }); };
@@ -116,6 +118,7 @@ export function Home({ p, go, memberPreview = false }) {
     if (g.has_items && (g.max || 1) > g.mine) attention.push({ key: "levar-" + g.gira_id, tone: "warning", icon: <ClipboardList size={19} />, title: "Escolha " + ((g.max || 1) - g.mine) + (((g.max || 1) - g.mine) === 1 ? " item" : " itens") + " para levar", text: g.name + " · café coletivo", cta: "Escolher", onClick: () => abrirGira(g.gira_id, "o-que-levar") });
   });
   docs.filter((d) => !d.sent).forEach((d) => attention.push({ key: "docs-" + d.gira_id, tone: "warning", icon: <ShieldCheck size={20} />, title: "Envie seu nome completo e RG", text: "Lista de acesso · " + d.gira, cta: "Enviar", onClick: () => setDocOpen(d) }));
+  if (respostas > 0) attention.push({ key: "resposta-pais", tone: "info", icon: <span style={{ fontSize: 19 }}>💬</span>, title: respostas === 1 ? "Os Pais responderam sua mensagem" : "Os Pais responderam " + respostas + " mensagens suas", text: "Toque para ler a resposta", cta: "Ler", onClick: () => go("contact") });
   if (pendCaminho) attention.push({ key: "caminho-" + pendCaminho.e.id, tone: "warning", icon: <span style={{ fontSize: 19 }}>{pendCaminho.c.emoji}</span>, title: pendCaminho.c.title + ": você vai?", text: "Responda até " + new Date(pendCaminho.e.deadline || Date.now()).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }), cta: "Responder", onClick: () => go("caminho") });
   requiredReads.forEach((x) => {
     const reminded = x.reminded_at && now - new Date(x.reminded_at) < 7 * 864e5;

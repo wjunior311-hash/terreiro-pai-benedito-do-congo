@@ -160,7 +160,7 @@ export function ContactParents({ back }) {
     if (!error) setItems(data || []);
   };
   useEffect(() => {
-    load();
+    load().then(() => supabase.rpc("mark_my_answers_seen"));
   }, []);
   const send = async (e) => {
     e.preventDefault();
