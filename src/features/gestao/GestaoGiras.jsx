@@ -607,6 +607,10 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
     setTasks((v) => [...v, { id: newId(), name: "", shiftId: shifts.length === 1 ? shifts[0].id : "", subtasks: [] }]);
     touch();
   };
+  const addTaskTo = (shiftId, name = "") => {
+    setTasks((v) => [...v, { id: newId(), name, shiftId: shiftId || "", subtasks: [] }]);
+    touch();
+  };
   const updateTask = (tid, patch) => {
     setTasks((v) => v.map((t) => t.id === tid ? { ...t, ...patch } : t));
     touch();
@@ -886,49 +890,7 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
    {hasShifts === false && (shifts.length > 0 || tasks.length > 0) && <div className="gw-warning">Ao salvar, os turnos e as tarefas cadastrados serão removidos. Se mudar de ideia, marque <b>Sim</b> antes de avançar.</div>}
   </div>}
 
-  {step === "activities" && <div className="card gw-panel">
-   <div className="gw-panel-head">
-     <h3>Atividades</h3>
-     <p className="muted small">Cada tarefa pertence a um turno. As subtarefas seguem automaticamente o turno da tarefa.</p>
-     </div>
-   {!tasks.length && <div className="gw-empty">
-     <ClipboardList size={20} />
-     <p>Nenhuma tarefa ainda. Adicione a primeira tarefa e escolha o turno.</p>
-     </div>}
-   {tasks.map((t, i) => <div className="gw-task" key={t.id}>
-    <div className="gw-task-row"><span className="gw-task-num">{i + 1}</span>
-     <div className="field gw-task-name">
-       <label htmlFor={"n" + t.id}>Tarefa</label>
-       <input id={"n" + t.id} className={"input " + (errors[t.id + ":name"] ? "has-error" : "")} value={t.name} onChange={(e) => updateTask(t.id, { name: e.target.value })} placeholder="Ex.: Decoração do congá" />
-       <FieldError msg={errors[t.id + ":name"]} />
-       </div>
-     <div className="field gw-task-shift">
-       <label htmlFor={"s" + t.id}>Turno</label>
-       <select id={"s" + t.id} className={"select " + (errors[t.id + ":shift"] ? "has-error" : "")} value={t.shiftId} onChange={(e) => updateTask(t.id, { shiftId: e.target.value })}>
-       <option value="">Escolha o turno…</option>{shifts.map((s) => <option value={s.id} key={s.id}>{shiftLabel(s)}</option>)}</select>
-       <FieldError msg={errors[t.id + ":shift"]} />
-       </div>
-     <button type="button" className="btn gw-icon-btn" aria-label={"Excluir tarefa " + (t.name || i + 1)} onClick={() => removeTask(t)}>
-       <Trash2 size={15} />
-       </button>
-    </div>
-    <div className="gw-subtasks">
-      <span className="gw-subtasks-label">Subtarefas {t.shiftId && shifts.find((s) => s.id === t.shiftId) ? <em>· no turno {shiftLabel(shifts.find((s) => s.id === t.shiftId))}</em> : null}</span>
-     {t.subtasks.map((s, j) => <div className="gw-subtask" key={s.id}>
-       <span aria-hidden="true">↳</span>
-       <input className={"input " + (errors[s.id] ? "has-error" : "")} aria-label={"Subtarefa " + (j + 1) + " de " + (t.name || "tarefa")} value={s.name} onChange={(e) => updateSubtask(t.id, s.id, e.target.value)} placeholder="Ex.: Separar as flores" />
-       <button type="button" className="btn gw-icon-btn" aria-label="Remover subtarefa" onClick={() => removeSubtask(t.id, s.id)}>
-       <X size={14} />
-       </button>
-       <FieldError msg={errors[s.id]} />
-       </div>)}
-     <button type="button" className="gw-link-btn" onClick={() => addSubtask(t.id)}>
-       <Plus size={13} /> Adicionar subtarefa</button>
-    </div>
-   </div>)}
-   <button type="button" className="btn gw-add" onClick={addTask}><Plus size={14} /> Adicionar tarefa</button>
-  </div>}
-
+  {step === "activities" && <AtividadesPorTurno giraId={id} shifts={shifts} tasks={tasks} errors={errors} addTaskTo={addTaskTo} updateTask={updateTask} removeTask={removeTask} addSubtask={addSubtask} updateSubtask={updateSubtask} removeSubtask={removeSubtask} />}
   {step === "preview" && <div className="gw-preview">
    <div className="card gw-preview-bar">
      <div>
@@ -994,4 +956,169 @@ export function GiraWizard({ p, giraId, initialMessage = "", onCreated, onExit }
    </div>
   </div>
  </div>;
+}
+
+
+// ---------- Atividades por turno (com conferência da lista dos Pais e revisão) ----------
+const semAcento = (x) => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+const tarefaParecida = (a, b) => {
+  const x = semAcento(a), y = semAcento(b);
+  if (!x || !y) return false;
+  if (x === y) return true;
+  const A = new Set(x.split(" ").filter((w) => w.length > 2)), B = new Set(y.split(" ").filter((w) => w.length > 2));
+  let c = 0; A.forEach((w) => { if (B.has(w)) c++; });
+  return c / Math.max(A.size, B.size, 1) >= 0.7;
+};
+const DIAS_SEMANA = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+const turnoCurto = (sh) => {
+  if (!sh?.date || !sh?.time) return "Sem dia/horário";
+  const dia = DIAS_SEMANA[new Date(sh.date + "T12:00:00").getDay()];
+  const [h, mi] = sh.time.split(":");
+  return dia.charAt(0).toUpperCase() + dia.slice(1).replace("abado", "ábado").replace("erca", "erça") + " " + Number(h) + "h" + (mi && mi !== "00" ? mi : "");
+};
+// acha o turno de um título da lista: "Sábado 11h30", "14/11 13h", "Sexta 18:00"…
+const turnoDoTitulo = (linha, shifts) => {
+  const n = semAcento(linha);
+  const hm = n.match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/);
+  if (!hm) return null;
+  const hora = Number(hm[1]), min = Number(hm[2] || 0);
+  const dm = n.match(/(\d{1,2})\s*(?:\/|de)\s*(\d{1,2})/);
+  const dia = DIAS_SEMANA.find((d) => n.startsWith(d.slice(0, 3)));
+  return shifts.find((sh) => {
+    if (!sh.date || !sh.time) return false;
+    const [H, M] = sh.time.split(":").map(Number);
+    if (H !== hora || M !== min) return false;
+    if (dm) { const [, mm, dd] = sh.date.split("-").map(Number); return dd === Number(dm[1]) && mm === Number(dm[2]); }
+    if (dia) return DIAS_SEMANA[new Date(sh.date + "T12:00:00").getDay()] === dia;
+    return true;
+  }) || null;
+};
+const lerListaPais = (texto, shifts) => {
+  const itens = [];
+  let atual = null;
+  String(texto || "").split("\n").forEach((raw) => {
+    const l = raw.trim();
+    if (!l) return;
+    const marcador = /^[-•*·–]/.test(l);
+    const t = !marcador ? turnoDoTitulo(l, shifts) : null;
+    if (t) { atual = t.id; return; }
+    const nome = l.replace(/^[-•*·–\d.)\s]+/, "").replace(/[:;]$/, "").trim();
+    if (nome) itens.push({ shiftId: atual, name: nome });
+  });
+  return itens;
+};
+
+function AtividadesPorTurno({ giraId, shifts, tasks, errors, addTaskTo, updateTask, removeTask, addSubtask, updateSubtask, removeSubtask }) {
+  const chave = "gira-lista-pais:" + (giraId || "nova");
+  const [modo, setModo] = useState("turnos"), [ativo, setAtivo] = useState(shifts[0]?.id || ""), [nova, setNova] = useState("");
+  const [lista, setLista] = useState(() => { try { return localStorage.getItem(chave) || ""; } catch (e) { return ""; } });
+  useEffect(() => { try { localStorage.setItem(chave, lista); } catch (e) { /* ok */ } }, [lista, chave]);
+  useEffect(() => { if (!shifts.some((sh) => sh.id === ativo)) setAtivo(shifts[0]?.id || ""); }, [shifts.length]);
+  const semTurno = tasks.filter((t) => !t.shiftId || !shifts.some((sh) => sh.id === t.shiftId));
+  const itens = lerListaPais(lista, shifts);
+  const conf = itens.map((it) => ({ ...it, ok: tasks.some((t) => t.shiftId === it.shiftId && tarefaParecida(t.name, it.name)) }));
+  const temLista = itens.length > 0;
+  const aMais = temLista ? tasks.filter((t) => t.name.trim() && !itens.some((it) => it.shiftId === t.shiftId && tarefaParecida(t.name, it.name))) : [];
+  const okN = conf.filter((c) => c.ok).length;
+  const alertas = (shId) => {
+    const ts = tasks.filter((t) => t.shiftId === shId), al = [];
+    if (!ts.length) al.push("Turno sem nenhuma tarefa");
+    const nomes = ts.map((t) => semAcento(t.name));
+    nomes.forEach((n, i) => { if (n && nomes.indexOf(n) !== i) al.push("Tarefa repetida: " + ts[i].name); });
+    ts.filter((t) => !t.name.trim()).forEach(() => al.push("Tarefa sem nome"));
+    conf.filter((c) => c.shiftId === shId && !c.ok).forEach((c) => al.push("Está na lista e não foi cadastrada: " + c.name));
+    aMais.filter((t) => t.shiftId === shId).forEach((t) => al.push("Não está na lista dos Pais: " + t.name));
+    return al;
+  };
+  const adicionar = (e) => {
+    e.preventDefault();
+    const nome = nova.trim();
+    if (!nome) return;
+    addTaskTo(ativo, nome);
+    setNova("");
+  };
+  const verTurno = (shId) => { setAtivo(shId); setModo("turnos"); };
+  const listaTurnos = [...shifts, ...(semTurno.length ? [{ id: "", semTurno: true }] : [])];
+  const tarefasDoAtivo = ativo ? tasks.filter((t) => t.shiftId === ativo) : semTurno;
+
+  const painelTurnos = <div className="at-painel">
+    <div className="at-chips" role="group" aria-label="Turnos">{listaTurnos.map((sh) => {
+      const n = sh.semTurno ? semTurno.length : tasks.filter((t) => t.shiftId === sh.id).length;
+      const falta = sh.semTurno ? 0 : conf.filter((c) => c.shiftId === sh.id && !c.ok).length;
+      return <button type="button" key={sh.id || "sem"} className={"at-chip" + (sh.semTurno ? " sem" : "")} aria-pressed={ativo === sh.id} onClick={() => setAtivo(sh.id)}>
+        <b>{sh.semTurno ? "Sem turno" : turnoCurto(sh)}</b>
+        <small>{sh.semTurno ? "" : shiftLabel(sh).split(" · ")[0] + " · "}{n} tarefa{n === 1 ? "" : "s"}{sh.capacity ? " · " + sh.capacity + " vagas" : ""}{falta ? <em> · falta {falta}</em> : null}</small>
+      </button>;
+    })}</div>
+    {!tarefasDoAtivo.length && <div className="gw-empty"><ClipboardList size={20} /><p>Nenhuma tarefa neste turno ainda.</p></div>}
+    {tarefasDoAtivo.map((t) => <div className="gw-task at-task" key={t.id}>
+      <div className="at-task-row">
+        <input className={"input at-nome " + (errors[t.id + ":name"] ? "has-error" : "")} value={t.name} onChange={(e) => updateTask(t.id, { name: e.target.value })} placeholder="Nome da tarefa" aria-label="Nome da tarefa" />
+        <select className={"select at-mover " + (errors[t.id + ":shift"] ? "has-error" : "")} value={t.shiftId} onChange={(e) => updateTask(t.id, { shiftId: e.target.value })} aria-label="Turno da tarefa">
+          <option value="">Escolha o turno…</option>{shifts.map((sh) => <option value={sh.id} key={sh.id}>{turnoCurto(sh)}</option>)}</select>
+        <button type="button" className="btn gw-icon-btn" aria-label={"Excluir tarefa " + (t.name || "")} onClick={() => removeTask(t)}><Trash2 size={15} /></button>
+      </div>
+      <FieldError msg={errors[t.id + ":name"] || errors[t.id + ":shift"]} />
+      {temLista && t.name.trim() && aMais.includes(t) && <span className="at-tag extra">Não está na lista dos Pais</span>}
+      <div className="gw-subtasks">
+        {t.subtasks.map((st, j) => <div className="gw-subtask" key={st.id}>
+          <span aria-hidden="true">↳</span>
+          <input className={"input " + (errors[st.id] ? "has-error" : "")} aria-label={"Subtarefa " + (j + 1)} value={st.name} onChange={(e) => updateSubtask(t.id, st.id, e.target.value)} placeholder="Ex.: Separar as flores" />
+          <button type="button" className="btn gw-icon-btn" aria-label="Remover subtarefa" onClick={() => removeSubtask(t.id, st.id)}><X size={14} /></button>
+          <FieldError msg={errors[st.id]} />
+        </div>)}
+        <button type="button" className="gw-link-btn" onClick={() => addSubtask(t.id)}><Plus size={13} /> Adicionar subtarefa</button>
+      </div>
+    </div>)}
+    {ativo && <form className="at-add" onSubmit={adicionar}>
+      <input className="input" value={nova} onChange={(e) => setNova(e.target.value)} placeholder={"Nova tarefa em " + turnoCurto(shifts.find((sh) => sh.id === ativo))} aria-label="Nova tarefa" />
+      <button className="btn primary"><Plus size={14} /> Adicionar</button>
+    </form>}
+  </div>;
+
+  const painelLista = <div className="at-painel at-lista">
+    <h4>Lista dos Pais</h4>
+    <p className="muted small">Cole a lista do jeito que veio. Use o turno como título (ex.: “Sábado 11h30” ou “05/12 13h”) e as tarefas embaixo.</p>
+    <textarea className="textarea" rows="7" value={lista} onChange={(e) => setLista(e.target.value)} placeholder={"Sábado 11h30\n- Varrer quintal\n- Arrumar congá\n\nSábado 13h\n- Fazer amaci"} />
+    {temLista && <>
+      <div className="at-barra" aria-hidden="true"><i style={{ width: (okN / conf.length * 100) + "%" }} /></div>
+      <div className="at-resumo"><span className="at-pill ok">✓ {okN} de {conf.length} cadastradas</span>{conf.length - okN > 0 && <span className="at-pill falta">{conf.length - okN} faltando</span>}{aMais.length > 0 && <span className="at-pill extra">{aMais.length} a mais</span>}</div>
+      {[...shifts, { id: null, semTurno: true }].map((sh) => {
+        const da = conf.filter((c) => c.shiftId === sh.id), ex = sh.semTurno ? [] : aMais.filter((t) => t.shiftId === sh.id);
+        if (!da.length && !ex.length) return null;
+        return <div key={sh.id || "sem"} className="at-grupo">
+          <h5>{sh.semTurno ? "Sem turno (coloque um título de turno acima)" : turnoCurto(sh)}</h5>
+          {da.map((c, i) => c.ok
+            ? <div className="at-li ok" key={i}><span className="st">✓</span><span className="t">{c.name}</span></div>
+            : <div className="at-li falta" key={i}><span className="st">!</span><span className="t">{c.name}<em>Ainda não virou tarefa</em></span>{!sh.semTurno && <button type="button" className="btn sm" onClick={() => addTaskTo(sh.id, c.name)}>+ Adicionar</button>}</div>)}
+          {ex.map((t) => <div className="at-li extra" key={t.id}><span className="st">?</span><span className="t">{t.name}<em>Está no app, mas não na lista</em></span><button type="button" className="btn sm" onClick={() => verTurno(sh.id)}>Ver</button></div>)}
+        </div>;
+      })}
+    </>}
+  </div>;
+
+  return <div className="card gw-panel">
+    <div className="gw-panel-head">
+      <h3>Atividades</h3>
+      <p className="muted small">Escolha o turno e veja só as tarefas dele. A tarefa nova já entra no turno aberto.</p>
+    </div>
+    <div className="at-modos" role="group" aria-label="Modo">
+      <button type="button" aria-pressed={modo === "turnos"} onClick={() => setModo("turnos")}>Turnos</button>
+      <button type="button" aria-pressed={modo === "conferir"} onClick={() => setModo("conferir")}>Conferir{temLista ? " " + okN + "/" + conf.length : ""}</button>
+      <button type="button" aria-pressed={modo === "revisao"} onClick={() => setModo("revisao")}>Revisão</button>
+    </div>
+    {modo === "turnos" && painelTurnos}
+    {modo === "conferir" && <div className="at-lado">{painelLista}<div className="at-so-largo">{painelTurnos}</div></div>}
+    {modo === "revisao" && <div className="at-rev">{[...shifts, ...(semTurno.length ? [{ id: "", semTurno: true }] : [])].map((sh) => {
+      const al = sh.semTurno ? semTurno.map((t) => "Tarefa sem turno: " + (t.name || "sem nome")) : alertas(sh.id);
+      const n = sh.semTurno ? semTurno.length : tasks.filter((t) => t.shiftId === sh.id).length;
+      return <div className="at-r" key={sh.id || "sem"}>
+        <b>{sh.semTurno ? "Sem turno" : turnoCurto(sh)}</b> <span className="muted small">· {n} tarefa{n === 1 ? "" : "s"}{sh.capacity ? " · " + sh.capacity + " vagas" : ""}</span>
+        {al.length ? <ul>{al.map((a, i) => <li key={i}>{a}</li>)}</ul> : <div className="at-bom">✓ Tudo certo</div>}
+        {!sh.semTurno && <button type="button" className="gw-link-btn" onClick={() => verTurno(sh.id)}>Abrir turno</button>}
+      </div>;
+    })}
+      {!temLista && <p className="muted small">Dica: cole a lista dos Pais em “Conferir” para o app avisar o que ficou faltando.</p>}
+    </div>}
+  </div>;
 }
